@@ -4,8 +4,8 @@ from fastapi import HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
-from backend.app.domains.appraisal.schemas import appraisal as schemas
-from backend.app.domains.appraisal.services.appraisal import appraisal_form_service as actions
+from domains.appraisal.schemas import appraisal as schemas
+from domains.appraisal.services.appraisal import appraisal_form_service as actions
 from db.session import get_db
 
 

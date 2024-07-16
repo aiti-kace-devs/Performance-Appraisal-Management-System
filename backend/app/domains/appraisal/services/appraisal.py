@@ -4,8 +4,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from db.base_class import UUID
-from backend.app.domains.appraisal.respository.appraisal import appraisal_form_actions as appraisal_form_repo
-from backend.app.domains.appraisal.schemas.appraisal import AppraisalFormSchema, AppraisalFormUpdate, AppraisalFormCreate
+from domains.appraisal.respository.appraisal import appraisal_form_actions as appraisal_form_repo
+from domains.appraisal.schemas.appraisal import AppraisalFormSchema, AppraisalFormUpdate, AppraisalFormCreate
 
 
 class AppraisalFormService:

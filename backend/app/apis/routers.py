@@ -1,5 +1,5 @@
 
-from backend.app.domains.appraisal.apis.appraisal import appraisal_forms_router
+from domains.appraisal.apis.appraisal import appraisal_forms_router
 from fastapi import APIRouter
 
 
