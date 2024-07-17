@@ -17,5 +17,7 @@ class Appraisal(APIBase):
     # appraisal_form_sections = relationship("AppraisalFormSection", backref="appraisal_form_section")
     # submissions = relationship("AppraisalSubmission", backref="app_form_form")
 
+    user = relationship("Appraisal", back_populates="appraisals")
+
 
 
