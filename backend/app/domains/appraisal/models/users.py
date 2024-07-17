@@ -20,4 +20,6 @@ class User(APIBase):
     role_id = Column(UUID(as_uuid=True), ForeignKey('roles.id'),nullable=False)
     created_at = Column(DateTime,default=datetime.UTC, nullable=False)
 
-    appraisals = relationship("Appraisal", back_populates="user")
+
+    roles = relationship("Role",back_populates="users")
+    appraisals = relationship("Appraisal", back_populates="users")
