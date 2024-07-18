@@ -17,4 +17,4 @@ class staff(APIBase):
     user_id = Column(UUID(as_uuid=True), ForeignKey('user.id'),nullable=False)
     department_id = Column(UUID(as_uuid=True), ForeignKey('department.id'),nullable=False)
     grade = Column(String)
-    #appointment_date = Column(String)
+    appointment_date = Column(String)
