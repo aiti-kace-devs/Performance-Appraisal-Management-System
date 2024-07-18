@@ -1,18 +1,13 @@
 from fastapi.middleware.cors import CORSMiddleware
-from db.session import engine,SessionLocal
+from db.session import SessionLocal
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from apis.routers import router as api_router
 from config.settings import Settings
-from db.base_class import APIBase
 from db.init_db import init_db
 from fastapi import FastAPI,Request,status
 import uvicorn
-
-
-
-def create_tables():
-    APIBase.metadata.create_all(bind=engine)
+from db.init_models import create_tables
 
 
 
