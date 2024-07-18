@@ -8,7 +8,7 @@ from db.base_class import APIBase
 
 
 
-class AppraisalForm(APIBase):
+class Appraisal(APIBase):
 
     name = Column(String) #Public or Civil Service
     description = Column(Text, nullable=True)
