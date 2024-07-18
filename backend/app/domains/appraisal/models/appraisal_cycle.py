@@ -8,13 +8,13 @@ from db.base_class import APIBase
 
 
 
-class AppraisalConfiguration(APIBase):
+class AppraisalCycle(APIBase):
 
-    appraisal_cycles_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_cycles.id'), nullable=False) 
-    configuration = Column(JSON, nullable=False)
+    name = Column(String, nullable=False) 
+    description = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
     
-    
-    
+
 
     
 
