@@ -1,10 +1,10 @@
 from crud.base import CRUDBase
-from domains.appraisal.models.appraisal import AppraisalForm
+from domains.appraisal.models.appraisal import Appraisal
 from domains.appraisal.schemas.appraisal import (
-    AppraisalFormCreate, AppraisalFormUpdate
+    AppraisalCreate, AppraisalUpdate
 )
 
 
-class CRUDAppraisalForm(CRUDBase[AppraisalForm, AppraisalFormCreate, AppraisalFormUpdate]):
+class CRUDAppraisal(CRUDBase[Appraisal, AppraisalCreate, AppraisalUpdate]):
     pass
-appraisal_form_actions = CRUDAppraisalForm(AppraisalForm)
+appraisal_form_actions = CRUDAppraisal(Appraisal)
