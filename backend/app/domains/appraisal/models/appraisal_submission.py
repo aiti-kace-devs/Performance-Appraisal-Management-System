@@ -16,7 +16,7 @@ class AppraisalSubmission(APIBase):
     submitted = Column(Boolean, default=True)
     completed = Column(Boolean, default=True)
     approval_status = Column(Boolean, default=True)
-    approval_date = Column(DateTime, default=datetime.UTC, onupdate=datetime.UTC)
+    approval_date = Column(DateTime, default=datetime.utcnow(), onupdate=datetime.utcnow())
     appraisal_forms_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_forms.id'), nullable=True)
     comment = Column(String(255),nullable=True)
 
