@@ -15,7 +15,6 @@ class User(APIBase):
     password = Column(String, nullable=True)
     reset_password_token = Column(String,nullable=True)
     role_id = Column(UUID(as_uuid=True), ForeignKey('roles.id'),nullable=False)
-    created_at = Column(DateTime,default=datetime.UTC, nullable=False)
 
 
     roles = relationship("Role",back_populates="users")
