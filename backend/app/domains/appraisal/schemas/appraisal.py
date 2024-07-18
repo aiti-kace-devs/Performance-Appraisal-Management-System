@@ -5,24 +5,24 @@ from pydantic import BaseModel
 from pydantic import UUID4
 
 
-class AppraisalFormBase(BaseModel):
+class AppraisalBase(BaseModel):
     name:str
     description: Optional[str] = None
     created_at: date
 
-class AppraisalFormCreate(AppraisalFormBase):
+class AppraisalCreate(AppraisalBase):
     name:str
     description: Optional[str] = None
     created_at: date
 
-class AppraisalFormUpdate(AppraisalFormBase):
+class AppraisalUpdate(AppraisalBase):
     pass
 
-class AppraisalFormInDBBase(AppraisalFormBase):
+class AppraisalInDBBase(AppraisalBase):
     id: UUID4
 
     class Config:
         orm_mode= True
 
-class AppraisalFormSchema(AppraisalFormBase):
+class AppraisalSchema(AppraisalBase):
     pass
