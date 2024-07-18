@@ -10,9 +10,6 @@ from db.base_class import APIBase
 
 
 class User(APIBase):
-    __tablename__ = 'users'
-
-    id = Column(UUID(as_uuid=True),index=True,primary_key=True, default=uuid.uuid4)
     staff_id = Column(String,nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=True)
