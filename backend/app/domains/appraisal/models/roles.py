@@ -10,11 +10,7 @@ from db.base_class import APIBase
 
 
 class Role(APIBase):
-    __tablename__ = 'roles'
-
-    id = Column(UUID(as_uuid=True),index=True,primary_key=True, default=uuid.uuid4)
     name = Column(String,nullable=False)
     description = Column(String,nullable=True)
-    created_at = Column(DateTime,default=datetime.UTC, nullable=False)
 
     users = relationship("User",back_populates="role")
