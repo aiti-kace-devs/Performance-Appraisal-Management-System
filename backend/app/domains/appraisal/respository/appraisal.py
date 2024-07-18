@@ -1,6 +1,6 @@
 from crud.base import CRUDBase
-from backend.app.domains.appraisal.models.appraisal import AppraisalForm
-from backend.app.domains.appraisal.schemas.appraisal import (
+from domains.appraisal.models.appraisal import AppraisalForm
+from domains.appraisal.schemas.appraisal import (
     AppraisalFormCreate, AppraisalFormUpdate
 )
 
