@@ -18,7 +18,7 @@ class AppraisalSubmission(APIBase):
     approval_status = Column(Boolean, default=True)
     approval_date = Column(DateTime, default=datetime.datetime.now(), onupdate= datetime.datetime.now())
     appraisal_forms_id = Column(UUID(as_uuid=True))
-    comment = Column(String(255),nullable=True)
+    comment = Column(String(255), nullable=True)
 
     #appraisals = relationship("Appraisal", back_populates = "appraisal_submissions")
     #staffs = relationship("Staff", back_populates = "appraisal_submissions")
