@@ -13,4 +13,4 @@ class Role(APIBase):
     name = Column(String,nullable=False)
     description = Column(String,nullable=True)
 
-    users = relationship("User",back_populates="role")
+    users = relationship("User",back_populates="roles")

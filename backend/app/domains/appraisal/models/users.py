@@ -14,8 +14,8 @@ class User(APIBase):
     email = Column(String, nullable=False)
     password = Column(String, nullable=True)
     reset_password_token = Column(String,nullable=True)
-    role_id = Column(UUID(as_uuid=True), ForeignKey('roles.id'),nullable=False)
+    role_id = Column(UUID(as_uuid=True), ForeignKey('roles_id'),nullable=False)
 
 
-    users = relationship("User",back_populates="roles")
+    roles = relationship("Role",back_populates="users")
     appraisals = relationship("Appraisal", back_populates="users")
