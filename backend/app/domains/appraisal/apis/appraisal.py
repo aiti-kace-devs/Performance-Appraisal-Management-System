@@ -21,7 +21,7 @@ appraisal_forms_router = APIRouter(
 
 @appraisal_forms_router.get(
     "/",
-    response_model=List[schemas.AppraisalFormSchema]
+    response_model=List[schemas.AppraisalSchema]
 )
 def list_appraisal_forms(
         db: Session = Depends(get_db),
@@ -35,13 +35,13 @@ def list_appraisal_forms(
 
 @appraisal_forms_router.post(
     "/",
-    response_model=schemas.AppraisalFormSchema,
+    response_model=schemas.AppraisalSchema,
     status_code=HTTP_201_CREATED
 )
 def create_appraisal_forms(
         *, db: Session = Depends(get_db),
         # 
-        appraisal_forms_in: schemas.AppraisalFormCreate
+        appraisal_forms_in: schemas.AppraisalCreate
 ) -> Any:
     appraisal_forms_router = actions.create_appraisal_form(db=db, appraisal_form=appraisal_forms_in)
     return appraisal_forms_router
@@ -49,13 +49,13 @@ def create_appraisal_forms(
 
 @appraisal_forms_router.put(
     "/{id}",
-    response_model=schemas.AppraisalFormSchema
+    response_model=schemas.AppraisalSchema
 )
 def update_appraisal_forms(
         *, db: Session = Depends(get_db),
         
         id: UUID4,
-        appraisal_forms_in: schemas.AppraisalFormUpdate,
+        appraisal_forms_in: schemas.AppraisalUpdate,
 ) -> Any:
     appraisal_forms_router = actions.get_appraisal_form(db=db, id=id)
     if not appraisal_forms_router:
@@ -69,7 +69,7 @@ def update_appraisal_forms(
 
 @appraisal_forms_router.get(
     "/{id}",
-    response_model=schemas.AppraisalFormSchema
+    response_model=schemas.AppraisalSchema
 )
 def get_appraisal_forms(
         *, db: Session = Depends(get_db),
@@ -87,7 +87,7 @@ def get_appraisal_forms(
 
 @appraisal_forms_router.delete(
     "/{id}",
-    response_model=schemas.AppraisalFormSchema
+    response_model=schemas.AppraisalSchema
 )
 def delete_appraisal_forms(
         *, db: Session = Depends(get_db),
