@@ -10,7 +10,7 @@ from db.base_class import APIBase
 
 
 class Role(APIBase):
-    name = Column(String,nullable=False)
-    description = Column(String,nullable=True)
+    name = Column(String(255),nullable=False)
+    description = Column(String(255),nullable=True)
 
     users = relationship("User",back_populates="roles")
