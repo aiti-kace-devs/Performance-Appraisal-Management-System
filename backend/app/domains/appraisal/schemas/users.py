@@ -19,7 +19,7 @@ class UserCreate(UserBase):
     reset_password_token:str
     created_at:date
 
-@field_validator('name','description', mode='before')
+@field_validator('name','email','password','reset_password_token' mode='before')
 def check_non_empty_and_not_string(cls,v,info):
     if isinstance(v,str) and (v.strip() == '' or v.strip().lower() == 'string'):
         raise ValueError(f'\n{info.field_name} should not be empty "string"')
