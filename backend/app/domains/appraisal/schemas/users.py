@@ -17,7 +17,6 @@ class UserCreate(UserBase):
     email:str
     password:str
     reset_password_token:str
-    created_at:date
 
 @field_validator('name','email','password','reset_password_token' mode='before')
 def check_non_empty_and_not_string(cls,v,info):
