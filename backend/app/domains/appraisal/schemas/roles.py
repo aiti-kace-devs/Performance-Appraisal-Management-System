@@ -7,12 +7,10 @@ from pydantic import UUID4
 class RoleBase(BaseModel):
     name:str
     description: Optional[str] = None
-    created_at: date
 
 class RoleCreate(RoleBase):
     name:str
     description: Optional[str] = None
-    created_at: date
     
     @field_validator('name','description', mode='before')
     def check_non_empty_and_not_string(cls,v,info):
