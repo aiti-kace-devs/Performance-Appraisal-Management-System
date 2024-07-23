@@ -1,4 +1,6 @@
 from domains.appraisal.models.appraisal import APIBase
+from domains.appraisal.models.appraisal_configuration import APIBase
+from domains.appraisal.models.appraisal_cycle import APIBase
 from db.session import engine
 
 
