@@ -6,14 +6,16 @@ from pydantic import UUID4
 
 
 class AppraisalBase(BaseModel):
-    name:str
-    description: Optional[str] = None
-    created_at: date
+     appraisal_cycles_id:UUID4
+     staffs_id: UUID4
+     supervisor_id: UUID4
+     overall_score: str
 
 class AppraisalCreate(AppraisalBase):
-    name:str
-    description: Optional[str] = None
-    created_at: date
+    appraisal_cycles_id:UUID4
+    staffs_id: UUID4
+    supervisor_id: UUID4
+    overall_score: str
 
 class AppraisalUpdate(AppraisalBase):
     pass
