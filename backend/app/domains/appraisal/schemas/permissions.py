@@ -6,7 +6,7 @@ class PermissionBase(BaseModel):
 
     @validator('name')
     def name_must_not_be_empty(cls, value):
-        if not value or value.isspace():
+        if not value or value.isspace() or (value.lower() == "string"):
             raise ValueError("Permission name must not be empty or only whitespace")
         return value
 
