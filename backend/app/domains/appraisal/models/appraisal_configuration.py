@@ -10,6 +10,7 @@ from db.base_class import APIBase
 
 class AppraisalConfiguration(APIBase):
 
+
     appraisal_cycles_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_cycles.id'), nullable=False) 
     configuration = Column(JSON, nullable=False)
     

@@ -10,6 +10,7 @@ from db.base_class import APIBase
 
 class AppraisalCycle(APIBase):
 
+
     name = Column(String, nullable=False) 
     description = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
