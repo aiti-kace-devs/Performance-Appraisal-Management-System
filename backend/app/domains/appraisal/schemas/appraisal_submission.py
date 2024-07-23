@@ -9,30 +9,31 @@ from sqlalchemy import JSON
 
 
 class AppraisalSubmissionBase(BaseModel):
-    appraisals_id : Optional[UUID4]
-    staffs_id : Optional[UUID4]
+    appraisals_id : UUID4 
+    staffs_id : UUID4
     submitted_values : JSON
-    started_at : Optional[date]
-    completed_at : Optional[date]
+    started_at : date
+    completed_at : date
     submitted : bool
     completed : bool
     approval_status : bool
-    approval_date : Optional[date]
-    appraisal_forms_id : Optional[UUID4]
-    comment : Optional[str]
+    approval_date : date
+    appraisal_forms_id : UUID4
+    comment : str
 
 class AppraisalSubmissionCreate(AppraisalSubmissionBase):
-    appraisals_id : Optional[UUID4]
-    staffs_id : Optional[UUID4]
+    appraisals_id : UUID4 
+    staffs_id : UUID4
     submitted_values : JSON
-    started_at : Optional[date]
-    completed_at : Optional[date]
+    started_at : date
+    completed_at : date
     submitted : bool
     completed : bool
     approval_status : bool
-    approval_date : Optional[date]
-    appraisal_forms_id : Optional[UUID4]
-    comment : Optional[str] = Field(..., min_length=1)
+    approval_date : date
+    appraisal_forms_id : UUID4
+    comment : str = Field(..., min_length=1)
+
 
 
  # Checking if fields are not empty and also not allowing the word string as value
