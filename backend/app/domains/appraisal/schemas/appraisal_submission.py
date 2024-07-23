@@ -3,8 +3,7 @@ from datetime import date, datetime,time
 from typing import Optional, Any, Dict
 import uuid
 
-from pydantic import BaseModel, Field, field_validator
-from pydantic import UUID4
+from pydantic import BaseModel, Field, field_validator,UUID4
 from sqlalchemy import JSON
 
 
