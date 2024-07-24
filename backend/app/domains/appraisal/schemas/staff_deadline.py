@@ -17,12 +17,7 @@ class StaffDeadlineBase(BaseModel):
 
 
 class StaffDeadlineCreate(StaffDeadlineBase):
-    appraisal_sections_id: Optional[UUID4] 
-    staffs_id: Optional[UUID4]
-    supervisor_id: Optional[UUID4]
-    start_date:Optional[date]
-    end_date: Optional[date]
-    comment: Optional[str]= Field(..., min_length=1) # Ensure comment is not empty
+    pass
 
 
 
