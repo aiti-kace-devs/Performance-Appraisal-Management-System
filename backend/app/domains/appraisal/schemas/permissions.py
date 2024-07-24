@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, validator
 
 
 class PermissionBase(BaseModel):
-    name: str = Field(..., min_length=1, max_length=50, example="read:data")
+    name: str = Field(min_length=1, max_length=50, example="read:data")
 
     @validator('name')
     def name_must_not_be_empty(cls, value):
