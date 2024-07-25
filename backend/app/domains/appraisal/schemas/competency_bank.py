@@ -25,6 +25,12 @@ class Compentency_BankCreate(Compentency_BankBase):
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
+    
+    @staticmethod
+    def validate_competency_type(value: Dict[str, Any]) -> Dict[str, Any]:
+         if not isinstance(value, dict) or not value:
+            raise ValueError('Competency type must be a non-empty valid JSON object')
+         return value
 
 
 class Compentency_BankUpdate(Compentency_BankBase):
