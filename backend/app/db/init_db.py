@@ -17,7 +17,7 @@ SUPER_ADMIN_STATUS: bool = True
 def init_db(db: Session) -> None:
  
     payload = {
-        "name" : "",
+        "name" : '',
         "description" : ""
     }
 
