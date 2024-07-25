@@ -1,6 +1,7 @@
 from typing import List, Optional, Union,Annotated
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, UUID4
 from schemas.permissions import PermissionCreate, Permission
+
 
 
 class RoleBase(BaseModel):
@@ -31,7 +32,7 @@ class RoleUpdate(RoleBase):
         return value
 
 class ReadRole(RoleBase):
-    id: int
+    id: UUID4
     permissions: List[Permission] = []
 
     class Config:
