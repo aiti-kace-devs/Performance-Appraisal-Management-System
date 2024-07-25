@@ -1,10 +1,10 @@
 
-from pydantic import BaseModel, field_validator
-import uuid
+from pydantic import BaseModel, field_validator, UUID4 
+
 
 class RolePermissionBase(BaseModel):
-    role_id: uuid
-    permission_id: uuid
+    role_id: UUID4 
+    permission_id: UUID4 
 
     @field_validator('role_id', 'permission_id')
     def id_must_be_positive(cls, value):
@@ -19,7 +19,7 @@ class RolePermissionUpdate(RolePermissionBase):
     pass
 
 class RolePermission(RolePermissionBase):
-    id: uuid
+    id: UUID4 
 
     class Config:
         orm_mode = True
