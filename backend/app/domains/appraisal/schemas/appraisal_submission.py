@@ -11,7 +11,7 @@ class AppraisalSubmissionBase(BaseModel):
     appraisals_id : Optional[UUID4]
     staffs_id : Optional[UUID4]
     appraisal_forms_id : Optional[UUID4]
-    submitted_values : Annotated[Dict[str, Any], Field(...)]
+    submitted_values : Dict[str, str]
     started_at : Optional[date]
     completed_at : Optional[date]
     submitted : Optional[bool]
@@ -24,19 +24,19 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
     appraisals_id : Optional[UUID4]
     staffs_id : Optional[UUID4]
     appraisal_forms_id : Optional[UUID4]
-    submitted_values : Annotated[Dict[str, Any], Field(...)]
+    submitted_values : Dict[str, str]= Field(..., description="Values details")
     started_at : Optional[date]
     completed_at : Optional[date]
+    approval_date : Optional[date]
     submitted : Optional[bool]
     completed : Optional[bool]
     approval_status : Optional[bool]
-    approval_date : Optional[date]
     comment : Optional[str] = Field(..., min_length=1)
 
 
 
  # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', 'submitted_values', 'submitted', 'completed', 'approval_status', 'comment', mode='before')
+    @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', 'comment', mode='before')
     def check_non_empty_and_not_string(cls, v, info):
         if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
@@ -53,7 +53,7 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
         return v
 
 
-    # Checking if started_at and Completed_at is none, current time nad date will be submitted
+    # Checking if started_at, approval_date and Completed_at is none, current time nad date will be submitted
     @field_validator('started_at', 'Completed_at', 'approval_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
         if v is not None:
@@ -69,11 +69,32 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
     
 
 
-    # @field_validator('submitted_values', mode='before')
-    # def validate_submission_values(v: Dict[str, Any]) -> Dict[str, Any]:
-    #     if not isinstance(v, dict) or not v:
-    #         raise ValueError('Configuration must be a non-empty valid JSON object')
-    #     return v 
+    @field_validator('submitted_values')
+    @classmethod
+    def validate(cls, values):
+        # Perform additional custom validation if necessary
+        details = values.get("details", {})
+        for key, value in details.items():
+            if not key.isalpha():  # Ensure keys are alphabetic
+                raise ValueError(f"Key '{key}' is not alphabetic")
+        return values
+    
+    @field_validator('submitted_values')
+    def metadata_must_not_be_empty(cls, values):
+        for key, value in values.items():
+            if not key.strip():
+                raise ValueError('details keys must not be empty')
+            if not value.strip():
+                raise ValueError('details values must not be empty')
+        return values
+
+    
+    @field_validator('submitted_values')
+    def entry_not_be_string(cls, values):
+        for key, value in values.items():
+            if value == "string":
+                raise ValueError(f'entry {key}: "string" is not allowed')
+        return values
 
 
 class AppraisalSubmissionUpdate(AppraisalSubmissionBase):

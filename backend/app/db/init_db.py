@@ -23,10 +23,10 @@ def init_db(db: Session) -> None:
         "submitted_values" : "well",
         "started_at" : None,
         "completed_at" : None,
+        "approval_date" : None,
         "submitted" : "True",
         "completed" : "True",
         "approval_status" : "False",
-        "approval_date" : None,
         "comment" : "Well done on completing your work"
     }
 
