@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from pydantic import UUID4
 from sqlalchemy import func 
-
+from domains.appraisal.models.competency_bank import Compentency_Bank
+from domains.appraisal.models.competency_bank import Compentency_BankCreate
 
 
 SUPER_ADMIN_NAME: str = "Super Admin"
@@ -15,6 +16,24 @@ SUPER_ADMIN_STATUS: bool = True
 def init_db(db: Session) -> None:
 
     return False
+
+
+    payload = {
+    "appraisal_section_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",
+    "staffs_id":"03e8beaa-ba9f-4192-b788-ffcff2cef900",
+    "overall_score" : ""
+    }
+
+
+    try:
+        db_add = Appraisal(**payload)  #model class name
+        db.add(db_add)
+        db.commit()
+        db.refresh(db_add)
+        print("Data inserted Successfully")
+    except ValidationError as e:
+        print(e.json())
+
 
     # # Create 1st Superuser
     # admin = userCRUD.get_by_email(db=db, email=SUPER_ADMIN_EMAIL)
