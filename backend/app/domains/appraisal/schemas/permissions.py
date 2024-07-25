@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field, validator
-
+from pydantic import BaseModel, Field, field_validator
+import uuid
 
 class PermissionBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=50, example="read:data")
 
-    @validator('name')
+    @field_validator('name')
     def name_must_not_be_empty(cls, value):
         if not value or value.isspace() or (value.lower() == "string"):
             raise ValueError("Permission name must not be empty or only whitespace")
@@ -14,7 +14,7 @@ class PermissionCreate(PermissionBase):
     pass 
 
 class Permission(PermissionBase):
-    id: int 
+    id: uuid
 
     class Config:
         orm_mode = True 
