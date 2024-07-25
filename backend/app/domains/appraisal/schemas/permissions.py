@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, UUID4
 
 
 class PermissionBase(BaseModel):
@@ -14,7 +14,7 @@ class PermissionCreate(PermissionBase):
     pass 
 
 class Permission(PermissionBase):
-    id: int 
+    id: UUID4
 
     class Config:
         orm_mode = True 
