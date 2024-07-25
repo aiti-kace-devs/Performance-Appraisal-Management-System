@@ -19,7 +19,7 @@ class RolePermissionUpdate(RolePermissionBase):
     pass
 
 class RolePermission(RolePermissionBase):
-    id: int
+    id: uuid
 
     class Config:
         orm_mode = True
