@@ -25,9 +25,9 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
     staffs_id : Optional[UUID4]
     appraisal_forms_id : Optional[UUID4]
     submitted_values : Dict[str, str]= Field(..., description="Values details")
-    started_at : Optional[date]
-    completed_at : Optional[date]
-    approval_date : Optional[date]
+    started_at : Optional[date] = None
+    completed_at : Optional[date] = None
+    approval_date : Optional[date] = None
     submitted : Optional[bool]
     completed : Optional[bool]
     approval_status : Optional[bool]
@@ -68,33 +68,24 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
         return v
     
 
+    @field_validator('submitted', 'completed', 'approval_status', mode='before')
+    def validate_boolean(cls, v, info):
+        if not isinstance(v, bool):
+            raise ValueError(f'{info.field_name} must be a boolean value')
+        return v
+
 
     @field_validator('submitted_values')
-    @classmethod
-    def validate(cls, values):
-        # Perform additional custom validation if necessary
-        details = values.get("details", {})
-        for key, value in details.items():
-            if not key.isalpha():  # Ensure keys are alphabetic
-                raise ValueError(f"Key '{key}' is not alphabetic")
-        return values
-    
-    @field_validator('submitted_values')
-    def metadata_must_not_be_empty(cls, values):
+    def validate_submitted_values(cls, values):
         for key, value in values.items():
             if not key.strip():
-                raise ValueError('details keys must not be empty')
+                raise ValueError('Keys in submitted_values must not be empty')
             if not value.strip():
-                raise ValueError('details values must not be empty')
-        return values
-
-    
-    @field_validator('submitted_values')
-    def entry_not_be_string(cls, values):
-        for key, value in values.items():
+                raise ValueError('Values in submitted_values must not be empty')
             if value == "string":
-                raise ValueError(f'entry {key}: "string" is not allowed')
+                raise ValueError(f'Entry for {key} cannot be the word "string"')
         return values
+    
 
 
 class AppraisalSubmissionUpdate(AppraisalSubmissionBase):
