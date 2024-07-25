@@ -2,7 +2,7 @@ from datetime import date,time
 from typing import Optional, Any, Dict
 import uuid
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 from pydantic import UUID4
 
 
@@ -16,7 +16,7 @@ class AppraisalCreate(AppraisalBase):
     appraisal_cycles_id:UUID4
     staffs_id: UUID4
     supervisor_id: UUID4
-    overall_score: str
+    overall_score: Optional[str] = Field(..., min_length = 1)
 
 
      # Checking if fields are not empty and also not allowing the word string as value
