@@ -11,11 +11,11 @@ from db.base_class import APIBase
 class Appraisal(APIBase):
 
     name = Column(String) #Public or Civil Service
-    description = Column(Text, nullable=True)
+    description = Column(Text, nullable=False)
     year = Column(Integer)
 
-    appraisal_form_sections = relationship("AppraisalSection", backref="appraisal_form_section")
-    submissions = relationship("AppraisalSubmission", backref="app_form_form")
+    #appraisal_form_sections = relationship("AppraisalSection", backref="appraisal_form_section")
+    #submissions = relationship("AppraisalSubmission", backref="app_form_form")
 
 
 

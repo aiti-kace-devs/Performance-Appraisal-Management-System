@@ -10,7 +10,7 @@ class AppraisalSubmission(APIBase):
 
     appraisals_id = Column(UUID(as_uuid=True))
     staffs_id = Column(UUID(as_uuid=True))
-    submitted_values = Column(JSON, nullable=False)
+    submitted_values = Column(JSON, nullable=True)
     started_at = Column(DateTime, default=datetime.datetime.now(), onupdate= datetime.datetime.now())
     completed_at = Column(DateTime, default=datetime.datetime.now(), onupdate= datetime.datetime.now())
     submitted = Column(Boolean, default=True)

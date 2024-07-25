@@ -1,6 +1,6 @@
 from dateutil.parser import parse
 from datetime import date, datetime,time
-from typing import Optional, Any, Dict
+from typing import Annotated, Optional, Any, Dict
 import uuid
 
 from pydantic import BaseModel, Field, field_validator,UUID4
@@ -8,30 +8,30 @@ from sqlalchemy import JSON
 
 
 class AppraisalSubmissionBase(BaseModel):
-    appraisals_id : UUID4 
-    staffs_id : UUID4
-    submitted_values : JSON
-    started_at : date
-    completed_at : date
-    submitted : bool
-    completed : bool
-    approval_status : bool
-    approval_date : date
-    appraisal_forms_id : UUID4
-    comment : str
+    appraisals_id : Optional[UUID4]
+    staffs_id : Optional[UUID4]
+    appraisal_forms_id : Optional[UUID4]
+    submitted_values : Annotated[Dict[str, Any], Field(...)]
+    started_at : Optional[date]
+    completed_at : Optional[date]
+    submitted : Optional[bool]
+    completed : Optional[bool]
+    approval_status : Optional[bool]
+    approval_date : Optional[date]
+    comment : Optional[str]
 
 class AppraisalSubmissionCreate(AppraisalSubmissionBase):
-    appraisals_id : UUID4 
-    staffs_id : UUID4
-    submitted_values : JSON
-    started_at : date
-    completed_at : date
-    submitted : bool
-    completed : bool
-    approval_status : bool
-    approval_date : date
-    appraisal_forms_id : UUID4
-    comment : str = Field(..., min_length=1)
+    appraisals_id : Optional[UUID4]
+    staffs_id : Optional[UUID4]
+    appraisal_forms_id : Optional[UUID4]
+    submitted_values : Annotated[Dict[str, Any], Field(...)]
+    started_at : Optional[date]
+    completed_at : Optional[date]
+    submitted : Optional[bool]
+    completed : Optional[bool]
+    approval_status : Optional[bool]
+    approval_date : Optional[date]
+    comment : Optional[str] = Field(..., min_length=1)
 
 
 
@@ -66,6 +66,14 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
             except ValueError:
                 raise ValueError(f'\n{info.field_name} must be a valid date format and will be converted to YYYY-MM-DDTHH:MM:SS')
         return v
+    
+
+
+    # @field_validator('submitted_values', mode='before')
+    # def validate_submission_values(v: Dict[str, Any]) -> Dict[str, Any]:
+    #     if not isinstance(v, dict) or not v:
+    #         raise ValueError('Configuration must be a non-empty valid JSON object')
+    #     return v 
 
 
 class AppraisalSubmissionUpdate(AppraisalSubmissionBase):
