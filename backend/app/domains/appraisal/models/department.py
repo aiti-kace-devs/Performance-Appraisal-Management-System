@@ -7,6 +7,6 @@ from db.base_class import APIBase
 
 class Department(APIBase):
 
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     
