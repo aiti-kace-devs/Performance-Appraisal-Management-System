@@ -48,8 +48,27 @@ class AppraisalCycleService:
             )
         return appraisal_cycle
 
+    def iread(self, db: Session, value: str = None):
+        search = "name"
+        base = db.query(AppraisalCycle)
+        response = []
+       
+        if search and value.strip():
+            try:
+                response = base.filter(
+                    AppraisalCycle.__table__.c[search].ilike("%" + value.strip() + "%"))
+              
+                if not response.all():
+                    response = base.filter(
+                    AppraisalCycle.__table__.c["year"] == value.strip())
+                
+            except KeyError as ke:
+                
+                return ke.json()
+        return response
+    
     def read_appraisal_cycle_by_name_by_year(self, *, db:Session, search_word: str) -> List[AppraisalCycleSchema]:
-        appraisal_cycle_name = appraisal_cycle_repo.iread(db=db, value=search_word)
+        appraisal_cycle_name = self.iread(db=db, value=search_word)
         return appraisal_cycle_name
     
 

@@ -37,7 +37,7 @@ def list_appraisal_cycles(
     "/search",
     response_model=List[schemas.AppraisalCycleSchema]
 )
-def search_appraisal_cycles_by_name_by_year(
+def search_appraisal_cycles_by_name_or_by_year(
         db: Session = Depends(get_db),
         search_word: str = None
 ) -> Any:
@@ -46,7 +46,7 @@ def search_appraisal_cycles_by_name_by_year(
 
 
 @appraisal_cycles_router.post(
-    "/",
+    "/new",
     response_model=schemas.AppraisalCycleSchema,
     status_code=HTTP_201_CREATED
 )
