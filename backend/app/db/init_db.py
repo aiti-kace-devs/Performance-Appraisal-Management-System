@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-from pydantic import UUID4
+from pydantic import UUID4, ValidationError
 from sqlalchemy import func 
+from domains.appraisal.models.department import Department
+from domains.appraisal.schemas.department import DepartmentCreate
 
 
 
@@ -14,7 +16,23 @@ SUPER_ADMIN_STATUS: bool = True
 
 def init_db(db: Session) -> None:
 
-    return False
+    
+    payload = {
+    "name" : "",
+    "description" : ""
+    }
+
+
+    try:
+        db_add = Department(**payload)  #model class name
+        db.add(db_add)
+        db.commit()
+        db.refresh(db_add)
+        print("Data inserted Successfully")
+    except ValidationError as e:
+        print(e.json())
+
+    #return False
 
     # # Create 1st Superuser
     # admin = userCRUD.get_by_email(db=db, email=SUPER_ADMIN_EMAIL)

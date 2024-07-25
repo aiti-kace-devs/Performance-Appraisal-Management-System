@@ -8,5 +8,5 @@ from db.base_class import APIBase
 class Department(APIBase):
 
     name = Column(String)
-    description = Column(Text, nullable=True)
+    description = Column(String, nullable=True)
     
