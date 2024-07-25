@@ -1,7 +1,7 @@
 from datetime import date,time
 from typing import Optional, Any, Dict
 
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from pydantic import UUID4
 
 
