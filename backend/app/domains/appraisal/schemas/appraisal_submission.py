@@ -41,7 +41,7 @@ class AppraisalSubmissionBase(BaseModel):
 
 
     # Checking if submitted_at, approval_date and Completed_at is none, current time nad date will be submitted
-    @field_validator('submitted_at', 'completed_at', 'approval_date', mode='before')
+    @field_validator('started_at', 'completed_at', 'approval_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
         if v is not None:
             try:
@@ -63,15 +63,10 @@ class AppraisalSubmissionBase(BaseModel):
 
 
     @field_validator('submitted_values')
-    def validate_submitted_values(cls, values):
-        for key, value in values.items():
-            if not key.strip():
-                raise ValueError('Keys in submitted_values must not be empty')
-            if not value.strip():
-                raise ValueError('Values in submitted_values must not be empty')
-            if value == "string":
-                raise ValueError(f'Entry for {key} cannot be the word "string"')
-        return values
+    def validate_competency_type(value: Dict[str, Any]) -> Dict[str, Any]:
+         if not isinstance(value, dict) or not value:
+            raise ValueError('Competency type must be a non-empty valid JSON object')
+         return value
     
 
 class AppraisalSubmissionCreate(AppraisalSubmissionBase):

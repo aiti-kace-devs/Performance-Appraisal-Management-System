@@ -21,12 +21,12 @@ def init_db(db: Session) -> None:
         "staffs_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef965",
         "appraisal_forms_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef972",
         "submitted_values" : {"homework": "well done"},
-        "started_at" : "2024-06-01T09:30:20",
-        "completed_at" : "2024-06-01T10:00:20",
-        "approval_date" : "2024-06-01T1o:30:20",
-        "submitted" : "True",
-        "completed" : "True",
-        "approval_status" : "False",
+        "started_at" : None,
+        "completed_at" : None,
+        "approval_date" : None,
+        "submitted" : True,
+        "completed" : True,
+        "approval_status" : False,
         "comment" : "Well done on completing your work"
 
     }
