@@ -8,10 +8,10 @@ from db.base_class import APIBase
 
 
 
-class Compentency_Bank(APIBase):
+class CompentencyBank(APIBase):
     appraisal_section_id = Column(UUID(as_uuid=True), nullable=False)
     staff_id = Column(UUID(as_uuid=True), nullable=False)
     compentency_type = Column(JSON,nullable=False)
     
 
-    compentency_banks = relationship("AppraisalCycle", back_populates="staff")
+    #compentency_banks = relationship("AppraisalCycle", back_populates="staff")
