@@ -16,7 +16,7 @@ class AppraisalCreate(AppraisalBase):
     appraisal_cycles_id:UUID4
     staffs_id: UUID4
     supervisor_id: UUID4
-    overall_score: Optional[str] = Field(..., min_length = 1)
+    overall_score: Optional[str]
 
 
      # Checking if fields are not empty and also not allowing the word string as value
