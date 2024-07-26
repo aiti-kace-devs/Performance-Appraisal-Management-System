@@ -41,6 +41,6 @@ class APIBase(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True,index=True, nullable=False, default=uuid.uuid4)
 
-    created_date = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_date = Column(DateTime, default=datetime.datetime.utcnow)
+    created_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    updated_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
 
