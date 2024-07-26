@@ -17,5 +17,5 @@ class User(APIBase):
     role_id = Column(UUID(as_uuid=True))
 
 
-    roles = relationship("Role",back_populates="users")
-    appraisals = relationship("Appraisal", back_populates="users")
+    #roles = relationship("Role",back_populates="users")
+    #appraisals = relationship("Appraisal", back_populates="users")
