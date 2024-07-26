@@ -11,7 +11,7 @@ class AppraisalSubmissionBase(BaseModel):
     appraisals_id : Optional[UUID4]
     staffs_id : Optional[UUID4]
     appraisal_forms_id : Optional[UUID4]
-    submitted_values : Dict[str, str]
+    submitted_values : Dict[str, Any]
     started_at : Optional[date]
     completed_at : Optional[date]
     submitted : Optional[bool]
@@ -20,22 +20,9 @@ class AppraisalSubmissionBase(BaseModel):
     approval_date : Optional[date]
     comment : Optional[str]
 
-class AppraisalSubmissionCreate(AppraisalSubmissionBase):
-    appraisals_id : Optional[UUID4]
-    staffs_id : Optional[UUID4]
-    appraisal_forms_id : Optional[UUID4]
-    submitted_values : Dict[str, str]= Field(..., description="Values details")
-    started_at : Optional[date] = None
-    completed_at : Optional[date] = None
-    approval_date : Optional[date] = None
-    submitted : Optional[bool]
-    completed : Optional[bool]
-    approval_status : Optional[bool]
-    comment : Optional[str] = Field(..., min_length=1)
 
 
-
- # Checking if fields are not empty and also not allowing the word string as value
+     # Checking if fields are not empty and also not allowing the word string as value
     @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', 'comment', mode='before')
     def check_non_empty_and_not_string(cls, v, info):
         if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
@@ -47,14 +34,14 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
     @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', mode='before')
     def validate_fields_with_uuid4(cls, v, info):
         try:
-            uuid.UUID(v, version=4)
+            uuid.UUID(str(v), version=4)
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
 
 
-    # Checking if started_at, approval_date and Completed_at is none, current time nad date will be submitted
-    @field_validator('started_at', 'Completed_at', 'approval_date', mode='before')
+    # Checking if submitted_at, approval_date and Completed_at is none, current time nad date will be submitted
+    @field_validator('submitted_at', 'completed_at', 'approval_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
         if v is not None:
             try:
@@ -69,7 +56,7 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
     
 
     @field_validator('submitted', 'completed', 'approval_status', mode='before')
-    def validate_boolean(cls, v, info):
+    def validate_boolean(cls, v, info) -> bool:
         if not isinstance(v, bool):
             raise ValueError(f'{info.field_name} must be a boolean value')
         return v
@@ -86,6 +73,10 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
                 raise ValueError(f'Entry for {key} cannot be the word "string"')
         return values
     
+
+class AppraisalSubmissionCreate(AppraisalSubmissionBase):
+    pass
+
 
 
 class AppraisalSubmissionUpdate(AppraisalSubmissionBase):

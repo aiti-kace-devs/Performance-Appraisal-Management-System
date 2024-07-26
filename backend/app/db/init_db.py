@@ -20,22 +20,25 @@ def init_db(db: Session) -> None:
         "appraisals_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef925",
         "staffs_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef965",
         "appraisal_forms_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef972",
-        "submitted_values" : "well",
-        "started_at" : None,
-        "completed_at" : None,
-        "approval_date" : None,
+        "submitted_values" : {"homework": "well done"},
+        "started_at" : "2024-06-01T09:30:20",
+        "completed_at" : "2024-06-01T10:00:20",
+        "approval_date" : "2024-06-01T1o:30:20",
         "submitted" : "True",
         "completed" : "True",
         "approval_status" : "False",
         "comment" : "Well done on completing your work"
+
     }
 
 
     try:
-        db_add = AppraisalSubmission(**payload)  #model class name
-        db.add(db_add)
+        db_add = AppraisalSubmissionCreate(**payload)  #model class name
+        print("db_add", db_add)
+        add = AppraisalSubmission(**payload)
+        db.add(add)
         db.commit()
-        db.refresh(db_add)
+        db.refresh(add)
         print("Data inserted Successfully")
     except ValidationError as e:
         print(e.json())
