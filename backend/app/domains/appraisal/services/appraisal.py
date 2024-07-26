@@ -4,58 +4,58 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from db.base_class import UUID
-from domains.appraisal.respository.appraisal import appraisal_form_actions as appraisal_form_repo
+from domains.appraisal.respository.appraisal import appraisal_actions as appraisal_repo
 from domains.appraisal.schemas.appraisal import AppraisalSchema, AppraisalUpdate, AppraisalCreate
 
 
 class AppraisalService:
 
 
-    def list_appraisal_form(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalSchema]:
-        appraisal_form = appraisal_form_repo.get_all(db=db, skip=skip, limit=limit)
-        return appraisal_form
+    def list_appraisal(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalSchema]:
+        appraisal = appraisal_repo.get_all(db=db, skip=skip, limit=limit)
+        return appraisal
 
-    def create_appraisal_form(self, *, db: Session, appraisal_form: AppraisalCreate) -> AppraisalSchema:
-        appraisal_form = appraisal_form_repo.create(db=db, obj_in=appraisal_form)
-        return appraisal_form
+    def create_appraisal(self, *, db: Session, appraisal: AppraisalCreate) -> AppraisalSchema:
+        appraisal = appraisal_repo.create(db=db, obj_in=appraisal)
+        return appraisal
 
-    def update_appraisal_form(self, *, db: Session, id: UUID, appraisal_form: AppraisalUpdate) -> AppraisalSchema:
-        appraisal_form = appraisal_form_repo.get(db=db, id=id)
-        if not appraisal_form:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_form not found")
-        appraisal_form = appraisal_form_repo.update(db=db, db_obj=appraisal_form, obj_in=appraisal_form)
-        return appraisal_form
+    def update_appraisal(self, *, db: Session, id: UUID, appraisal: AppraisalUpdate) -> AppraisalSchema:
+        appraisal = appraisal_repo.get(db=db, id=id)
+        if not appraisal:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal not found")
+        appraisal = appraisal_repo.update(db=db, db_obj=appraisal, obj_in=appraisal)
+        return appraisal
 
-    def get_appraisal_form(self, *, db: Session, id: UUID) -> AppraisalSchema:
-        appraisal_form = appraisal_form_repo.get(db=db, id=id)
-        if not appraisal_form:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_form not found")
-        return appraisal_form
+    def get_appraisal(self, *, db: Session, id: UUID) -> AppraisalSchema:
+        appraisal = appraisal_repo.get(db=db, id=id)
+        if not appraisal:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal not found")
+        return appraisal
 
-    def delete_appraisal_form(self, *, db: Session, id: UUID) -> AppraisalSchema:
-        appraisal_form = appraisal_form_repo.get(db=db, id=id)
-        if not appraisal_form:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_form not found")
-        appraisal_form = appraisal_form_repo.remove(db=db, id=id)
-        return appraisal_form
+    def delete_appraisal(self, *, db: Session, id: UUID) -> AppraisalSchema:
+        appraisal = appraisal_repo.get(db=db, id=id)
+        if not appraisal:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal not found")
+        appraisal = appraisal_repo.remove(db=db, id=id)
+        return appraisal
 
-    def get_appraisal_form_by_id(self, *, id: UUID) -> AppraisalSchema:
-        appraisal_form = appraisal_form_repo.get(id)
-        if not appraisal_form:
+    def get_appraisal_by_id(self, *, id: UUID) -> AppraisalSchema:
+        appraisal = appraisal_repo.get(id)
+        if not appraisal:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="appraisal_form not found"
+                detail="appraisal not found"
             )
-        return appraisal_form
+        return appraisal
 
-    def get_appraisal_form_by_keywords(self, *, db: Session, tag: str) -> List[AppraisalSchema]:
+    def get_appraisal_by_keywords(self, *, db: Session, tag: str) -> List[AppraisalSchema]:
         pass
 
-    def search_appraisal_form(self, *, db: Session, search: str, value: str) -> List[AppraisalSchema]:
+    def search_appraisal(self, *, db: Session, search: str, value: str) -> List[AppraisalSchema]:
         pass
 
     def read_by_kwargs(self, *, db: Session, **kwargs) -> Any:
-        return appraisal_form_repo.get_by_kwargs(self, db, kwargs)
+        return appraisal_repo.get_by_kwargs(self, db, kwargs)
 
 
-appraisal_form_service = AppraisalService()
+appraisal_service = AppraisalService()

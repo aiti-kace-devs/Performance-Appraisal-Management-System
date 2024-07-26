@@ -16,26 +16,26 @@ SUPER_ADMIN_STATUS: bool = True
 
 def init_db(db: Session) -> None:
 
-    payload = {
-    "appraisal_cycles_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",
-    "staffs_id":"03e8beaa-ba9f-4192-b788-ffcff2cef900",
-    "supervisor_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef910",
-    "overall_score" : "54"
-    }
+    # payload = {
+    # "appraisal_cycles_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",
+    # "staffs_id":"03e8beaa-ba9f-4192-b788-ffcff2cef900",
+    # "supervisor_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef910",
+    # "overall_score" : "54"
+    # }
 
 
-    try:
-        db_add = AppraisalCreate(**payload)  #model class name
-        print("db_add", db_add)
-        add = Appraisal(**payload)
-        db.add(add)
-        db.commit()
-        db.refresh(add)
-        print("Data inserted Successfully")
-    except ValidationError as e:
-        print(e.json())
+    # try:
+    #     db_add = AppraisalCreate(**payload)  #model class name
+    #     print("db_add", db_add)
+    #     add = Appraisal(**payload)
+    #     db.add(add)
+    #     db.commit()
+    #     db.refresh(add)
+    #     print("Data inserted Successfully")
+    # except ValidationError as e:
+    #     print(e.json())
 
-    #return False
+    return False
 
     # # Create 1st Superuser
     # admin = userCRUD.get_by_email(db=db, email=SUPER_ADMIN_EMAIL)
