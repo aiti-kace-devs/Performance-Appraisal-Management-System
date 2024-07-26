@@ -17,17 +17,18 @@ SUPER_ADMIN_STATUS: bool = True
 def init_db(db: Session) -> None:
  
     payload = {
-        "name" : 'hajj',
-        "description" : "well"
+        "name" : 'well',
+        "description" : None
     }
 
 
     try:
         db_add = DepartmentCreate(**payload)  #model class name
-        
-        db.add(db_add)
+        print("db_add", db_add)
+        add = Department(**payload)
+        db.add(add)
         db.commit()
-        db.refresh(db_add)
+        db.refresh(add)
         print("Data inserted Successfully")
     except ValidationError as e:
         print(e.json())
