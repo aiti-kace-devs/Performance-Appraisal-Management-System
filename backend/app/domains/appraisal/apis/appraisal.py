@@ -11,7 +11,7 @@ from db.session import get_db
 
 appraisals_router = APIRouter(
        prefix="/appraisals",
-    tags=["Appraisal Form"],
+    tags=["Appraisal"],
     responses={404: {"description": "Not found"}},
 )
 
