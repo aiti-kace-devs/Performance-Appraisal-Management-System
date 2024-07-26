@@ -8,18 +8,14 @@ class DepartmentBase(BaseModel):
     name:str
     description: Optional[str] = None
 
-
-class DepartmentCreate(DepartmentBase):
-    name:str
-    description: Optional[str] = Field(None, min_length=1)
-
-
     @field_validator('name', 'description', mode='before')
     def check_non_empty_and_not_string(cls, v, info):
         if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
         return v
 
+class DepartmentCreate(DepartmentBase):
+    pass
 
 
 

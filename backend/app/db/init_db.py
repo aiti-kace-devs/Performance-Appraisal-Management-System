@@ -17,13 +17,14 @@ SUPER_ADMIN_STATUS: bool = True
 def init_db(db: Session) -> None:
  
     payload = {
-        "name" : '',
-        "description" : ""
+        "name" : 'hajj',
+        "description" : "well"
     }
 
 
     try:
-        db_add = Department(**payload)  #model class name
+        db_add = DepartmentCreate(**payload)  #model class name
+        
         db.add(db_add)
         db.commit()
         db.refresh(db_add)
