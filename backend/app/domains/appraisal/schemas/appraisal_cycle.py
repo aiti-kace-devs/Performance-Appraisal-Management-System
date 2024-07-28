@@ -36,6 +36,7 @@ class AppraisalCycleInDBBase(AppraisalCycleBase):
 
     class Config:
         orm_mode = True
+        
 
 class AppraisalCycleSchema(AppraisalCycleInDBBase):
     pass

@@ -1,5 +1,5 @@
 from typing import Any, List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi import HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
@@ -39,7 +39,7 @@ def list_appraisal_cycles(
 )
 def search_appraisal_cycles_by_name_or_by_year(
         db: Session = Depends(get_db),
-        search_word: str = None
+        search_word: str = Query(...)
 ) -> Any:
     appraisal_cycles_router = actions.read_appraisal_cycle_by_name_by_year(db=db, search_word=search_word)
     return appraisal_cycles_router

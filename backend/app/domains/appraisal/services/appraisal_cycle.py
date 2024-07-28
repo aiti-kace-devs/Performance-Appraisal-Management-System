@@ -48,23 +48,34 @@ class AppraisalCycleService:
             )
         return appraisal_cycle
 
+
+    # Check if value is an integer and formatted as yyyy
+    def is_valid_year(self, year_str: str) -> bool:
+        return year_str.isdigit() and len(year_str) == 4
+    
+
     def iread(self, db: Session, value: str = None):
         search = "name"
         base = db.query(AppraisalCycle)
         response = []
-       
+
+        if not value:
+            return response
+        
         if search and value.strip():
             try:
                 response = base.filter(
                     AppraisalCycle.__table__.c[search].ilike("%" + value.strip() + "%"))
-              
-                if not response.all():
+                
+                if not response.all() and self.is_valid_year(value.strip()):
                     response = base.filter(
                     AppraisalCycle.__table__.c["year"] == value.strip())
+                else:
+                    response = []  # Reset response if not valid year
                 
             except KeyError as ke:
-                
-                return ke.json()
+                print("ke.json(): ", ke.json())
+                return response
         return response
     
     def read_appraisal_cycle_by_name_by_year(self, *, db:Session, search_word: str) -> List[AppraisalCycleSchema]:

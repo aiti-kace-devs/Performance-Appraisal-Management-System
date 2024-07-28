@@ -45,26 +45,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
                 return base.offset(skip).limit(limit).all()
         return base.offset(skip).limit(limit).all()
 
-    def iread(self, db: Session, value: str = None):
-        search = "name"
+    async def iread(self, db: Session, search: str = None, value: str = None, skip: int = 0, limit: int = 100):
         base = db.query(self.model)
-        response = []
-        # print("search: ", search)
-        # print("value: ", value)
-        # print("saerch and value: ", (search and value))
         if search and value:
             try:
-                response = base.filter(
+                base = base.filter(
                     self.model.__table__.c[search].ilike("%" + value + "%"))
-                # print("response:: ", response.all())
-                if not response.all():
-                    response = base.filter(
-                    self.model.__table__.c["year"] == value)
-                # print("base: ", response)
-            except KeyError as ke:
-                # print("ke.json: ", ke.json())
-                return ke.json()
-        return response.all()
+            except KeyError:
+                return base.offset(skip).limit(limit).all()
+        return base.offset(skip).limit(limit).all()
+    
 
     async def read_by_id(self, id, db: Session):
         return db.query(self.model).filter(self.model.id == id).first()
