@@ -1,8 +1,8 @@
 from typing import List, Any
-
+import re
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-
+from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal_cycle import appraisal_cycle_actions as appraisal_cycle_repo
 from domains.appraisal.schemas.appraisal_cycle import AppraisalCycleSchema, AppraisalCycleUpdate, AppraisalCycleCreate
@@ -47,35 +47,44 @@ class AppraisalCycleService:
                 detail="appraisal_cycle not found"
             )
         return appraisal_cycle
-
-
+    
     # Check if value is an integer and formatted as yyyy
     def is_valid_year(self, year_str: str) -> bool:
         return year_str.isdigit() and len(year_str) == 4
     
 
-    def iread(self, db: Session, value: str = None):
-        search = "name"
-        base = db.query(AppraisalCycle)
+    def iread(self, db: Session, value: str) -> List[AppraisalCycle]:
+        search_field = "name"
         response = []
 
-        if not value:
+        # Sanitize and validate input
+        search_value = re.sub(r'[^\w\s]', '', value.strip())  # Remove special characters
+        if not search_value:
             return response
-        
-        if search and value.strip():
-            try:
-                response = base.filter(
-                    AppraisalCycle.__table__.c[search].ilike("%" + value.strip() + "%"))
-                
-                if not response.all() and self.is_valid_year(value.strip()):
-                    response = base.filter(
-                    AppraisalCycle.__table__.c["year"] == value.strip())
-                else:
-                    response = []  # Reset response if not valid year
-                
-            except KeyError as ke:
-                print("ke.json(): ", ke.json())
-                return response
+
+        try:
+            # Use parameterized queries to prevent SQL injection
+            if search_field and search_value:
+                response = db.query(AppraisalCycle).filter(
+                    getattr(AppraisalCycle, search_field).ilike(f"%{search_value}%")
+                ).all()
+
+                if not response and self.is_valid_year(value.strip()):
+                    response = db.query(AppraisalCycle).filter(
+                        AppraisalCycle.year == search_value
+                    ).all()
+
+        except SQLAlchemyError as e:
+            print(f"Database error occurred: {e}")
+            # Log the error and return a safe message
+            # log.error(f"Database error occurred: {e}")
+            return {"error": "An error occurred while processing your request."}
+        except KeyError as ke:
+            # Log the error and return a safe message
+            # log.error(f"Key error: {ke}")
+            print(f"Key error: {ke}")
+            return {"error": "Invalid search parameter."}
+
         return response
     
     def read_appraisal_cycle_by_name_by_year(self, *, db:Session, search_word: str) -> List[AppraisalCycleSchema]:
