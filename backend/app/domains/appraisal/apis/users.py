@@ -43,7 +43,7 @@ def create_users_forms(
         # 
         users_forms_in: schemas.UserCreate
 ) -> Any:
-    users_router = actions.create_users_forms(db=db, users_forms=users_forms_in)
+    users_router = actions.create_users_forms(db=db, users_form=users_forms_in)
     return users_router
 
 
@@ -63,7 +63,7 @@ def update_users_forms(
             status_code=HTTP_404_NOT_FOUND,
             detail="users_forms_router not found"
         )
-    users_router = actions.update_users_forms(db=db, id=users_router.id, users_forms_in=users_forms_in)
+    users_router = actions.update_users_forms(db=db, id=users_router.id, users_form=users_forms_in)
     return users_router
 
 

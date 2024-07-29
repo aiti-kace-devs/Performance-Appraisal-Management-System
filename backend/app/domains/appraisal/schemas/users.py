@@ -13,7 +13,7 @@ class UserBase(BaseModel):
     staff_id :  Optional[UUID4]
     role_id :  Optional[UUID4]
 
-    @field_validator('email','password','reset_password_token' ,mode='before')
+    @field_validator('email','reset_password_token' ,mode='before')
     def check_non_empty_and_not_string(cls,v,info):
         if isinstance(v,str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty "string"')
@@ -45,5 +45,5 @@ class UserInDBBase(UserBase):
     class Config:
         orm_mode= True
 
-class UserSchema(UserBase):
+class UserSchema(UserInDBBase):
     pass

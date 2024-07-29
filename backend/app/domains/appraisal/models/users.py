@@ -14,3 +14,11 @@ class User(APIBase):
     password = Column(String(255), nullable=True)
     reset_password_token = Column(String(255),nullable=True)
     role_id = Column(UUID(as_uuid=True))
+
+    def serialize(self):
+        return {
+            'name': self.name,
+            'description': self.description,
+            'created_date': self.created_date,
+            'updated_date': self.updated_date
+        }
