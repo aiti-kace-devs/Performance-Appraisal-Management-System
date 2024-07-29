@@ -18,3 +18,5 @@ class Staff(APIBase):
     department_id = Column(UUID(as_uuid=True))
     grade = Column(String(255), nullable=False)
     appointment_date = Column(Date, nullable=True)
+
+    kra_banks = relationship('KraBank', back_populates='supervisor')

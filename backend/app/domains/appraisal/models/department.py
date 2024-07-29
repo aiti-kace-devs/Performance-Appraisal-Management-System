@@ -9,4 +9,6 @@ class Department(APIBase):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
+
+    kra_banks = relationship('KraBank', back_populates='department')
     
