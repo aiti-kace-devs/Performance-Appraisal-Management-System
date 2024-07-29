@@ -5,6 +5,6 @@ from domains.appraisal.schemas.department import (
 )
 
 
-class CRUDAppraisal(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
+class CRUDDepartment(CRUDBase[Department, DepartmentCreate, DepartmentUpdate]):
     pass
-department_actions = CRUDAppraisal(Department)
+department_actions = CRUDDepartment(Department)
