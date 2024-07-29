@@ -19,12 +19,11 @@ class KraBankBaseCreate(KraBankBase):
     appraisal_section_id: Optional[UUID4] = Field(..., description="Appraisal ID")
     supervisor_id: Optional[UUID4] = Field(..., description="Supervisor ID")
     focus_area: List[Dict[str, Any]] = Field(
-        ..., description="Focus Area", min_length=1
+        ..., description="Focus Area"
     )
     created_date: datetime = Field(
         default_factory=lambda: datetime.now(datetime.UTC),
-        description="Created Date",
-        min_length=1,
+        description="Created Date"
     )
 
     @root_validator(pre=True)

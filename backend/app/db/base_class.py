@@ -3,7 +3,7 @@ import inflect
 import typing as t
 from sqlalchemy.ext.declarative import declared_attr, as_declarative
 from sqlalchemy import Column, String,  DateTime
-import datetime
+from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID
 from typing import Any
 import uuid
@@ -41,6 +41,6 @@ class APIBase(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True,index=True, nullable=False, default=uuid.uuid4)
 
-    created_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
-    updated_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_date = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_date = Column(DateTime, default=datetime.now(timezone.utc))
 
