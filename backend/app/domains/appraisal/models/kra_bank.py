@@ -10,7 +10,7 @@ class KraBank(APIBase):
 
     department_id = Column(UUID, ForeignKey('department.id'), nullable=False)
     appraisal_section_id = Column(UUID, ForeignKey('appraisal.id'), nullable=False)
-    supervisor_id = Column(UUID, ForeignKey('supervisor.id'), nullable=False)
+    supervisor_id = Column(UUID, ForeignKey('staff.id'), nullable=False)
     focus_area = Column(JSON, nullable=False)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
 
