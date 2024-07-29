@@ -5,7 +5,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import competency_bank as schemas
-from domains.appraisal.services.competency_bank import competency_bank_forms_service as actions
+from domains.appraisal.services.competency_bank import competency_bank_form_service as actions
 from db.session import get_db
 
 competency_bank_router = APIRouter(
