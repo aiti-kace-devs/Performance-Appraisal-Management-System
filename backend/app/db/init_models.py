@@ -1,4 +1,7 @@
 from domains.appraisal.models.appraisal import APIBase
+from domains.appraisal.models.appraisal_configuration import APIBase
+from domains.appraisal.models.appraisal_cycle import APIBase
+from domains.appraisal.models.appraisal_section import APIBase
 from domains.appraisal.models.department import APIBase
 from domains.appraisal.models.staff import APIBase
 from db.session import engine

@@ -1,7 +1,7 @@
 from uuid import UUID as UUID_V
 import inflect
 import typing as t
-from sqlalchemy.ext.declarative import declared_attr, as_declarative
+from sqlalchemy.ext.declarative import declared_attr, as_declarative, declarative_base
 from sqlalchemy import Column, String,  DateTime
 from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID
@@ -21,7 +21,8 @@ def change_case(str):
 class Base:
     id: Any
     __name__: str
-
+    
+    
     # Generate __tablename__ automatically
     @declared_attr
     def __tablename__(cls) -> str:
@@ -34,7 +35,7 @@ class Base:
 
 
 
-@as_declarative()
+@as_declarative(class_registry=class_registry)
 class APIBase(Base):
 
     __abstract__ = True

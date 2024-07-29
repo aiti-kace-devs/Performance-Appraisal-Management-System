@@ -18,9 +18,11 @@ def include(app):
 
 
 def initial_data_insert():
-
     db = SessionLocal()
-    init_db(db)
+    try:
+        init_db(db)
+    finally:
+        db.close()
 
 
     
@@ -38,6 +40,7 @@ def start_application():
     initial_data_insert()
     include(app)
     create_tables()
+    initial_data_insert()
     return app
 app = start_application()
 
