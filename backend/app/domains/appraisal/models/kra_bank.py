@@ -9,7 +9,7 @@ import datetime
 class KraBank(APIBase):
 
     department_id = Column(Integer, ForeignKey('department.id'), nullable=False)
-    appraisal_id = Column(Integer, ForeignKey('appraisal.id'), nullable=False)
+    appraisal_section_id = Column(Integer, ForeignKey('appraisal.id'), nullable=False)
     supervisor_id = Column(Integer, ForeignKey('supervisor.id'), nullable=False)
     focus_area = Column(JSON, nullable=False)
     created_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
