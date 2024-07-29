@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-from pydantic import UUID4
+from pydantic import UUID4, ValidationError
 from sqlalchemy import func
+from domains.appraisal.models.department import Department
+from domains.appraisal.schemas.department import DepartmentCreate
 from pydantic import ValidationError
 from domains.appraisal.models.kra_bank import KraBank
 from domains.appraisal.schemas.kra_bank import KraBankBaseCreate
