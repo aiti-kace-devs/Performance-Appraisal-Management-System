@@ -43,7 +43,7 @@ class AppraisalSubmissionBase(BaseModel):
     # Checking if submitted_at, approval_date and Completed_at is none, current time nad date will be submitted
     @field_validator('started_at', 'completed_at', 'approval_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
-        if v is not None:
+        if v is None:
             try:
                 dt = parse(v)
                 now = datetime.now()
@@ -83,5 +83,5 @@ class AppraisalSubmissionInDBBase(AppraisalSubmissionBase):
     class Config:
         orm_mode= True
 
-class AppraisalSubmissionSchema(AppraisalSubmissionBase):
+class AppraisalSubmissionSchema(AppraisalSubmissionInDBBase):
     pass
