@@ -20,10 +20,10 @@ class AppraisalService:
         return department
 
     def update_department(self, *, db: Session, id: UUID, department: DepartmentUpdate) -> DepartmentSchema:
-        department = department_repo.get(db=db, id=id)
-        if not department:
+        department_ = department_repo.get(db=db, id=id)
+        if not department_:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="department not found")
-        department = department_repo.update(db=db, db_obj=department, obj_in=department)
+        department = department_repo.update(db=db, db_obj=department_, obj_in=department)
         return department
 
     def get_department(self, *, db: Session, id: UUID) -> DepartmentSchema:

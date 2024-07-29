@@ -63,7 +63,7 @@ def update_department(
             status_code=HTTP_404_NOT_FOUND,
             detail="department_router not found"
         )
-    department_router = actions.update_department(db=db, id=department_router.id, department_in=department_in)
+    department_router = actions.update_department(db=db, id=department_router.id, department=department_in)
     return department_router
 
 
