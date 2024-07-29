@@ -1,7 +1,6 @@
 from typing import List, Optional, Union,Annotated
 from pydantic import BaseModel, Field, field_validator, UUID4
-from schemas.permissions import PermissionCreate, Permission
-
+from domains.appraisal.schemas.permissions import PermissionCreate, Permission
 
 
 class RoleBase(BaseModel):
@@ -16,7 +15,7 @@ class RoleBase(BaseModel):
 class RoleCreate(RoleBase):
     permissions: List[PermissionCreate] = []
 
-    @field_validator('permissions', pre=True, each_item=True)
+    @field_validator('permissions')
     def permissions_must_be_valid(cls, value):
         if not isinstance(value, PermissionCreate):
             raise ValueError("Invalid permission data")
@@ -25,13 +24,13 @@ class RoleCreate(RoleBase):
 class RoleUpdate(RoleBase):
     permissions: List[PermissionCreate] = []
 
-    @field_validator('permissions', pre=True, each_item=True)
+    @field_validator('permissions')
     def permissions_must_be_valid(cls, value):
         if not isinstance(value, PermissionCreate):
             raise ValueError("Invalid permission data")
         return value
 
-class ReadRole(RoleBase):
+class RoleRead(RoleBase):
     id: UUID4
     permissions: List[Permission] = []
 
