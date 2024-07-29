@@ -20,10 +20,10 @@ class AppraisalService:
         return appraisal
 
     def update_appraisal(self, *, db: Session, id: UUID, appraisal: AppraisalUpdate) -> AppraisalSchema:
-        appraisal = appraisal_repo.get(db=db, id=id)
-        if not appraisal:
+        appraisal_ = appraisal_repo.get(db=db, id=id)
+        if not appraisal_:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal not found")
-        appraisal = appraisal_repo.update(db=db, db_obj=appraisal, obj_in=appraisal)
+        appraisal = appraisal_repo.update(db=db, db_obj=appraisal_, obj_in=appraisal)
         return appraisal
 
     def get_appraisal(self, *, db: Session, id: UUID) -> AppraisalSchema:

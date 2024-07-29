@@ -55,7 +55,7 @@ def update_appraisals(
         *, db: Session = Depends(get_db),
         
         id: UUID4,
-        appraisals_in: schemas.AppraisalUpdate,
+        appraisals_in: schemas.AppraisalUpdate
 ) -> Any:
     appraisals_router = actions.get_appraisal(db=db, id=id)
     if not appraisals_router:
@@ -63,7 +63,7 @@ def update_appraisals(
             status_code=HTTP_404_NOT_FOUND,
             detail="appraisals_router not found"
         )
-    appraisals_router = actions.update_appraisal(db=db, id=appraisals_router.id, appraisals_in=appraisals_in)
+    appraisals_router = actions.update_appraisal(db=db, id=appraisals_router.id, appraisal=appraisals_in)
     return appraisals_router
 
 
