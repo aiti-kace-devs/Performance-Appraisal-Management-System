@@ -55,7 +55,7 @@ def update_department(
         *, db: Session = Depends(get_db),
         
         id: UUID4,
-        department_in: schemas.DepartmentUpdate,
+        department_in: schemas.DepartmentUpdate
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:
