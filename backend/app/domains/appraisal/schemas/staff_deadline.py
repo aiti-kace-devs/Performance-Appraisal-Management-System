@@ -42,7 +42,7 @@ class StaffDeadlineCreate(StaffDeadlineBase):
     # Checking if start_date and end_date is none, current time nad date will be submitted
     @field_validator('start_date', 'end_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
-        if v is not None:
+        if v is None:
             try:
                 dt = parse(v)
                 now = datetime.now()
