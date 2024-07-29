@@ -47,5 +47,5 @@ class AppraisalInDBBase(AppraisalBase):
     class Config:
         orm_mode= True
 
-class AppraisalSchema(AppraisalBase):
+class AppraisalSchema(AppraisalInDBBase):
     pass
