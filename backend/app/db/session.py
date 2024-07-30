@@ -53,7 +53,7 @@ def get_db():
         self.engine = None
 
     def get_db_connection(self):
-        if self.connection_is_active == False:
+        if self.connection_is_active is False:
 
             try: 
                 
