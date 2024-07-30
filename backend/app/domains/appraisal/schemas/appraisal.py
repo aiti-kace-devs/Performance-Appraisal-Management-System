@@ -2,8 +2,7 @@ from datetime import date,time
 from typing import Optional, Any, Dict
 import uuid
 
-from pydantic import BaseModel, Field, field_validator
-from pydantic import UUID4
+from pydantic import BaseModel, UUID4, Field, field_validator, root_validator
 
 
 class AppraisalBase(BaseModel):
@@ -20,7 +19,7 @@ class AppraisalCreate(AppraisalBase):
 
 
      # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('appraisal_cycles_id', 'supervisor_id', 'staffs_id', 'overall_score', mode='before')
+    @root_validator('appraisal_cycles_id', 'supervisor_id', 'staffs_id', 'overall_score', mode='before')
     def check_non_empty_and_not_string(cls, value, info):
         if isinstance(value, str) and (value.strip() == '' or value.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
