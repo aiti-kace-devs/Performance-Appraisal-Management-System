@@ -22,7 +22,7 @@ class StaffPermissionCreate(StaffPermissionBase):
     @field_validator('staffs_id', 'roles_id', 'permissions_id', mode='before')
     def validate_fields_with_uuid4(cls, v, info):
         try:
-            uuid.uuid4(v)
+            uuid.UUID(str(v), version=4)
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
