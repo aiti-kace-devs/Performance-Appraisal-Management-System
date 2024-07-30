@@ -36,5 +36,5 @@ class StaffPermissionInDBBase(StaffPermissionBase):
     class Config:
         orm_mode= True
 
-class StaffPermissionSchema(StaffPermissionBase):
+class StaffPermissionSchema(StaffPermissionInDBBase):
     pass
