@@ -20,12 +20,12 @@ def include(app):
 
 
 def initial_data_insert():
+   
+    db = SessionLocal()
     try:
-        db = SessionLocal()
         init_db(db)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+    finally:
+        db.close()
 
 
     
@@ -42,6 +42,7 @@ def start_application():
     )
     include(app)
     create_tables()
+    initial_data_insert()
     return app
 app = start_application()
 
