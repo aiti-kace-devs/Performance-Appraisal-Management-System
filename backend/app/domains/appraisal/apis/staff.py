@@ -63,7 +63,7 @@ def update_staff(
             status_code=HTTP_404_NOT_FOUND,
             detail="staff_router not found"
         )
-    staff_router = actions.update_staff(db=db, id=staff_router.id, staff_in=staff_in)
+    staff_router = actions.update_staff(db=db, id=staff_router.id, staff=staff_in)
     return staff_router
 
 

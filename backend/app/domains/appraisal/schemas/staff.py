@@ -51,7 +51,8 @@ class StaffBase(BaseModel):
         return v
 
 
-
+class StaffCreate(StaffBase):
+    pass
 
 class StaffUpdate(StaffBase):
     pass
@@ -62,10 +63,9 @@ class StaffInDBBase(StaffBase):
     class Config:
         orm_mode= True
 
-class StaffSchema(StaffBase):
+class StaffSchema(StaffInDBBase):
     pass
 
 
 
-class StaffCreate(StaffBase):
-    pass
+
