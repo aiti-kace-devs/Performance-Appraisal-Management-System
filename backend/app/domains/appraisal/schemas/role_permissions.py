@@ -23,3 +23,6 @@ class RolePermission(RolePermissionBase):
 
     class Config:
         orm_mode = True
+
+class RolePermissionRead(RolePermissionBase):
+    pass
