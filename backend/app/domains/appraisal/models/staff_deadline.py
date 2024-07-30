@@ -12,5 +12,5 @@ class StaffDeadline(APIBase):
     staffs_id = Column(UUID(as_uuid=True))
     supervisor_id = Column(UUID(as_uuid=True))
     start_date = Column(DateTime, nullable=True)
-    end_DateTime = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
     comment = Column(String(255), nullable=True)
