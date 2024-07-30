@@ -5,6 +5,10 @@ from sqlalchemy import JSON, Column, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
 
+from domains.appraisal.models.department import Department
+from domains.appraisal.models.appraisal_section import AppraisalSection
+from domains.appraisal.models.staff import Staff 
+
 
 class KraBank(APIBase):
     department_id = Column(UUID(as_uuid=True), ForeignKey('department.id'), nullable=False)

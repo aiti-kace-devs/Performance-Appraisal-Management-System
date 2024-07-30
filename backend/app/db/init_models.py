@@ -4,10 +4,12 @@ from domains.appraisal.models.appraisal_cycle import APIBase
 from domains.appraisal.models.appraisal_section import APIBase
 from domains.appraisal.models.department import APIBase
 from domains.appraisal.models.staff import APIBase
+from domains.appraisal.models.kra_bank import APIBase
 from db.session import engine
 
 
 
 
 def create_tables():
+    # APIBase.metadata.drop_all(engine)
     APIBase.metadata.create_all(bind=engine)
