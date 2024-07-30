@@ -63,7 +63,7 @@ def update_competency_bank_forms(
             status_code=HTTP_404_NOT_FOUND,
             detail="competency_bank_forms_router not found"
         )
-    competency_bank_forms_router = actions.update_competency_bank_form(db=db, id=competency_bank_forms_router.id, competency_bank_forms_in=competency_bank_forms_in)
+    competency_bank_forms_router = actions.update_competency_bank_form(db=db, id=competency_bank_forms_router.id, competency_bank_form=competency_bank_forms_in)
     return competency_bank_forms_router
 
 

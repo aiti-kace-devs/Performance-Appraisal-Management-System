@@ -20,11 +20,11 @@ class CompetencyBankService:
         return competency_bank_form
 
     def update_competency_bank_form(self, *, db: Session, id: UUID, competency_bank_form: CompetencyBankUpdate) -> CompetencyBankSchema:
-        competency_bank_form = competency_bank_form_repo.get(db=db, id=id)
-        if not competency_bank_form:
+        competency_bank_form_ = competency_bank_form_repo.get(db=db, id=id)
+        if not competency_bank_form_:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="competency_bank_form not found")
-        competency_bank_form = competency_bank_form_repo.update(db=db, db_obj=competency_bank_form, obj_in=competency_bank_form)
-        return competency_bank_form
+        competency_bank_form_ = competency_bank_form_repo.update(db=db, db_obj=competency_bank_form_, obj_in=competency_bank_form)
+        return competency_bank_form_
 
     def get_competency_bank_form(self, *, db: Session, id: UUID) -> CompetencyBankSchema:
         competency_bank_form = competency_bank_form_repo.get(db=db, id=id)
