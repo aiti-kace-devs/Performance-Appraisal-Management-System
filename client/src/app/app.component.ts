@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'appraisal-management';
-  login = false;
+  constructor(private router: Router) {}
+
+  get adminRoute(): any {
+    return this.router.url.includes('admin/');
+  }
 }
