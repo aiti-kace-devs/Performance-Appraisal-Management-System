@@ -41,5 +41,5 @@ class CompentencyBankInDBBase(CompentencyBankBase):
     class Config:
         orm_mode= True
 
-class CompentencyBankSchema(CompentencyBankBase):
+class CompentencyBankSchema(CompentencyBankInDBBase):
     pass
