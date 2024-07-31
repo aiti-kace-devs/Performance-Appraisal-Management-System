@@ -2,8 +2,8 @@ from aiohttp import Payload
 from sqlalchemy.orm import Session
 from pydantic import UUID4, ValidationError
 from sqlalchemy import func 
-from domains.appraisal.models.appraisal import Appraisal
-from domains.appraisal.schemas.appraisal import AppraisalCreate
+#from domains.appraisal.models.department import Department
+#from domains.appraisal.schemas.department import DepartmentCreate
 
 
 
@@ -16,19 +16,17 @@ SUPER_ADMIN_STATUS: bool = True
 
 
 def init_db(db: Session) -> None:
-
+ 
     # payload = {
-    # "appraisal_cycles_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",
-    # "staffs_id":"03e8beaa-ba9f-4192-b788-ffcff2cef900",
-    # "supervisor_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef910",
-    # "overall_score" : "54"
+    #     "name" : 'well',
+    #     "description" : None
     # }
 
 
     # try:
-    #     db_add = AppraisalCreate(**payload)  #model class name
+    #     db_add = DepartmentCreate(**payload)  #model class name
     #     print("db_add", db_add)
-    #     add = Appraisal(**payload)
+    #     add = Department(**payload)
     #     db.add(add)
     #     db.commit()
     #     db.refresh(add)

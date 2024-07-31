@@ -28,5 +28,5 @@ class DepartmentInDBBase(DepartmentBase):
     class Config:
         orm_mode= True
 
-class DepartmentSchema(DepartmentBase):
+class DepartmentSchema(DepartmentInDBBase):
     pass
