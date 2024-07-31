@@ -7,10 +7,10 @@ from pydantic import UUID4
 from sqlalchemy import JSON
 
 
-class CompetencyBankBase(BaseModel):
+class CompentencyBankBase(BaseModel):
     appraisal_section_id : Optional[UUID4]
     staff_id : Optional[UUID4]
-    competency_type : Dict[str,Any]
+    compentency_type : Dict[str,Any]
 
     # Checking if UUID4 fields accept only UUID4 as value
     @field_validator('appraisal_section_id', 'staff_id', mode='before')
@@ -20,26 +20,26 @@ class CompetencyBankBase(BaseModel):
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
-
+    
     @staticmethod
     def validate_competency_type(value: Dict[str, Any]) -> Dict[str, Any]:
          if not isinstance(value, dict) or not value:
             raise ValueError('Competency type must be a non-empty valid JSON object')
          return value
 
-class CompetencyBankCreate(CompetencyBankBase):
+class CompentencyBankCreate(CompentencyBankBase):
     pass
 
 
 
-class CompetencyBankUpdate(CompetencyBankBase):
+class CompentencyBankUpdate(CompentencyBankBase):
     pass
 
-class CompetencyBankInDBBase(CompetencyBankBase):
+class CompentencyBankInDBBase(CompentencyBankBase):
     id: UUID4
 
     class Config:
         orm_mode= True
 
-class CompetencyBankSchema(CompetencyBankInDBBase):
+class CompentencyBankSchema(CompentencyBankBase):
     pass

@@ -2,8 +2,8 @@ from aiohttp import Payload
 from sqlalchemy.orm import Session
 from pydantic import UUID4, ValidationError
 from sqlalchemy import func 
-#from domains.appraisal.models.department import Department
-#from domains.appraisal.schemas.department import DepartmentCreate
+from domains.appraisal.models.competency_bank import CompentencyBank
+from domains.appraisal.schemas.competency_bank import CompentencyBankCreate
 
 
 
@@ -16,25 +16,28 @@ SUPER_ADMIN_STATUS: bool = True
 
 
 def init_db(db: Session) -> None:
- 
-    # payload = {
-    #     "name" : 'well',
-    #     "description" : None
-    # }
+
+   #return False
 
 
-    # try:
-    #     db_add = DepartmentCreate(**payload)  #model class name
-    #     print("db_add", db_add)
-    #     add = Department(**payload)
-    #     db.add(add)
-    #     db.commit()
-    #     db.refresh(add)
-    #     print("Data inserted Successfully")
-    # except ValidationError as e:
-    #     print(e.json())
+    payload = {
+    "appraisal_section_id": "03e8beaa-ba9f-4192-b788-ffcff2cef450",
+    "staff_id":"03e8beaa-ba9f-4192-b788-ffcff2cef900",
+    "compentency_type": {"key1": "value"}
+    }
 
-    return False
+
+    try:
+        data = CompentencyBankCreate(**payload)
+        print("data :", data)
+        db_add = CompentencyBank(**payload)  #model class name
+        db.add(db_add)
+        db.commit()
+        db.refresh(db_add)
+        print("Data inserted Successfully")
+    except ValidationError as e:
+        print(e.json())
+
 
     # # Create 1st Superuser
     # admin = userCRUD.get_by_email(db=db, email=SUPER_ADMIN_EMAIL)
