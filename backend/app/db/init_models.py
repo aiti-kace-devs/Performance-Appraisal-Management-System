@@ -1,5 +1,5 @@
 from domains.appraisal.models.appraisal import APIBase
-from domains.appraisal.models.department import APIBase
+from domains.appraisal.models.appraisal_submission import APIBase
 from db.session import engine
 
 
