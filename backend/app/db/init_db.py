@@ -2,8 +2,8 @@ from aiohttp import Payload
 from sqlalchemy.orm import Session
 from pydantic import UUID4, ValidationError
 from sqlalchemy import func 
-# from domains.appraisal.models.appraisal_submission import AppraisalSubmission
-# from domains.appraisal.schemas.appraisal_submission import AppraisalSubmissionCreate
+# from domains.appraisal.models.competency_bank import CompentencyBank
+# from domains.appraisal.schemas.competency_bank import CompentencyBankCreate
 
 
 
