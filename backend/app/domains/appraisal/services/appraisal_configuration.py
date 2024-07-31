@@ -12,6 +12,7 @@ import uuid
 from sqlalchemy.dialects.postgresql import  TEXT
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.types import TEXT
+import re
 
 
 
@@ -71,6 +72,9 @@ class AppraisalConfigurationService:
             return []
 
         try:
+            search_value = re.sub(r'[^\w\s]', '', tag.strip())  # Remove special characters
+            if not search_value:
+                return []
             # Check if the search term is a valid UUID4
             search_uuid = uuid.UUID(tag.strip(), version=4)
 
