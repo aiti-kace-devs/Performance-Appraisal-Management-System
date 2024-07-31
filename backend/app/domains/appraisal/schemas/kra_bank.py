@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from pydantic import UUID4, BaseModel, Field, field_validator, root_validator
@@ -9,9 +9,7 @@ class KraBankBase(BaseModel):
     appraisal_section_id: Optional[UUID4] = Field(..., description="Appraisal ID")
     supervisor_id: Optional[UUID4] = Field(..., description="Supervisor ID")
     focus_area: List[Dict[str, Any]] = Field(..., description="Focus Area")
-    created_date: datetime = Field(
-        default_factory=lambda: datetime.now(datetime.UTC), description="Created Date"
-    )
+    created_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class KraBankBaseCreate(KraBankBase):
@@ -21,10 +19,8 @@ class KraBankBaseCreate(KraBankBase):
     focus_area: List[Dict[str, Any]] = Field(
         ..., description="Focus Area"
     )
-    created_date: datetime = Field(
-        default_factory=lambda: datetime.now(datetime.UTC),
-        description="Created Date"
-    )
+    created_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 
     @root_validator(pre=True)
     def check_non_empty_fields(cls, values):
