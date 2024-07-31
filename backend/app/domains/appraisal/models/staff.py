@@ -19,6 +19,8 @@ class Staff(APIBase):
 
     def serialize(self):
         return {
+            'name': self.name,
+            'description': self.description,
             'created_date': self.created_date,
             'updated_date': self.updated_date
         }
