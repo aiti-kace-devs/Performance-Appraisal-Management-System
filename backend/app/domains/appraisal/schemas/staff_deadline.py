@@ -39,16 +39,13 @@ class StaffDeadlineCreate(StaffDeadlineBase):
         return v
 
 
-    # Checking if start_date and end_date is none, current time nad date will be submitted
+    # Checking if start_date and end_date is none, current date will be submitted
     @field_validator('start_date', 'end_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
-        if v is None:
+        if isinstance(v, date) is None:
             try:
-                dt = parse(v)
                 now = datetime.now()
-                combined_datetime = dt.replace(hour=now.hour, minute=now.minute, second=now.second)
-                formatted_date = combined_datetime.strftime('%Y-%m-%dT%H:%M:%S')
-                return formatted_date
+                return now
             except ValueError:
                 raise ValueError(f'\n{info.field_name} must be a valid date format and will be converted to YYYY-MM-DDTHH:MM:SS')
         return v
@@ -65,5 +62,5 @@ class StaffDeadlineInDBBase(StaffDeadlineBase):
     class Config:
         orm_mode= True
 
-class StaffDeadlineSchema(StaffDeadlineBase):
+class StaffDeadlineSchema(StaffDeadlineInDBBase):
     pass
