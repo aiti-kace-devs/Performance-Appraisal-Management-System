@@ -38,6 +38,9 @@ def start_application():
     create_tables()
     initial_data_insert()
     include(app)
+    create_tables()
+    initial_data_insert()
+    include(app)
     return app
 app = start_application()
 

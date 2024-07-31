@@ -2,8 +2,8 @@ from aiohttp import Payload
 from sqlalchemy.orm import Session
 from pydantic import UUID4, ValidationError
 from sqlalchemy import func 
-from domains.appraisal.models.appraisal_submission import AppraisalSubmission
-from domains.appraisal.schemas.appraisal_submission import AppraisalSubmissionCreate
+from domains.appraisal.models.appraisal import Appraisal
+from domains.appraisal.schemas.appraisal import AppraisalCreate
 
 
 
@@ -18,25 +18,17 @@ SUPER_ADMIN_STATUS: bool = True
 def init_db(db: Session) -> None:
 
     payload = {
-        "appraisals_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef925",
-        "staffs_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef965",
-        "appraisal_forms_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef972",
-        "submitted_values" : {"homework": "well done"},
-        "started_at" : None,
-        "completed_at" : None,
-        "approval_date" : None,
-        "submitted" : True,
-        "completed" : True,
-        "approval_status" : False,
-        "comment" : "Well done on completing your work"
-
+    "appraisal_cycles_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",
+    "staffs_id":"03e8beaa-ba9f-4192-b788-ffcff2cef900",
+    "supervisor_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef910",
+    "overall_score" : "54"
     }
 
 
     try:
-        db_add = AppraisalSubmissionCreate(**payload)  #model class name
+        db_add = AppraisalCreate(**payload)  #model class name
         print("db_add", db_add)
-        add = AppraisalSubmission(**payload)
+        add = Appraisal(**payload)
         db.add(add)
         db.commit()
         db.refresh(add)
