@@ -1,7 +1,7 @@
 from domains.appraisal.models.appraisal import APIBase
 from domains.appraisal.models.competency_bank import APIBase
+from domains.appraisal.models.staff_permissions import APIBase
 from db.session import engine
-
 
 
 

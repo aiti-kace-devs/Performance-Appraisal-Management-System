@@ -7,6 +7,8 @@ from domains.appraisal.apis.users import users_router
 from domains.appraisal.apis.competency_bank import competency_bank_forms_router
 from domains.appraisal.apis.staff import staff_router
 from fastapi import APIRouter
+from fastapi import APIRouter 
+from domains.appraisal.apis.staff_permissions import staff_permission_router
 
 
 
@@ -20,4 +22,5 @@ router.include_router(appraisals_router)
 router.include_router(users_router)
 router.include_router(competency_bank_forms_router)
 router.include_router(staff_router)
+router.include_router(staff_permission_router)
 
