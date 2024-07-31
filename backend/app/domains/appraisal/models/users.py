@@ -3,7 +3,6 @@ from typing import Any
 import uuid
 from sqlalchemy import JSON, Boolean, Column, Date, DateTime, ForeignKey, String, Text,Integer
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 from db.base_class import APIBase
 
 
@@ -16,6 +15,10 @@ class User(APIBase):
     reset_password_token = Column(String(255),nullable=True)
     role_id = Column(UUID(as_uuid=True))
 
-
-    #roles = relationship("Role",back_populates="users")
-    #appraisals = relationship("Appraisal", back_populates="users")
+    def serialize(self):
+        return {
+            'name': self.name,
+            'description': self.description,
+            'created_date': self.created_date,
+            'updated_date': self.updated_date
+        }

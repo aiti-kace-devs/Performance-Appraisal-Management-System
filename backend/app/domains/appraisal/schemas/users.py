@@ -8,7 +8,7 @@ from pydantic import UUID4
 
 class UserBase(BaseModel):
     email:str
-    password:Optional[str] = None
+    password:str
     reset_password_token:str
     staff_id :  Optional[UUID4]
     role_id :  Optional[UUID4]
@@ -21,7 +21,7 @@ class UserBase(BaseModel):
         if len(v.strip()) < 1:
             raise ValueError(f'{info.field_name} should have a minimum value of 1')
         return v
-    
+
       # Checking if UUID4 fields accept only UUID4 as value
     @field_validator('role_id', 'staff_id', mode='before')
     def validate_fields_with_uuid4(cls, v, info):
