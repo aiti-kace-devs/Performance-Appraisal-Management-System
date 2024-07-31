@@ -1,6 +1,9 @@
+from aiohttp import Payload
 from sqlalchemy.orm import Session
-from pydantic import UUID4
+from pydantic import UUID4, ValidationError
 from sqlalchemy import func 
+from domains.appraisal.models.users import User
+from domains.appraisal.schemas.users import UserCreate
 
 
 
@@ -13,6 +16,36 @@ SUPER_ADMIN_STATUS: bool = True
 
 
 def init_db(db: Session) -> None:
+     
+    
+
+
+
+   #   payload = {
+
+   #        "email":"abc@gmail.com",
+   #        "password" : "eeeee552d93",
+   #        "reset_password_token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzIyMDA1Mjk5LCJleHAiOjE3MjIwMDcwOTl9.dsuVb4EELOcI-ECkqHWrYOdXiUeBrJxRP_09DR1a0Zs",
+   #        "role_id":"03e8beaa-ba9f-4192-b788-ffcff2cef500",
+   #        "staff_id":"03e8beaa-ba9f-4192-b788-ffcff2cef705"
+   #        }
+     
+
+   #   try:
+   #      data = UserCreate(**payload)
+   #      print("data :", data)
+   #      db_add = User(**payload)  #model class name
+   #      db.add(db_add)
+   #      db.commit()
+   #      db.refresh(db_add)
+   #      print("Data inserted Successfully")
+   #   except ValidationError as e:
+   #      print(e.json())
+
+     
+
+
+   
 
     return False
 
