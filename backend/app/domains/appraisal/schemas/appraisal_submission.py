@@ -43,13 +43,10 @@ class AppraisalSubmissionBase(BaseModel):
     # Checking if submitted_at, approval_date and Completed_at is none, current time nad date will be submitted
     @field_validator('started_at', 'completed_at', 'approval_date', mode='before')
     def validate_and_convert_date_format(cls, v, info):
-        if v is None:
+        if isinstance(v, date) is None:
             try:
-                dt = parse(v)
                 now = datetime.now()
-                combined_datetime = dt.replace(hour=now.hour, minute=now.minute, second=now.second)
-                formatted_date = combined_datetime.strftime('%Y-%m-%dT%H:%M:%S')
-                return formatted_date
+                return now
             except ValueError:
                 raise ValueError(f'\n{info.field_name} must be a valid date format and will be converted to YYYY-MM-DDTHH:MM:SS')
         return v
