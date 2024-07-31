@@ -8,18 +8,11 @@ from db.base_class import APIBase
 
 class Appraisal(APIBase):
 
-<<<<<<< HEAD
-    appraisal_cycles_id = Column(UUID(as_uuid=True))
-    staffs_id = Column(UUID(as_uuid=True))
-    supervisor_id = Column(UUID(as_uuid=True))
-    overall_score = Column(String(255), nullable=False)
-=======
     description = Column(Text, nullable=True)
     year = Column(Integer)
 
-    appraisal_form_sections = relationship("AppraisalSection", backref="appraisal_form_section")
-    submissions = relationship("AppraisalSubmission", backref="app_form_form")
+    # appraisal_form_sections = relationship("AppraisalSection", backref="appraisal_form_section")
+    # submissions = relationship("AppraisalSubmission", backref="app_form_form")
 
 
 
->>>>>>> GIKPA-252-Create-appraisal-form-repo-service-and-API
