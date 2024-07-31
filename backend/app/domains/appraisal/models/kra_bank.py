@@ -11,9 +11,9 @@ from domains.appraisal.models.staff import Staff
 
 
 class KraBank(APIBase):
-    department_id = Column(UUID(as_uuid=True), ForeignKey('department.id'), nullable=False)
-    appraisal_section_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_section.id'), nullable=False)
-    supervisor_id = Column(UUID(as_uuid=True), ForeignKey("staff.id"), nullable=False)
+    department_id = Column(UUID(as_uuid=True), ForeignKey('departments.id'), nullable=False)
+    appraisal_section_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_sections.id'), nullable=False)
+    supervisor_id = Column(UUID(as_uuid=True), ForeignKey("staffs.id"), nullable=False)
     focus_area = Column(JSON, nullable=False)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
 
