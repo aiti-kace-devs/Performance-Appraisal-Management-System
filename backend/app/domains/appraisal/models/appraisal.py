@@ -10,7 +10,7 @@ from db.base_class import APIBase
 
 class Appraisal(APIBase):
 
-    name = Column(String) #Public or Civil Service
+    name = Column(String, unique=True, nullable=False) #Public or Civil Service
     description = Column(Text, nullable=True)
     year = Column(Integer)
 

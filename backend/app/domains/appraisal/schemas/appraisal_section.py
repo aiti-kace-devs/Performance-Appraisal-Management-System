@@ -58,5 +58,5 @@ class AppraisalSectionInDBBase(AppraisalSectionBase):
     class Config:
         orm_mode = True
 
-class AppraisalSectionSchema(AppraisalSectionBase):
+class AppraisalSectionSchema(AppraisalSectionInDBBase):
     pass
