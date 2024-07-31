@@ -6,10 +6,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.staff_permissions import staff_permission_action as staff_permission_repo
 from domains.appraisal.schemas.staff_permissions import StaffPermissionSchema, StaffPermissionUpdate, StaffPermissionCreate
-from domains.appraisal.models.staff_permissions import StaffPermission
+
 
 class StaffPermissionService:
-
 
     def create_staff_permissions(self, *, db: Session, staff_permission:StaffPermissionCreate) -> StaffPermissionSchema:
         staff_permissions_obj = staff_permission_repo.create(db=db, obj_in = staff_permission)
