@@ -42,7 +42,7 @@ class KraBankCreate(KraBankBase):
 
     @field_validator("created_date")
     def validate_created_date(cls, v):
-        if v > datetime.now(datetime.UTC):
+        if v > datetime.now(timezone.utc):
             raise ValueError("created_date cannot be in the future")
         return v
 
