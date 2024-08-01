@@ -21,7 +21,7 @@ competency_bank_forms_router = APIRouter(
 
 @competency_bank_forms_router.get(
     "/",
-    response_model=List[schemas.CompentencyBankSchema]
+    response_model=List[schemas.CompetencyBankSchema]
 )
 def list_competency_bank_forms(
         db: Session = Depends(get_db),
@@ -35,13 +35,13 @@ def list_competency_bank_forms(
 
 @competency_bank_forms_router.post(
     "/",
-    response_model=schemas.CompentencyBankSchema,
+    response_model=schemas.CompetencyBankSchema,
     status_code=HTTP_201_CREATED
 )
 def create_competency_bank_forms(
         *, db: Session = Depends(get_db),
         # 
-        competency_bank_forms_in: schemas.CompentencyBankCreate
+        competency_bank_forms_in: schemas.CompetencyBankCreate
 ) -> Any:
     competency_bank_forms_router = actions.create_competency_bank_form(db=db, competency_bank_form=competency_bank_forms_in)
     return competency_bank_forms_router
@@ -49,13 +49,13 @@ def create_competency_bank_forms(
 
 @competency_bank_forms_router.put(
     "/{id}",
-    response_model=schemas.CompentencyBankSchema
+    response_model=schemas.CompetencyBankSchema
 )
 def update_competency_bank_forms(
         *, db: Session = Depends(get_db),
         
         id: UUID4,
-        competency_bank_forms_in: schemas.CompentencyBankUpdate,
+        competency_bank_forms_in: schemas.CompetencyBankUpdate,
 ) -> Any:
     competency_bank_forms_router = actions.get_competency_bank_form(db=db, id=id)
     if not competency_bank_forms_router:
@@ -69,7 +69,7 @@ def update_competency_bank_forms(
 
 @competency_bank_forms_router.get(
     "/{id}",
-    response_model=schemas.CompentencyBankSchema
+    response_model=schemas.CompetencyBankSchema
 )
 def get_competency_bank_forms(
         *, db: Session = Depends(get_db),
@@ -87,7 +87,7 @@ def get_competency_bank_forms(
 
 @competency_bank_forms_router.delete(
     "/{id}",
-    response_model=schemas.CompentencyBankSchema
+    response_model=schemas.CompetencyBankSchema
 )
 def delete_competency_bank_forms(
         *, db: Session = Depends(get_db),

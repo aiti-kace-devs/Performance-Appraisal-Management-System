@@ -1,10 +1,10 @@
 from crud.base import CRUDBase
-from domains.appraisal.models.competency_bank import CompentencyBank
+from domains.appraisal.models.competency_bank import CompetencyBank
 from domains.appraisal.schemas.competency_bank import (
-    CompentencyBankCreate, CompentencyBankUpdate
+    CompetencyBankCreate, CompetencyBankUpdate
 )
 
 
-class CRUDCompetencyBank(CRUDBase[CompentencyBank, CompentencyBankCreate, CompentencyBankUpdate]):
+class CRUDCompetencyBank(CRUDBase[CompetencyBank, CompetencyBankCreate, CompetencyBankUpdate]):
     pass
-competency_bank_form_actions = CRUDCompetencyBank(CompentencyBank)
+competency_bank_form_actions = CRUDCompetencyBank(CompetencyBank)
