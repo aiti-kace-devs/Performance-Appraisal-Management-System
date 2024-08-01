@@ -9,16 +9,8 @@ from db.base_class import APIBase
 
 
 class User(APIBase):
-    staff_id = Column(String(255),nullable=False)
-    email = Column(String(255), nullable=False)
+    staff_id = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), unique=True, nullable=False)
+    email = Column(String(255), ForeignKey('staffs.email', ondelete='CASCADE', onupdate='CASCADE'), unique=True,  nullable=False)
     password = Column(String(255), nullable=True)
     reset_password_token = Column(String(255),nullable=True)
-    role_id = Column(UUID(as_uuid=True))
-
-    def serialize(self):
-        return {
-            'name': self.name,
-            'description': self.description,
-            'created_date': self.created_date,
-            'updated_date': self.updated_date
-        }
+    role_id = Column(UUID(as_uuid=True),   nullable=False)

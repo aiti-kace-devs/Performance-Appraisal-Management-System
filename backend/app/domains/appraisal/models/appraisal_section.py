@@ -15,7 +15,7 @@ class AppraisalSection(APIBase):
     description = Column(Text, nullable=True)
     
 
-    appraisal_sections = relationship("AppraisalCycle", backref="appraisal_cycles")
+    #appraisal_sections = relationship("AppraisalCycle", backref="appraisal_cycles")
     
     
 
