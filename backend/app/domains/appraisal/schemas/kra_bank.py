@@ -12,7 +12,7 @@ class KraBankBase(BaseModel):
     created_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-class KraBankBaseCreate(KraBankBase):
+class KraBankCreate(KraBankBase):
     department_id: Optional[UUID4] = Field(..., description="Department ID")
     appraisal_section_id: Optional[UUID4] = Field(..., description="Appraisal ID")
     supervisor_id: Optional[UUID4] = Field(..., description="Supervisor ID")
