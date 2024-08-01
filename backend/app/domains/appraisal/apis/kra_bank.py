@@ -23,7 +23,7 @@ kra_bank_router = APIRouter(
     "/",
     response_model=List[schemas.KraBankSchema]
 )
-def list_appraisal_forms(
+def list_kra_bank(
         db: Session = Depends(get_db),
         
         skip: int = 0,
