@@ -1,20 +1,9 @@
 from aiohttp import Payload
 from sqlalchemy.orm import Session
 from pydantic import UUID4, ValidationError
-<<<<<<< HEAD
-from sqlalchemy import func
-from domains.appraisal.models.department import Department
-from domains.appraisal.schemas.department import DepartmentCreate
-from pydantic import ValidationError
-from domains.appraisal.models.kra_bank import KraBank
-from domains.appraisal.schemas.kra_bank import KraBankBaseCreate
-from domains.appraisal.models.staff import Staff
-from domains.appraisal.schemas.staff import StaffCreate 
-=======
 from sqlalchemy import func 
 # from domains.appraisal.models.appraisal_submission import AppraisalSubmission
 # from domains.appraisal.schemas.appraisal_submission import AppraisalSubmissionCreate
->>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
 
 
 
@@ -30,6 +19,7 @@ def init_db(db: Session) -> None:
 
 <<<<<<< HEAD
     return False
+
 
     # payload = {
     # "department_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",
