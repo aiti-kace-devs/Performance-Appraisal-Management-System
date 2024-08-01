@@ -1,22 +1,11 @@
-<<<<<<< HEAD
 from pydantic import UUID4,BaseModel,Field,field_validator
 from datetime import datetime,date
 from dateutil.parser import parse
 from typing import Optional, Any, Dict 
-=======
-from pydantic import UUID4,BaseModel,field_validator
-from datetime import datetime,date
-from dateutil.parser import parse
-from typing import Optional
->>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
 import uuid
 
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
 class StaffBase(BaseModel):
     first_name : str
     last_name : str
@@ -80,8 +69,5 @@ class StaffSchema(StaffBase):
 
 class StaffCreate(StaffBase):
     pass
-<<<<<<< HEAD
 
     
-=======
->>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
