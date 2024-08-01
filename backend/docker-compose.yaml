@@ -2,7 +2,7 @@
 version: "3.8"
 
 services:
-  database_host:
+  db:
     build:
       context: .
       dockerfile: Dockerfile.postgres
@@ -29,7 +29,7 @@ services:
     ports:
       - "5050:80"
     depends_on:
-      - database_host
+      - db
     networks:
       - test_network
     volumes:
@@ -37,15 +37,15 @@ services:
 
   web:
     build: ./app
-    # command: sh -c "uvicorn main:app --reload --host 0.0.0.0 --port=8000"
-    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80 --reload"
+    #command: bash -c "uvicorn main:app --reload --host 0.0.0.0 --port=2024"
+    #command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80 --reload"
     env_file:
       - .env
     environment:
-      DATABASE_URL: "postgres://postgres:password@database_host:5432/appraisal_db"
+      DATABASE_URL: "postgres://postgres:password@db:5432/appraisal_db"
     restart: always
     depends_on:
-      - database_host
+      - db
     volumes:
       - ./app:/app
     ports:
