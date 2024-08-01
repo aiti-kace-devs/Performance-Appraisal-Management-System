@@ -4,20 +4,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from db.base_class import APIBase
 
-
-
-
-
-class AppraisalConfiguration(APIBase):
-
-
-    appraisal_cycles_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_cycles.id'), unique=True, nullable=False) 
-    configuration = Column(JSON, nullable=False)
-     
+class StaffPermission(APIBase):
+    staffs_id = Column(UUID(as_uuid= True), nullable=False)
+    roles_id = Column(UUID(as_uuid= True), nullable=False)
+    permissions_id = Column(UUID(as_uuid= True), nullable=False)
     
-    
-
-    
-
-
-

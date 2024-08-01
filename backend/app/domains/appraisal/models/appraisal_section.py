@@ -10,8 +10,8 @@ from db.base_class import APIBase
 
 class AppraisalSection(APIBase):
 
-    appraisal_cycles_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_cycles.id'), nullable=False)
-    name = Column(String) 
+    appraisal_cycles_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_cycles.id'), unique=True, nullable=False)
+    name = Column(String, unique=True, nullable=False) 
     description = Column(Text, nullable=True)
     
 
