@@ -9,15 +9,10 @@ class AppraisalFormBase(BaseModel):
     appraisal_sections_id : UUID4
     form_fields : Dict[str, Any]
 
-class AppraisalFormCreate(AppraisalFormBase):
-    pass
-
-
-
     @field_validator('appraisal_id', 'appraisal_sections_id', mode='before')
     def validate_fields_with_uuid4(cls, v, info):
         try:
-            uuid.UUID(v, version=4)
+            uuid.UUID(str(v), version=4)
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
@@ -27,6 +22,13 @@ class AppraisalFormCreate(AppraisalFormBase):
         if not isinstance(value, dict) or not value:
             raise ValueError('form_fields type must not be a an empty valid JSON object')
         return value
+
+class AppraisalFormCreate(AppraisalFormBase):
+    pass
+
+
+
+    
 
 class AppraisalFormUpdate(AppraisalFormBase):
     pass

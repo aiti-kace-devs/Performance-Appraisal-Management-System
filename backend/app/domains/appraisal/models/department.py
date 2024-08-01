@@ -7,14 +7,9 @@ from db.base_class import APIBase
 
 class Department(APIBase):
 
-    name = Column(String, nullable=False)
+    name = Column(String, unique=True, nullable=False)
     description = Column(String, nullable=True)
 
-    def serialize(self):
-        return {
-            'name': self.name,
-            'description': self.description,
-            'created_date': self.created_date,
-            'updated_date': self.updated_date
-        }
+    
+    staff = relationship('Staff', backref='departments', uselist=False, cascade='all, delete-orphan')
     

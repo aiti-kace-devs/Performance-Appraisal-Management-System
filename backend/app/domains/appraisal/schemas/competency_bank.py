@@ -8,8 +8,8 @@ from sqlalchemy import JSON
 
 
 class CompetencyBankBase(BaseModel):
-    appraisal_section_id : Optional[UUID4]
-    staff_id : Optional[UUID4]
+    appraisal_section_id : UUID4
+    staff_id : UUID4
     competency_type : Dict[str,Any]
 
     # Checking if UUID4 fields accept only UUID4 as value
