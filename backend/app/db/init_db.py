@@ -16,23 +16,24 @@ SUPER_ADMIN_STATUS: bool = True
 
 
 def init_db(db: Session) -> None:
- 
-    payload = {
-        "name" : 'well',
-        "description" : None
-    }
+    
+    return False
+    # payload = {
+    #     "name" : 'well',
+    #     "description" : None
+    # }
 
 
-    try:
-        db_add = DepartmentCreate(**payload)  #model class name
-        print("db_add", db_add)
-        add = Department(**payload)
-        db.add(add)
-        db.commit()
-        db.refresh(add)
-        print("Data inserted Successfully")
-    except ValidationError as e:
-        print(e.json())
+    # try:
+    #     db_add = DepartmentCreate(**payload)  #model class name
+    #     print("db_add", db_add)
+    #     add = Department(**payload)
+    #     db.add(add)
+    #     db.commit()
+    #     db.refresh(add)
+    #     print("Data inserted Successfully")
+    # except ValidationError as e:
+    #     print(e.json())
 
     #return False
 

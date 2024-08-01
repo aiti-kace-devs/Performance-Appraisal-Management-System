@@ -3,7 +3,7 @@ from typing import Any, List
 from db.base_class import UUID
 from domains.appraisal.respository.kra_bank import kra_bank_actions as kra_bank_repo
 from domains.appraisal.schemas.kra_bank import (
-    KraBankBaseCreate,
+    KraBankCreate,
     KraBankSchema,
     KraBankUpdate,
 )
@@ -19,7 +19,7 @@ class KraBankService:
         return kra_bank
 
     def create_kra_bank(
-        self, *, db: Session, kra_bank: KraBankBaseCreate
+        self, *, db: Session, kra_bank: KraBankCreate
     ) -> KraBankSchema:
         kra_bank = kra_bank_repo.create(db=db, obj_in=kra_bank)
         return kra_bank

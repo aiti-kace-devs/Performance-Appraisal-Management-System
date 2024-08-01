@@ -5,4 +5,4 @@ from domains.appraisal.schemas.appraisal import AppraisalCreate, AppraisalUpdate
 
 class CRUDAppraisal(CRUDBase[Appraisal, AppraisalCreate, AppraisalUpdate]):
     pass
-appraisal_actions = CRUDAppraisal(Appraisal)
+appraisal_form_actions = CRUDAppraisal(Appraisal)
