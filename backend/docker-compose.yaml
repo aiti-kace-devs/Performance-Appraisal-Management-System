@@ -1,0 +1,62 @@
+## docker-compose.yml
+version: "3.8"
+
+services:
+  database_host:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appraisal_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:
+      - test_network
+
+  pgadmin4:
+    build:
+      context: .
+      dockerfile: dockerfile.pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "openforme"
+    ports:
+      - "5050:80"
+    depends_on:
+      - database_host
+    networks:
+      - test_network
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin/data
+
+  web:
+    build: ./app
+    # command: sh -c "uvicorn main:app --reload --host 0.0.0.0 --port=8000"
+    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80 --reload"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgres://postgres:password@database_host:5432/appraisal_db"
+    restart: always
+    depends_on:
+      - database_host
+    volumes:
+      - ./app:/app
+    ports:
+      - 2024:80
+    networks:
+      - test_network
+
+networks:
+  test_network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local

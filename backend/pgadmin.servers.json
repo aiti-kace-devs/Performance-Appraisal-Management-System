@@ -1,0 +1,15 @@
+{
+    "Servers": {
+      "1": {
+        "Name": "Database",
+        "Group": "Server Group 1",
+        "Port": 5432,
+        "Username": "permformance_appraisal`_user",
+        "Password": "password",
+        "Host": "database_host",
+        "SSLMode": "prefer",
+        "MaintenanceDB": "postgres"
+      }
+    }
+  }
+  
