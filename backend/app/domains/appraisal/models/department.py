@@ -9,6 +9,7 @@ class Department(APIBase):
 
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
+
     def serialize(self):
         return {
             'name': self.name,
