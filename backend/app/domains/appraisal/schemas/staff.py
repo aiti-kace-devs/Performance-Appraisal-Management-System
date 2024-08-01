@@ -19,6 +19,9 @@ class Title(str, Enum):
     Ms = 'Ms.'
     Other = 'Other'
 
+
+
+
 class StaffBase(BaseModel):
     title: Title
     first_name : str
@@ -27,13 +30,13 @@ class StaffBase(BaseModel):
     gender : Gender
     email: EmailStr
     position : str
-    department_id : Optional[UUID4]
+    department_id : UUID4
     grade : str
     appointment_date : Optional[date]
 
 
     # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('title', 'first_name', 'last_name', 'other_name', 'gender','email', 'position', 'grade',  mode='before')
+    @field_validator('title', 'first_name', 'last_name', 'gender','email', 'position', 'grade',  mode='before')
     def check_non_empty_and_not_string(cls,v,info):
         if isinstance(v,str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty "string"') 

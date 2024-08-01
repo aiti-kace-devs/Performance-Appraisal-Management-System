@@ -2,15 +2,15 @@ from datetime import date,time
 from typing import Optional, Any, Dict
 import uuid
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, EmailStr
 from pydantic import UUID4
 
 
 class UserBase(BaseModel):
-    email:str
+    email:EmailStr
     password:str
     reset_password_token:str
-    staff_id :  Optional[UUID4]
+    staff_id :  UUID4
     role_id :  Optional[UUID4]
 
     @field_validator('email','reset_password_token' ,mode='before')

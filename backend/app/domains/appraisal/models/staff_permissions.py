@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from db.base_class import APIBase
 
 class StaffPermission(APIBase):
-    staffs_id = Column(UUID(as_uuid= True), nullable=False)
+    staffs_id = Column(UUID(as_uuid= True), ForeignKey('staffs.id'), unique=True, nullable=False)
     roles_id = Column(UUID(as_uuid= True), nullable=False)
     permissions_id = Column(UUID(as_uuid= True), nullable=False)
     

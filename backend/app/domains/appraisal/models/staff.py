@@ -1,3 +1,4 @@
+import domains.appraisal.schemas
 from typing import Any
 from sqlalchemy import Column, Date, String, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
@@ -32,7 +33,12 @@ class Staff(APIBase):
     grade = Column(String(255), nullable=False)
     appointment_date = Column(Date, nullable=True)
 
-    user = relationship('User', backref='staffs', uselist=False, cascade='all, delete-orphan')
+    user = relationship('User', backref='users', uselist=False, cascade='all, delete-orphan')
+    staff_appraisal_submission = relationship('AppraisalSubmission', backref='appraisal_staff_submissions', uselist=False, cascade='all, delete-orphan')
+    staff_deadline_staff = relationship('StaffDeadline', backref='staffs_deadline', uselist=False, cascade='all, delete-orphan')
+    staff_permission = relationship('StaffPermission', backref='staff_permissions', uselist=False, cascade='all, delete-orphan')
+    competency_bank_staff = relationship('CompetencyBank', back_populates='staff_competency_bank', uselist=False, cascade='all, delete-orphan')
+
     
 
     

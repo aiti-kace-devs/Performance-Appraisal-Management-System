@@ -10,7 +10,7 @@ from db.base_class import APIBase
 
 class User(APIBase):
     staff_id = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), unique=True, nullable=False)
-    email = Column(String(255), ForeignKey('staffs.email', ondelete='CASCADE', onupdate='CASCADE'), unique=True,  nullable=False)
+    email = Column(String(255), unique=True,  nullable=False)
     password = Column(String(255), nullable=True)
     reset_password_token = Column(String(255),nullable=True)
     role_id = Column(UUID(as_uuid=True),   nullable=False)
