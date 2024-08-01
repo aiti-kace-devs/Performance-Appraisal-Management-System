@@ -43,7 +43,7 @@ def create_kra_bank(
         # 
         kra_bank_in: schemas.KraBankCreate
 ) -> Any:
-    kra_bank_router = actions.create_appraisal_form(db=db, appraisal_form=kra_bank_in)
+    kra_bank_router = actions.create_kra_bank(db=db, kra_bank=kra_bank_in)
     return kra_bank_router
 
 
