@@ -12,7 +12,7 @@ class AppraisalCycleBase(BaseModel):
 
     @field_validator('name', 'description', mode='before')
     def validate_non_empty_and_no_string(cls, v, info):
-        if not v or 'string' in v:
+        if not v.strip() or 'string' in v.strip():
             raise ValueError(f'{info.field_name} cannot be empty or contain the word "string"')
         return v
 
@@ -36,6 +36,7 @@ class AppraisalCycleInDBBase(AppraisalCycleBase):
 
     class Config:
         orm_mode = True
+        
 
-class AppraisalCycleSchema(AppraisalCycleBase):
+class AppraisalCycleSchema(AppraisalCycleInDBBase):
     pass

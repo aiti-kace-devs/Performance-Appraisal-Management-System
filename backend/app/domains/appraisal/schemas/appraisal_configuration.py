@@ -1,49 +1,55 @@
-from typing import Any, Dict, Annotated
+from typing import Any, Dict, Annotated, Optional, List
 import uuid
-from pydantic import BaseModel, Field, UUID4, ValidationError
-from sqlalchemy.orm import Session
-from domains.appraisal.models.appraisal_cycle import AppraisalCycle  # Import the actual SQLAlchemy model
-from domains.appraisal.models.appraisal_configuration import AppraisalConfiguration 
+from pydantic import BaseModel, Field, UUID4,field_validator
+import json
+from domains.appraisal.schemas.appraisal_cycle import AppraisalCycleSchema
 
-# Custom Validator Function
-def validate_appraisal_cycles_id(value: UUID4, session: Session) -> UUID4:
-    # Ensure the ID is in UUID4 format
-    try:
-        uuid.UUID(str(value), version=4)
-    except ValueError:
-        raise ValueError('appraisal_cycles_id must be a valid UUID4')
-    
-    # Check if the UUID exists in the appraisal_cycle table
-    if not session.query(AppraisalCycle).filter(AppraisalCycle.id == value).first():
-        raise ValueError('appraisal_cycles_id must reference an existing row in the appraisal_cycle table')
-    
-    if session.query(AppraisalConfiguration).filter(AppraisalConfiguration.appraisal_cycles_id == value).first():
-        raise ValueError('appraisal_cycles_id already exist in table \'appraisal_configurations\' ' )
 
-    return value
 
 class AppraisalConfigurationBase(BaseModel):
-    appraisal_cycles_id: Annotated[UUID4, Field(...)]
-    configuration: Annotated[Dict[str, Any], Field(...)]
+    appraisal_cycles_id: UUID4
+    configuration: Dict[str, Any]
+    
 
-    @staticmethod
-    def validate_appraisal_cycles_id_with_session(value: UUID4, session: Session) -> UUID4:
-        return validate_appraisal_cycles_id(value, session)
 
-    @staticmethod
-    def validate_configuration(value: Dict[str, Any]) -> Dict[str, Any]:
-        if not isinstance(value, dict) or not value:
-            raise ValueError('Configuration must be a non-empty valid JSON object')
+        
+    # Custom Validator Functions
+    @field_validator('appraisal_cycles_id', mode='before')
+    def validate_appraisal_cycles_id(cls, value: UUID4) -> UUID4:
+        try:
+            uuid_obj = uuid.UUID(str(value), version=4)
+            if uuid_obj.version != 4:
+                raise ValueError("Not a Valid UUID4 data")
+        except ValueError:
+            raise ValueError('appraisal_cycles_id must be a valid UUID4')
         return value
     
-    
+    @field_validator('configuration', mode='before')
+    def validate_configuration(cls, value: Any) -> Dict[str, Any]:
+        if not value:
+            raise ValueError('Configuration cannot be empty')
+        
 
-    def validate(self, session: Session) -> 'AppraisalConfigurationBase':
-        self.appraisal_cycles_id = self.validate_appraisal_cycles_id_with_session(self.appraisal_cycles_id, session)
-        self.configuration = self.validate_configuration(self.configuration)
-        return self
+        if isinstance(value, dict):
+            return value
+        elif isinstance(value, str):
+            try:
+                json_obj = json.loads(value.replace("'", "\""))
+                if not isinstance(json_obj, dict):
+                    raise ValueError
+                return json_obj
+            except (json.JSONDecodeError, ValueError):
+                raise ValueError('Configuration must be a valid JSON object or string')
+        else:
+            raise ValueError('Configuration must be a valid JSON object or string')
+    class Config:
+        arbitrary_types_allowed = True
+
+
+   
 
 class AppraisalConfigurationCreate(AppraisalConfigurationBase):
+
     pass
 
 class AppraisalConfigurationUpdate(AppraisalConfigurationBase):
@@ -51,9 +57,24 @@ class AppraisalConfigurationUpdate(AppraisalConfigurationBase):
 
 class AppraisalConfigurationInDBBase(AppraisalConfigurationBase):
     id: UUID4
+   
+
+    class Config:
+        orm_mode = True
+        
+
+class AppraisalConfigurationSchema(AppraisalConfigurationInDBBase):
+    pass
+
+
+class AppraisalConfigurationWithCycleSchema(AppraisalConfigurationSchema):
+    appraisal_cycle: Optional[AppraisalCycleSchema]
 
     class Config:
         orm_mode = True
 
-class AppraisalConfigurationSchema(AppraisalConfigurationBase):
-    pass
+class AppraisalCycleWithConfigurationsSchema(AppraisalCycleSchema):
+    appraisal_configurations: List[AppraisalConfigurationSchema]
+
+    class Config:
+        orm_mode = True

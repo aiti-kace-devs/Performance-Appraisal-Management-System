@@ -1,18 +1,20 @@
+import datetime
 from typing import Any
+import uuid
 from sqlalchemy import JSON, Boolean, Column, Date, DateTime, ForeignKey, String, Text,Integer
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 from db.base_class import APIBase
 
 
-class Department(APIBase):
 
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
 
-<<<<<<< HEAD
-    kra_banks = relationship('KraBank', back_populates='department')
-=======
+class User(APIBase):
+    staff_id = Column(String(255),nullable=False)
+    email = Column(String(255), nullable=False)
+    password = Column(String(255), nullable=True)
+    reset_password_token = Column(String(255),nullable=True)
+    role_id = Column(UUID(as_uuid=True))
+
     def serialize(self):
         return {
             'name': self.name,
@@ -20,5 +22,3 @@ class Department(APIBase):
             'created_date': self.created_date,
             'updated_date': self.updated_date
         }
->>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
-    

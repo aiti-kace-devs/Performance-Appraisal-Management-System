@@ -1,5 +1,7 @@
+from aiohttp import Payload
 from sqlalchemy.orm import Session
 from pydantic import UUID4, ValidationError
+<<<<<<< HEAD
 from sqlalchemy import func
 from domains.appraisal.models.department import Department
 from domains.appraisal.schemas.department import DepartmentCreate
@@ -8,6 +10,11 @@ from domains.appraisal.models.kra_bank import KraBank
 from domains.appraisal.schemas.kra_bank import KraBankBaseCreate
 from domains.appraisal.models.staff import Staff
 from domains.appraisal.schemas.staff import StaffCreate 
+=======
+from sqlalchemy import func 
+# from domains.appraisal.models.appraisal_submission import AppraisalSubmission
+# from domains.appraisal.schemas.appraisal_submission import AppraisalSubmissionCreate
+>>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
 
 
 
@@ -21,6 +28,7 @@ from domains.appraisal.schemas.staff import StaffCreate
 
 def init_db(db: Session) -> None:
 
+<<<<<<< HEAD
     return False
 
     # payload = {
@@ -156,6 +164,36 @@ def init_db(db: Session) -> None:
 
 
 
+=======
+    # payload = {
+    #     "appraisals_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef925",
+    #     "staffs_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef965",
+    #     "appraisal_forms_id" : "03e8beaa-ba9f-4192-b788-ffcff2cef972",
+    #     "submitted_values" : {"homework": "well done"},
+    #     "started_at" : None,
+    #     "completed_at" : None,
+    #     "approval_date" : None,
+    #     "submitted" : True,
+    #     "completed" : True,
+    #     "approval_status" : False,
+    #     "comment" : "Well done on completing your work"
+
+    # }
+
+
+    # try:
+    #     db_add = AppraisalSubmissionCreate(**payload)  #model class name
+    #     print("db_add", db_add)
+    #     add = AppraisalSubmission(**payload)
+    #     db.add(add)
+    #     db.commit()
+    #     db.refresh(add)
+    #     print("Data inserted Successfully")
+    # except ValidationError as e:
+    #     print(e.json())
+
+    return False
+>>>>>>> 0ab3f152a475199175e363c26417debb069e72b0
 
     # # Create 1st Superuser
     # admin = userCRUD.get_by_email(db=db, email=SUPER_ADMIN_EMAIL)
