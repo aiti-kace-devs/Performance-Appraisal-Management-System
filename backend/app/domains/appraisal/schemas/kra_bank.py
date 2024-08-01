@@ -16,11 +16,8 @@ class KraBankCreate(KraBankBase):
     department_id: Optional[UUID4] = Field(..., description="Department ID")
     appraisal_section_id: Optional[UUID4] = Field(..., description="Appraisal ID")
     supervisor_id: Optional[UUID4] = Field(..., description="Supervisor ID")
-    focus_area: List[Dict[str, Any]] = Field(
-        ..., description="Focus Area"
-    )
+    focus_area: List[Dict[str, Any]] = Field(..., description="Focus Area")
     created_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
 
     @root_validator(pre=True)
     def check_non_empty_fields(cls, values):
@@ -58,5 +55,5 @@ class KraBankInDBBase(KraBankBase):
         orm_mode = True
 
 
-class KraBankSchema(KraBankBase):
+class KraBankSchema(KraBankInDBBase):
     pass
