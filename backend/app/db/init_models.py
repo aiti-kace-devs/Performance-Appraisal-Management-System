@@ -10,6 +10,5 @@ from db.session import engine
 
 
 def create_tables():
-    # APIBase.metadata.drop_all(engine)
     APIBase.metadata.create_all(bind=engine)
    
