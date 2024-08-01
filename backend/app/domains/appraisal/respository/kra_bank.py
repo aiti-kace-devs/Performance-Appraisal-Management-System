@@ -7,4 +7,4 @@ from domains.appraisal.schemas.appraisal import (
 
 class CRUDAppraisal(CRUDBase[Appraisal, AppraisalCreate, AppraisalUpdate]):
     pass
-appraisal_form_actions = CRUDAppraisal(Appraisal)
+kra_bank_form_actions = CRUDAppraisal(Appraisal)

@@ -1,5 +1,7 @@
+import datetime
 from typing import Any
-from sqlalchemy import Column, Date, String
+import uuid
+from sqlalchemy import JSON, Boolean, Column, Date, DateTime, String, Text,Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from db.base_class import APIBase
@@ -16,11 +18,3 @@ class Staff(APIBase):
     department_id = Column(UUID(as_uuid=True))
     grade = Column(String(255), nullable=False)
     appointment_date = Column(Date, nullable=True)
-
-    def serialize(self):
-        return {
-            'name': self.name,
-            'description': self.description,
-            'created_date': self.created_date,
-            'updated_date': self.updated_date
-        }
