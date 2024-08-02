@@ -1,7 +1,7 @@
 from pydantic import UUID4,BaseModel,field_validator, EmailStr
 from datetime import datetime,date
 from dateutil.parser import parse
-from typing import Optional
+from typing import Optional, Any, Dict 
 import uuid
 from enum import Enum
 
@@ -86,3 +86,5 @@ class StaffSchema(StaffInDBBase):
 
 
 
+class StaffCreate(StaffBase):
+    pass
