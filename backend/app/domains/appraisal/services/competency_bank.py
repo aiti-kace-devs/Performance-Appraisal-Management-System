@@ -22,8 +22,8 @@ class CompetencyBankService:
 
 
          #checking if appraisal section_id is already in compentency_bank table 
-        check_section_id = db.query(CompetencyBank).filter(CompetencyBank.id ==competency_bank_form.appraisal_section_id).first()
-        if not check_section_id:
+        check_section_id = db.query(CompetencyBank).filter(CompetencyBank.appraisal_section_id ==competency_bank_form.appraisal_section_id).first()
+        if check_section_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal section already exist")
         
         #check if appraisal section_id is already in appraisal section table 
