@@ -6,28 +6,12 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
-from domains.appraisal.models.staff import Staff
-from domains.appraisal.models.department import Department
-
 
 
 class StaffService:
 
 
     def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffSchema]:
-
-        
-        #check for duplicate email entries in staff table
-        check_email = db.query(Staff).filter(Staff.email ==Staff.email).first()
-        if check_email:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Email already exist")
-        
-        
-        #check if department_id exists in department table 
-        check_department_id = db.query(Department).filter(Department.id ==Staff.department_id).first()
-        if not check_department_id:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Department not found")
-
         staff = Staff_form_repo.get_all(db=db, skip=skip, limit=limit)
         return staff
 
@@ -36,11 +20,11 @@ class StaffService:
         return staff
 
     def update_staff(self, *, db: Session, id: UUID, staff: StaffUpdate) -> StaffSchema:
-        staff_ = Staff_form_repo.get(db=db, id=id)
-        if not staff_:
+        staff = Staff_form_repo.get(db=db, id=id)
+        if not staff:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
-        staff_ = Staff_form_repo.update(db=db, db_obj=staff, obj_in=staff)
-        return staff_
+        staff = Staff_form_repo.update(db=db, db_obj=staff, obj_in=staff)
+        return staff
 
     def get_staff(self, *, db: Session, id: UUID) -> StaffSchema:
         staff = Staff_form_repo.get(db=db, id=id)
