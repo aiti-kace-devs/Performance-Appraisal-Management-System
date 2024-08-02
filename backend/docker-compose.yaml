@@ -2,19 +2,19 @@
 version: "3.8"
 
 services:
-  db:
+  postgres:
     build:
       context: .
       dockerfile: Dockerfile.postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: appraisal_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - ${POSTGRES_PORT}:5432
     networks:
       - test_network
 
@@ -24,12 +24,12 @@ services:
       dockerfile: dockerfile.pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
-      PGADMIN_DEFAULT_PASSWORD: "openforme"
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
-      - db
+      - postgres
     networks:
       - test_network
     volumes:
@@ -37,19 +37,18 @@ services:
 
   web:
     build: ./app
-    #command: bash -c "uvicorn main:app --reload --host 0.0.0.0 --port=2024"
-    #command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80 --reload"
     env_file:
       - .env
     environment:
-      DATABASE_URL: "postgres://postgres:password@db:5432/appraisal_db"
+      #DATABASE_URL: "postgres://postgres:password@postgres:5432/appraisal_db"
+      DATABASE_URL: 'postgres://${DB_USER}:${DB_PASSWORD}@${DB_SERVER}:${DB_PORT}/${DB_NAME}'
     restart: always
     depends_on:
-      - db
+      - postgres
     volumes:
       - ./app:/app
     ports:
-      - 2024:80
+      - ${WEB_PORT}:8080
     networks:
       - test_network
 

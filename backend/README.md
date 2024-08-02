@@ -6,21 +6,14 @@
 
 ## Installing Packages for Windows
 - Run the following command in your terminal
+    - cd backend
     - cd app
     - pip install -r requirements.txt
 
-## Installing Packages for Linux, Ubuntu
-- Run the following command in your terminal
-    - cd app
-    - python3 -m venv venv
-    - source venv/bin/activate
-    - pip install -r requirements.txt
 
-## Create Environment File
->  cp .env.example .env
-
-## CREATION AND MIGRATION OF DATABASE
+## CREATION OF DATABASE MANUALLY
 >  Create a database name: **appraisal_db**
+
 
 
 ## RUNNING OR STARTING APPLICATION
@@ -29,19 +22,35 @@
 
 
 
+## Installing Packages for Linux, Ubuntu
+- Run the following command in your terminal
+    - cd backend
+    - cd app
+    - python3 -m venv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+    - uvicorn main:app --reload
+
+
+
+
+## RUNNING FASTAPI SERVICE ON DOCKER
+
+## Create Environment File
+>  cp docker.env.example .env
+
+
 - Running FastAPI Service On Docker 
-    - Start Docker Service
-    - docker-compose build
-    - docker-compose up
+Run:
+```
+docker-compose --env-file ./.env up -d --build
+```
 
 
-
-
-- Database Migration and Data Seeding
-Run the following command
-    - python migrate.py
-
-
+Down containert with command:
+```
+docker-compose --env-file ./.env down
+```
 
 
 Setup environment variables; allowed environment variables `KEYWORDS`=`VALUES`:
@@ -53,7 +62,9 @@ Setup environment variables; allowed environment variables `KEYWORDS`=`VALUES`:
 | DB_SERVER | | localhost | string
 | DB_USER | | postgres | string 
 | DB_PASSWORD | | password | string 
-| DB_PORT | | 5432 | integer   
+| DB_PORT | | 5432 | integer 
+| PGADMIN_DEFAULT_EMAIL | | admin@admin.com | string 
+| PGADMIN_DEFAULT_PASSWORD | | openforme | string  
 | BASE_URL | | http://localhost:8080/ | string  
 | ADMIN_EMAIL | | superadmin@admin.com | string 
 | ADMIN_PASSWORD | | openforme | string 
