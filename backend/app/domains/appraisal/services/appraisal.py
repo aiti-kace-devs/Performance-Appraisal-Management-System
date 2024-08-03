@@ -19,7 +19,7 @@ class AppraisalService:
 
     def create_appraisal(self, *, db: Session, appraisal: AppraisalCreate) -> AppraisalSchema:
 
-        check_appraisal_cycle_id = db.query(AppraisalCycle).filter(AppraisalCycle.id == appraisal.appraisal_cycle_id).first()
+        check_appraisal_cycle_id = db.query(AppraisalCycle).filter(AppraisalCycle.id == appraisal.appraisal_cycles_id).first()
         if not check_appraisal_cycle_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Appraisal cycle not found")
         
@@ -27,7 +27,7 @@ class AppraisalService:
         if not check_staff_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Staff not found")
         
-        check_supervisor_id = db.query(Staff).filter(Staff.id == appraisal.staff_id).first()
+        check_supervisor_id = db.query(Staff).filter(Staff.id == appraisal.supervisor_id).first()
         if not check_supervisor_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Supervisor not found")
 
