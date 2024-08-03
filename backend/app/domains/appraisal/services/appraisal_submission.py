@@ -21,15 +21,15 @@ class AppraisalService:
 
     def create_appraisal_submission(self, *, db: Session, appraisal_submission: AppraisalSubmissionCreate) -> AppraisalSubmissionSchema:
 
-        check_appraisal_id = db.query(Appraisal).filter(Appraisal.id == appraisal_submission.appraisal_id).first()
+        check_appraisal_id = db.query(Appraisal).filter(Appraisal.id == appraisal_submission.appraisals_id).first()
         if not check_appraisal_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Appraisal not found")
 
-        check_staff_id = db.query(Staff).filter(Staff.id == appraisal_submission.staff_id).first()
+        check_staff_id = db.query(Staff).filter(Staff.id == appraisal_submission.staffs_id).first()
         if not check_staff_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Staff not found")
         
-        check_appraisal_form_id = db.query(AppraisalForm).filter(AppraisalForm.id == appraisal_submission.appraisal_form_id).first()
+        check_appraisal_form_id = db.query(AppraisalForm).filter(AppraisalForm.id == appraisal_submission.appraisal_forms_id).first()
         if not check_appraisal_form_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Appraisal form not found")
 
