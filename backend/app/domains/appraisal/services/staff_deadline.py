@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.appraisal.respository.staff_deadline import staff_deadline_actions as staff_deadline_repo
 from domains.appraisal.schemas.staff_deadline import StaffDeadlineSchema, StaffDeadlineUpdate, StaffDeadlineCreate
-
+from domains.appraisal.models.appraisal_section import AppraisalSection
+from domains.appraisal.models.staff import Staff
 
 class StaffDeadlineService:
 
@@ -16,6 +17,19 @@ class StaffDeadlineService:
         return list_staff_deadline
 
     def create_staff_deadline(self, *, db: Session, staff_deadline: StaffDeadlineCreate) -> StaffDeadlineSchema:
+
+        check_appraisal_section = db.query(AppraisalSection).filter(AppraisalSection.id == staff_deadline.appraisal_sections_id).first()
+        if not check_appraisal_section:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="appraisal section not found")
+        
+        check_staff_id = db.query(Staff).filter(Staff.id == staff_deadline.staffs_id).first()
+        if not check_staff_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s not found in staff table" % staff_deadline.staffs_id)
+        
+        check_supervisor_id = db.query(Staff).filter(Staff.id == staff_deadline.supervisor_id).first()
+        if not check_supervisor_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="supervisor with id %s not found in staff table" % staff_deadline.supervisor_id)
+        
         create_staff_deadline = staff_deadline_repo.create(db=db, obj_in=staff_deadline)
         return create_staff_deadline
 
