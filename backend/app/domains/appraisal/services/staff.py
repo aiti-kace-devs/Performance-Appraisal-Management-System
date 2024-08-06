@@ -7,6 +7,7 @@ from db.base_class import UUID
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
 from domains.appraisal.models.users import User
+from domains.appraisal.models.roles import Role
 from domains.appraisal.services.users import users_forms_service
 class StaffService:
 
@@ -16,6 +17,12 @@ class StaffService:
         return staff
 
     def create_staff(self, *, db: Session, staff: StaffCreate) -> StaffSchema:
+
+        check_if_role_id_exists = db.query(Role).filter(Role.id == staff.role_id).first()
+        if not check_if_role_id_exists:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Role does not exist")
+
+
         staff_obj = Staff_form_repo.create(db=db, obj_in=staff)
 
         check_if_user_email_exists = db.query(User).filter(User.email == staff.email).first()
