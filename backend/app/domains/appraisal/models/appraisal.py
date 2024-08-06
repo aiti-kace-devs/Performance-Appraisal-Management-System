@@ -18,4 +18,7 @@ class Appraisal(APIBase):
     app_appraisal_submission = relationship('AppraisalSubmission', back_populates='appraisal_app_submissions', uselist=False, cascade='all, delete-orphan')
 
 
+    # users = relationship("User",back_populates="appraisals")
+    # role_id = Column(UUID(as_uuid=True), ForeignKey('roles.id'), unique=True, nullable=False)
+    # roles = relationship("Role",back_populates="appraisals")
 
