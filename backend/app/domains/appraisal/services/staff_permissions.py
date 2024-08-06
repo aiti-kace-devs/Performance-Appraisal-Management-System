@@ -6,11 +6,21 @@ from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.staff_permissions import staff_permission_action as staff_permission_repo
 from domains.appraisal.schemas.staff_permissions import StaffPermissionSchema, StaffPermissionUpdate, StaffPermissionCreate
-
+from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.staff_permissions import StaffPermission
 
 class StaffPermissionService:
 
     def create_staff_permissions(self, *, db: Session, staff_permission:StaffPermissionCreate) -> StaffPermissionSchema:
+        # checking if Staff_id exist in Staff table
+        check_staff_id = db.query(Staff).filter(Staff.id == staff_permission.staffs_id).first()
+        if not check_staff_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s not found in staff table" % staff_permission.staffs_id)
+        
+        check_staff_id = db.query(StaffPermission).filter(StaffPermission.staffs_id == staff_permission.staffs_id).first()
+        if check_staff_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s already exist in staff_permission table" % staff_permission.staffs_id)
+        
         staff_permissions_obj = staff_permission_repo.create(db=db, obj_in = staff_permission)
         return staff_permissions_obj
 
@@ -19,7 +29,7 @@ class StaffPermissionService:
         if not staff_permissions_obj:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff_permission not found")
         return staff_permissions_obj
-    
+
     def get_all_staff_permissions(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffPermissionSchema]:
         staff_permission_obj = staff_permission_repo.get_all(db=db, skip=skip, limit=limit)
         return staff_permission_obj
