@@ -26,25 +26,26 @@ class KraBankService:
         self, *, db: Session, kra_bank: KraBankCreate
     ) -> KraBankSchema:
         
-        # Validate department_id exists
+        # Check if the department ID exists
         department = db.query(Department).filter(Department.id == kra_bank.department_id).first()
         if not department:
-            raise ValueError("Department ID does not exist.")
-
-        # Check for duplicate department_id in KraBank table
+            raise HTTPException(status_code=404, detail="Department ID does not exist")
+        
+        # Check for duplicate department ID in the Kra bank table
         duplicate_department = db.query(KraBank).filter(KraBank.department_id == kra_bank.department_id).first()
         if duplicate_department:
-            raise ValueError("Duplicate Department ID in KraBank table.")
-
-        # Validate appraisal_section_id exists
+            raise HTTPException(status_code=400, detail="Duplicate department ID in Kra bank table")
+        
+        # Check if the appraisal section ID exists
         appraisal_section = db.query(AppraisalSection).filter(AppraisalSection.id == kra_bank.appraisal_section_id).first()
         if not appraisal_section:
-            raise ValueError("Appraisal Section ID does not exist.")
-
-        # Validate supervisor_id exists
+            raise HTTPException(status_code=404, detail="Appraisal section ID does not exist")
+        
+        # Check if the supervisor ID exists in the staff table
         supervisor = db.query(Staff).filter(Staff.id == kra_bank.supervisor_id).first()
         if not supervisor:
-            raise ValueError("Supervisor ID does not exist.")
+            raise HTTPException(status_code=404, detail="Supervisor ID does not exist")
+        
 
         # Create KRA Bank
         kra_bank = kra_bank_repo.create(db=db, obj_in=kra_bank)
