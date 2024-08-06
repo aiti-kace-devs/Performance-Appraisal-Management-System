@@ -10,6 +10,9 @@ from domains.appraisal.apis.competency_bank import competency_bank_forms_router
 from domains.appraisal.apis.users import users_router
 from domains.appraisal.apis.staff import staff_router
 from domains.appraisal.apis.appraisal_form import appraisal_form_router
+from domains.appraisal.apis.kra_bank import kra_bank_router
+from domains.appraisal.apis.roles import role_router
+# from domains.appraisal.apis.role_permission import role_perm_router
 from fastapi import APIRouter
 
 
@@ -28,5 +31,8 @@ router.include_router(appraisal_form_router)
 router.include_router(appraisal_submissions_router)
 router.include_router(staff_permission_router)
 router.include_router(staff_deadline_router)
+router.include_router(kra_bank_router)
+# router.include_router(role_perm_router)
+router.include_router(role_router)
 
 

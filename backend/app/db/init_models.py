@@ -10,9 +10,16 @@ from domains.appraisal.models.staff_deadline import APIBase
 from domains.appraisal.models.staff_permissions import APIBase
 from domains.appraisal.models.staff import APIBase
 from domains.appraisal.models.users import APIBase
+from domains.appraisal.models.kra_bank import APIBase
+# from domains.appraisal.models.role_permissions import APIBase
+from domains.appraisal.models.roles import APIBase
+# from domains.appraisal.models.permissions import APIBase
+from domains.appraisal.models.users import APIBase
 from db.session import engine
 
 
 
 def create_tables():
     APIBase.metadata.create_all(bind=engine)
+   
+
