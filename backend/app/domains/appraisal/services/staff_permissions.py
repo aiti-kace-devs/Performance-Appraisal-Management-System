@@ -8,6 +8,9 @@ from domains.appraisal.respository.staff_permissions import staff_permission_act
 from domains.appraisal.schemas.staff_permissions import StaffPermissionSchema, StaffPermissionUpdate, StaffPermissionCreate
 from domains.appraisal.models.staff import Staff
 from domains.appraisal.models.staff_permissions import StaffPermission
+from domains.appraisal.models.roles import Role
+from domains.appraisal.models.permissions import Permission
+
 
 class StaffPermissionService:
 
@@ -17,12 +20,24 @@ class StaffPermissionService:
         if not check_staff_id:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s not found in staff table" % staff_permission.staffs_id)
         
+        # Check for duplicate staff IDs in the staff permission table.
         check_staff_id = db.query(StaffPermission).filter(StaffPermission.staffs_id == staff_permission.staffs_id).first()
         if check_staff_id:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s already exist in staff_permission table" % staff_permission.staffs_id)
         
+        # Checking if the roles ID exists on the roles table
+        check_roles_id = db.query(Role).filter(Role.id == staff_permission.roles_id).first()
+        if not check_roles_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="role with id %s not found in roles table" % staff_permission.roles_id)
+
+        # Check if the permissions ID exists on the permissions table
+        check_permission_id = db.query(Permission).filter(Permission.id == staff_permission.permissions_id).first()
+        if not check_permission_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Permission with id %s not found in permissions table" % staff_permission.permissions_id)
+
         staff_permissions_obj = staff_permission_repo.create(db=db, obj_in = staff_permission)
         return staff_permissions_obj
+    
 
     def get_staff_permissions(self, *, db: Session, id: UUID) -> StaffPermissionSchema:
         staff_permissions_obj = staff_permission_repo.get(db=db, id=id)
