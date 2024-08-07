@@ -1,6 +1,6 @@
 from domains.appraisal.models.appraisal import APIBase
-# from domains.appraisal.models.role_permissions import APIBase
-from domains.appraisal.models.roles import APIBase
+from domains.appraisal.models.role_permissions import APIBase
+# from domains.appraisal.models.roles import APIBase
 # from domains.appraisal.models.permissions import APIBase
 from domains.appraisal.models.users import APIBase
 from db.session import engine
