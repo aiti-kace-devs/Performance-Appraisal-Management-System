@@ -11,7 +11,6 @@ from domains.appraisal.models.staff_permissions import StaffPermission
 from domains.appraisal.models.roles import Role
 from domains.appraisal.models.permissions import Permission
 
-
 class StaffPermissionService:
 
     def create_staff_permissions(self, *, db: Session, staff_permission:StaffPermissionCreate) -> StaffPermissionSchema:

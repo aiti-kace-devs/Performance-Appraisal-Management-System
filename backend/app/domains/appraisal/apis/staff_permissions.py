@@ -58,7 +58,7 @@ def get_staff_permission(
 @staff_permission_router.put(
     "/{id}",
     response_model=schemas.StaffPermissionSchema
-)
+)  
 def update_staff_permissions(
         *, db: Session = Depends(get_db),
         id: UUID4,
@@ -70,7 +70,7 @@ def update_staff_permissions(
             status_code=HTTP_404_NOT_FOUND,
             detail="staff_permission_router not found"
         )
-    staff_permission_router = actions.update_staff_permissions(db=db, db_obj= staff_permission_router,  obj_in = staff_permissions_in)
+    staff_permission_router = actions.update_staff_permissions(db=db, id=id,  staff_permission = staff_permissions_in)
     return staff_permission_router
 
 @staff_permission_router.delete(
