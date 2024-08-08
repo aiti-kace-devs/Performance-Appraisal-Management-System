@@ -1,5 +1,5 @@
 from crud.base import CRUDBase
-from domains.appraisal.models.roles import Role
+from domains.appraisal.models.role_permissions import Role
 from domains.appraisal.schemas.roles import (
     RoleCreate, RoleUpdate
 )

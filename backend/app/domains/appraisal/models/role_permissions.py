@@ -1,17 +1,35 @@
-# from typing import Any
-# from sqlalchemy import Column, ForeignKey
-# from sqlalchemy.dialects.postgresql import UUID
-# from sqlalchemy.orm import relationship
-# from db.base_class import APIBase
+from typing import Any
+from sqlalchemy import Column, ForeignKey, String, Table
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+from db.base_class import APIBase
 
 
 
+# Define the association table
+role_permissions = Table(
+    'role_permissions',
+    APIBase.metadata,
+    Column('role_id', UUID(as_uuid=True), ForeignKey('roles.id'), primary_key=True),
+    Column('permission_id', UUID(as_uuid=True), ForeignKey('permissions.id'), primary_key=True)
+)
 
-# class RolePermission(APIBase):
+class Role(APIBase):
+    __tablename__ = 'roles'
 
-#     id = Column(UUID(as_uuid=True), primary_key=True, index=True)
-#     role_id = Column(UUID(as_uuid=True), ForeignKey('roles.id'))
-#     permission_id = Column(UUID(as_uuid=True), ForeignKey('permissions.id'))
+    name = Column(String(255), unique=True, index=True)
+    permissions = relationship(
+        "Permission",
+        secondary=role_permissions,
+        back_populates="roles"
+    )
 
-#     role = relationship("Role", back_populates="role_permissions")
-#     permission = relationship("Permission", back_populates="role_permissions")
+class Permission(APIBase):
+    __tablename__ = 'permissions'
+
+    name = Column(String(255), unique=True, index=True)
+    roles = relationship(
+        "Role",
+        secondary=role_permissions,
+        back_populates="permissions"
+    )
