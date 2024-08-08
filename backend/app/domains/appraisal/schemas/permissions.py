@@ -12,11 +12,11 @@ class PermissionBase(BaseModel):
 class PermissionCreate(PermissionBase):
     pass
 
-class Permission(PermissionBase):
-    id: UUID4
+# class Permission(PermissionBase):
+#     id: UUID4
 
-    class Config:
-        orm_mode = True 
+#     class Config:
+#         orm_mode = True 
 
 class PermissionRead(PermissionBase):
     id: UUID4
@@ -25,3 +25,5 @@ class PermissionRead(PermissionBase):
     class Config:
         orm_mode = True
         
+class PermissionUpdate(PermissionBase):
+    pass
