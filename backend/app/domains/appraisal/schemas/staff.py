@@ -1,4 +1,4 @@
-from pydantic import UUID4,BaseModel,field_validator, EmailStr
+from pydantic import UUID4,BaseModel,field_validator, EmailStr,Field
 from datetime import datetime,date
 from dateutil.parser import parse
 from typing import Optional, Any, Dict 
@@ -33,6 +33,7 @@ class StaffBase(BaseModel):
     department_id : UUID4
     grade : str
     appointment_date : Optional[date]
+    role_id : Optional[UUID4] = Field(None, exclude=True)
 
 
     # Checking if fields are not empty and also not allowing the word string as value

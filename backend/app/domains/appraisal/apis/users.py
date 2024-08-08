@@ -11,7 +11,7 @@ from db.session import get_db
 
 users_router = APIRouter(
        prefix="/users",
-    tags=["User"],
+    tags=["Users Account"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -20,7 +20,7 @@ users_router = APIRouter(
 
 
 @users_router.get(
-    "/",
+    "/all",
     response_model=List[schemas.UserSchema]
 )
 def list_users_forms(
@@ -33,18 +33,18 @@ def list_users_forms(
     return users_router
 
 
-@users_router.post(
-    "/",
-    response_model=schemas.UserSchema,
-    status_code=HTTP_201_CREATED
-)
-def create_users_forms(
-        *, db: Session = Depends(get_db),
-        # 
-        users_forms_in: schemas.UserCreate
-) -> Any:
-    users_router = actions.create_users_forms(db=db, users_form=users_forms_in)
-    return users_router
+# @users_router.post(
+#     "/",
+#     response_model=schemas.UserSchema,
+#     status_code=HTTP_201_CREATED
+# )
+# def create_users_forms(
+#         *, db: Session = Depends(get_db),
+#         # 
+#         users_forms_in: schemas.UserCreate
+# ) -> Any:
+#     users_router = actions.create_users_forms(db=db, users_form=users_forms_in)
+#     return users_router
 
 
 @users_router.put(
