@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from db.base_class import UUID
 from domains.appraisal.respository.department import department_actions as department_repo
+from domains.appraisal.models.department import Department
 from domains.appraisal.schemas.department import DepartmentSchema, DepartmentUpdate, DepartmentCreate
 
 
@@ -16,6 +17,9 @@ class AppraisalService:
         return department
 
     def create_department(self, *, db: Session, department: DepartmentCreate) -> DepartmentSchema:
+        check_department_name = db.query(Department).filter(Department.name == department.name).first()
+        if check_department_name:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Department name already exist")
         department = department_repo.create(db=db, obj_in=department)
         return department
 
