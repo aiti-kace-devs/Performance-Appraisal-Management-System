@@ -9,6 +9,10 @@ from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreat
 from domains.appraisal.models.users import User
 from domains.appraisal.models.roles import Role
 from domains.appraisal.services.users import users_forms_service
+from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.department import Department
+
+
 class StaffService:
 
 
@@ -18,17 +22,31 @@ class StaffService:
 
     def create_staff(self, *, db: Session, staff: StaffCreate) -> StaffSchema:
 
+        
+        #check for duplicate email entries in staff table
+        check_email = db.query(Staff).filter(Staff.email ==Staff.email).first()
+        if check_email:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Email already exist")
+
+
+        #check if department_id exists in department table 
+        check_department_id = db.query(Department).filter(Department.id ==Staff.department_id).first()
+        if not check_department_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Department not found")
+        
+
         check_if_role_id_exists = db.query(Role).filter(Role.id == staff.role_id).first()
         if not check_if_role_id_exists:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Role does not exist")
 
 
-        staff_obj = Staff_form_repo.create(db=db, obj_in=staff)
-
         check_if_user_email_exists = db.query(User).filter(User.email == staff.email).first()
         if check_if_user_email_exists:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="staff with email %s already exists" % staff.email)
         
+
+        staff_obj = Staff_form_repo.create(db=db, obj_in=staff)
+
         user_in = User()
         user_in.email = staff.email
         user_in.reset_password_token = None
@@ -37,8 +55,9 @@ class StaffService:
         db.add(user_in)
         db.commit()
         db.refresh(user_in)
-
         return staff_obj
+    
+    
 
     def update_staff(self, *, db: Session, id: UUID, staff: StaffUpdate) -> StaffSchema:
         get_staff1 = Staff_form_repo.get(db=db, id=id)
@@ -46,6 +65,7 @@ class StaffService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
         update_staff = Staff_form_repo.update(db=db, db_obj=get_staff1, obj_in=staff)
         return update_staff
+ 
 
     def get_staff(self, *, db: Session, id: UUID) -> StaffSchema:
         get_staff = Staff_form_repo.get(db=db, id=id)
