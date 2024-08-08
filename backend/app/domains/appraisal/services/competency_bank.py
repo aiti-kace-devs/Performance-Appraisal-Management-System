@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.appraisal.respository.competency_bank import competency_bank_form_actions as competency_bank_form_repo
 from domains.appraisal.schemas.competency_bank import CompetencyBankSchema, CompetencyBankUpdate, CompetencyBankCreate
+from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.competency_bank import CompetencyBank
+from domains.appraisal.models.appraisal_section import AppraisalSection
 
 
 class CompetencyBankService:
@@ -16,6 +19,34 @@ class CompetencyBankService:
         return competency_bank_form
 
     def create_competency_bank_form(self, *, db: Session, competency_bank_form: CompetencyBankCreate) -> CompetencyBankSchema:
+
+
+         #checking if appraisal section_id is already in compentency_bank table 
+        check_section_id = db.query(CompetencyBank).filter(CompetencyBank.appraisal_section_id ==competency_bank_form.appraisal_section_id).first()
+        if check_section_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal section already exist")
+        
+        #check if appraisal section_id is already in appraisal section table 
+        check_appraisal_section_id = db.query(AppraisalSection).filter(AppraisalSection.id ==competency_bank_form.appraisal_section_id).first()
+        if not check_appraisal_section_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal section not found")
+        
+
+        #check if staff_id is already in staff table 
+        check_staff_id = db.query(Staff).filter(Staff.id ==competency_bank_form.staff_id).first()
+        if not check_staff_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff not found")
+
+
+
+
+
+
+
+
+
+
+
         competency_bank_form = competency_bank_form_repo.create(db=db, obj_in=competency_bank_form)
         return competency_bank_form
 
