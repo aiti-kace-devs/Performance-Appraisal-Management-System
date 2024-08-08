@@ -5,10 +5,9 @@ from sqlalchemy import func
 # from domains.appraisal.models.roles import Role
 # from domains.appraisal.models.permissions import Permission
 from domains.appraisal.models.role_permissions import Role, Permission
+from uuid import uuid4
 
-from domains.appraisal.services.role_permission import role_perm_service
-from domains.appraisal.services.role_permission import role_perm_service  as actions 
-from domains.appraisal.schemas.role_permissions import RolePermissionCreate
+
 SUPER_ADMIN_NAME: str = "Super Admin"
 SUPER_ADMIN_PHONE_NUMBER: str = "9876543210"
 SUPER_ADMIN_EMAIL: str = "superadmin@admin.com"
@@ -20,21 +19,45 @@ SUPER_ADMIN_STATUS: bool = True
 def init_db(db: Session):
     ## check if a super admin does not exitst and create super admin
 
-    ## check if the Role Table is empty before inserting 
+    # Check if the super_admin role already exists
+    super_admin_role = db.query(Role).filter(Role.name == "super_admin").first()
+    if super_admin_role:
+        return  # super_admin role already exists, no need to initialize
 
-    if db.query(func.count(Role.id)).scalar() == 0: 
+    # Create the super_admin role
+    super_admin_role = Role(id=uuid4(), name="super_admin")
+    db.add(super_admin_role)
+    db.commit()
+
+    # Define the required permissions
+    permission_names = ["read", "create", "write", "update", "delete", "approve"]
+
+    # Create and assign the permissions to the super_admin role
+    for perm_name in permission_names:
+        permission = db.query(Permission).filter(Permission.name == perm_name).first()
+        if not permission:
+            permission = Permission(id=uuid4(), name=perm_name)
+            db.add(permission)
+            db.commit()
+        
+        # Add permission to the role
+        super_admin_role.permissions.append(permission)
+
+    db.commit()
+
+    # if db.query(func.count(Role.id)).scalar() == 0: 
             
 
-            payload = RolePermissionCreate(
-            name="super_admin",
-            permissions=[{"name": "create"}, {"name": "read"}, {"name": "update"}, {"name": "delete"}]
-        )
+    #         payload = RolePermissionCreate(
+    #         name="super_admin",
+    #         permissions=[{"name": "create"}, {"name": "read"}, {"name": "update"}, {"name": "delete"}]
+    #     )
             
             
-    # role_perm_service.create_role_perm(role_perm=payload, db=db)
-            actions.create_role_perm(role_perm=payload, db=db)
+    # # role_perm_service.create_role_perm(role_perm=payload, db=db)
+    #         actions.create_role_perm(role_perm=payload, db=db)
 
-    return {"detail": "Roles and permissions initialized"}
+    # return {"detail": "Roles and permissions initialized"}
 
 
     # # Create 1st Superuser
