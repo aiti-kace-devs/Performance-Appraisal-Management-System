@@ -39,11 +39,11 @@ role_router = APIRouter(
 #             )
 #     return role_checker
 
-## create a new role 
-@role_router.post("/", response_model= RoleRead)
-def create_new_role_permission(*, payload: RoleCreate, db:Session=Depends(get_db)):
-    new_role_perm = actions.create_role_perm(role_perm=payload, db=db)
-    return new_role_perm
+# ## create a new role 
+# @role_router.post("/", response_model= RoleRead)
+# def create_new_role_permission(*, payload: RoleCreate, db:Session=Depends(get_db)):
+#     new_role_perm = actions.create_role_perm(role_perm=payload, db=db)
+#     return new_role_perm
 
 
 ## get role by the row_id 
