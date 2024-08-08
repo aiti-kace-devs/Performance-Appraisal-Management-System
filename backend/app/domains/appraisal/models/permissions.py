@@ -9,5 +9,5 @@ import uuid
 
 class Permission(APIBase):
     name = Column(String(255), unique=True, index=True)
-    role_permissions = relationship("RolePermission", back_populates="permissions")
+    #role_permissions = relationship("RolePermission", back_populates="permissions")
 

@@ -7,4 +7,3 @@ class CRUDStaffPermission(CRUDBase[StaffPermission, StaffPermissionCreate, Staff
     pass
 
 staff_permission_action = CRUDStaffPermission(StaffPermission)
-
