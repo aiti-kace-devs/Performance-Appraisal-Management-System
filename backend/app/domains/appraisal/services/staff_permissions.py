@@ -8,8 +8,8 @@ from domains.appraisal.respository.staff_permissions import staff_permission_act
 from domains.appraisal.schemas.staff_permissions import StaffPermissionSchema, StaffPermissionUpdate, StaffPermissionCreate
 from domains.appraisal.models.staff import Staff
 from domains.appraisal.models.staff_permissions import StaffPermission
-from domains.appraisal.models.roles import Role
-from domains.appraisal.models.permissions import Permission
+from domains.appraisal.models.role_permissions import Role
+from domains.appraisal.models.role_permissions import Permission
 
 class StaffPermissionService:
 
