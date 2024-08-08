@@ -1,11 +1,14 @@
 from typing import List, Any
-
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal_submission import appraisal_submission_actions as appraisal_submission_repo
 from domains.appraisal.schemas.appraisal_submission import AppraisalSubmissionSchema, AppraisalSubmissionUpdate, AppraisalSubmissionCreate
+from domains.appraisal.models.appraisal import Appraisal
+from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.appraisal_form import AppraisalForm
+
 
 
 class AppraisalService:
@@ -16,6 +19,19 @@ class AppraisalService:
         return appraisal_submission
 
     def create_appraisal_submission(self, *, db: Session, appraisal_submission: AppraisalSubmissionCreate) -> AppraisalSubmissionSchema:
+
+        check_appraisal_id = db.query(Appraisal).filter(Appraisal.id == appraisal_submission.appraisals_id).first()
+        if not check_appraisal_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Appraisal not found")
+
+        check_staff_id = db.query(Staff).filter(Staff.id == appraisal_submission.staffs_id).first()
+        if not check_staff_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Staff not found")
+        
+        check_appraisal_form_id = db.query(AppraisalForm).filter(AppraisalForm.id == appraisal_submission.appraisal_forms_id).first()
+        if not check_appraisal_form_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Appraisal form not found")
+
         appraisal_submission = appraisal_submission_repo.create(db=db, obj_in=appraisal_submission)
         return appraisal_submission
 
