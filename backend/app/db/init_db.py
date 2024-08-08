@@ -4,8 +4,10 @@ from pydantic import UUID4, ValidationError
 from sqlalchemy import func
 from pydantic import UUID4
 from sqlalchemy import func 
-from domains.appraisal.models.roles import Role
-
+# from domains.appraisal.models.roles import Role
+# from domains.appraisal.models.permissions import Permission
+from domains.appraisal.models.role_permissions import Role, Permission
+from uuid import uuid4
 
 
 
@@ -17,66 +19,49 @@ from domains.appraisal.models.roles import Role
 # SUPER_ADMIN_STATUS: bool = True
 
 
-def init_db(db: Session) -> None:
+def init_db(db: Session):
     ## check if a super admin does not exitst and create super admin
 
-    ## check if the Role Table is empty before inserting 
+    # Check if the super_admin role already exists
+    super_admin_role = db.query(Role).filter(Role.name == "super_admin").first()
+    if super_admin_role:
+        return  # super_admin role already exists, no need to initialize
 
-    if db.query(func.count(Role.id)).scalar() == 0: 
-
-        roles_to_create = ["super_admin", "HR", "Supervisor", "Staff"]
-        permissions_to_create = ["read", "write"]
-
-        # created_permissions = {}
-        # for perm_name in permissions_to_create:
-        #     permission = db.query(Permission).filter(Permission.name == perm_name).first()
-        #     if not permission:
-        #         permission = Permission(name=perm_name)
-        #         db.add(permission)
-        #         db.commit()
-        #         db.refresh(permission)
-        #     created_permissions[perm_name] = permission
-
-        for role_name in roles_to_create:
-            role = db.query(Role).filter(Role.name == role_name).first()
-            if not role:
-                role = Role(name=role_name)
-                # if role_name == "super_admin":
-                #     role.permissions = list(created_permissions.values())
-                db.add(role)
-                db.commit()
-                db.refresh(role)
-
-    # return {"detail": "Roles and permissions initialized"}
-    return {"detail": "Roles initialized"}
-
-    
-    
-   
-        # raise HTTPException(status_code=400, detail="Super Admin role already exists")
-    
-    # read_permission = db.query(Permission).filter(Permission.name == "read").first()
-    # if not read_permission:
-    #     read_permission = Permission(name="read")
-    #     db.add(read_permission)
-    #     db.commit()
-    #     db.refresh(read_permission)
-    
-    # write_permission = db.query(Permission).filter(Permission.name == "write").first()
-    # if not write_permission:
-    #     write_permission = Permission(name="write")
-    #     db.add(write_permission)
-    #     db.commit()
-    #     db.refresh(write_permission)
-
-    # admin_role = Role(name="admin", permissions=[read_permission, write_permission])
-    super_admin_role = Role(name="super_admin")
+    # Create the super_admin role
+    super_admin_role = Role(id=uuid4(), name="super_admin")
     db.add(super_admin_role)
+    db.commit()
+
+    # Define the required permissions
+    permission_names = ["read", "create", "write", "update", "delete", "approve"]
+
+    # Create and assign the permissions to the super_admin role
+    for perm_name in permission_names:
+        permission = db.query(Permission).filter(Permission.name == perm_name).first()
+        if not permission:
+            permission = Permission(id=uuid4(), name=perm_name)
+            db.add(permission)
+            db.commit()
+        
+        # Add permission to the role
+        super_admin_role.permissions.append(permission)
 
     db.commit()
-    db.refresh(super_admin_role)
-    # return {"detail": "Admin role with read and write permissions created"}
-    return {"detail": "Admin role with read and write permissions created"}
+
+    # if db.query(func.count(Role.id)).scalar() == 0: 
+            
+
+    #         payload = RolePermissionCreate(
+    #         name="super_admin",
+    #         permissions=[{"name": "create"}, {"name": "read"}, {"name": "update"}, {"name": "delete"}]
+    #     )
+            
+            
+    # # role_perm_service.create_role_perm(role_perm=payload, db=db)
+    #         actions.create_role_perm(role_perm=payload, db=db)
+
+    # return {"detail": "Roles and permissions initialized"}
+
 
     # payload = {
     # "department_id": "03e8beaa-ba9f-4192-b788-ffcff2cef925",

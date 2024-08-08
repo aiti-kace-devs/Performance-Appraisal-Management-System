@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator, UUID4,field_validator
+from pydantic import BaseModel, Field, field_validator, UUID4
 
 class PermissionBase(BaseModel):
     name: str = Field(min_length=1, max_length=50, example="read:data")
@@ -21,3 +21,15 @@ class Permission(PermissionBase):
     class Config:
         orm_mode = True 
         
+#     class Config:
+#         orm_mode = True 
+
+class PermissionRead(PermissionBase):
+    id: UUID4
+
+
+    class Config:
+        orm_mode = True
+        
+class PermissionUpdate(PermissionBase):
+    pass

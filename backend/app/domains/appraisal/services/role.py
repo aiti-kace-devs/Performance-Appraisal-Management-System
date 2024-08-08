@@ -2,14 +2,12 @@ from typing import List, Any
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-
 from db.base_class import UUID
 from domains.appraisal.respository.role import role_actions as role_repo 
 from domains.appraisal.schemas.roles import RoleCreate, RoleUpdate, RoleRead
 
-# from domains.appraisal.models.permissions import Permission
-from domains.appraisal.models.roles import Role
-# from domains.appraisal.models.role_permissions import RolePermission
+from domains.appraisal.models.role_permissions import Role
+
 
 class RoleService:
     def get_role_by_id(self, db: Session, role_id: UUID) -> RoleRead:
@@ -29,16 +27,16 @@ class RoleService:
        
         
     
-    def create_role_perm(self, *, role_perm: RoleCreate, db: Session):
-        #Check if the role name already exists
-        existing_role = db.query(Role).filter(Role.name == role_perm.name).first()
-        if existing_role:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Role '{role_perm.name}' already exists."
-                )
+    # def create_role_perm(self, *, role_perm: RoleCreate, db: Session):
+    #     #Check if the role name already exists
+    #     existing_role = db.query(Role).filter(Role.name == role_perm.name).first()
+    #     if existing_role:
+    #             raise HTTPException(
+    #                 status_code=status.HTTP_400_BAD_REQUEST,
+    #                 detail=f"Role '{role_perm.name}' already exists."
+    #             )
 
-        db_role = Role(name=role_perm.name)
+    #     db_role = Role(name=role_perm.name)
         # db.add(db_role)
         # db.commit()
         # db.refresh(db_role)

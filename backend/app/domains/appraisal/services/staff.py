@@ -7,7 +7,7 @@ from db.base_class import UUID
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
 from domains.appraisal.models.users import User
-from domains.appraisal.models.roles import Role
+from domains.appraisal.models.role_permissions import Role
 from domains.appraisal.services.users import users_forms_service
 from domains.appraisal.models.staff import Staff
 from domains.appraisal.models.department import Department
