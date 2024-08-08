@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal import appraisal_form_actions as appraisal_repo
 from domains.appraisal.schemas.appraisal import AppraisalSchema, AppraisalUpdate, AppraisalCreate
+from domains.appraisal.models.appraisal_cycle import AppraisalCycle
+from domains.appraisal.models.staff import Staff
 
 
 class AppraisalService:
@@ -16,6 +18,19 @@ class AppraisalService:
         return appraisal
 
     def create_appraisal(self, *, db: Session, appraisal: AppraisalCreate) -> AppraisalSchema:
+
+        check_appraisal_cycle_id = db.query(AppraisalCycle).filter(AppraisalCycle.id == appraisal.appraisal_cycles_id).first()
+        if not check_appraisal_cycle_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Appraisal cycle not found")
+        
+        check_staff_id = db.query(Staff).filter(Staff.id == appraisal.staff_id).first()
+        if not check_staff_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Staff not found")
+        
+        check_supervisor_id = db.query(Staff).filter(Staff.id == appraisal.supervisor_id).first()
+        if not check_supervisor_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "Supervisor not found")
+
         appraisal = appraisal_repo.create(db=db, obj_in=appraisal)
         return appraisal
 
