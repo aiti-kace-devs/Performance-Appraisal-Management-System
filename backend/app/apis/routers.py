@@ -7,7 +7,7 @@ from domains.appraisal.apis.staff_permissions import staff_permission_router
 from domains.appraisal.apis.department import department_router
 from domains.appraisal.apis.staff_deadline import staff_deadline_router
 from domains.appraisal.apis.competency_bank import competency_bank_forms_router
-from domains.appraisal.apis.users import users_router
+from domains.auth.apis.user_account import users_router
 from domains.appraisal.apis.staff import staff_router
 from domains.appraisal.apis.appraisal_form import appraisal_form_router
 from domains.appraisal.apis.kra_bank import kra_bank_router

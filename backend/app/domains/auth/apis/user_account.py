@@ -4,8 +4,8 @@ from fastapi import HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
-from domains.appraisal.schemas import users as schemas
-from domains.appraisal.services.users import users_forms_service as actions
+from domains.auth.schemas import user_account as schemas
+from domains.auth.services.user_account import users_forms_service as actions
 from db.session import get_db
 
 

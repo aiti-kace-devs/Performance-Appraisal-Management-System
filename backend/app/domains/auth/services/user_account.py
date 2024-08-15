@@ -4,8 +4,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from db.base_class import UUID
-from domains.appraisal.respository.users import users_form_actions as users_form_repo
-from domains.appraisal.schemas.users import UserSchema, UserCreate, UserUpdate
+from domains.auth.respository.user_account import users_form_actions as users_form_repo
+from domains.auth.schemas.user_account import UserSchema, UserCreate, UserUpdate
 
 
 class UserService:
