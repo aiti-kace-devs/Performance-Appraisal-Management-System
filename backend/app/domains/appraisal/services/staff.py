@@ -1,16 +1,17 @@
-from typing import List, Any
-
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-
-from db.base_class import UUID
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
-from domains.appraisal.models.users import User
 from domains.appraisal.models.role_permissions import Role
-from domains.appraisal.services.users import users_forms_service
-from domains.appraisal.models.staff import Staff
 from domains.appraisal.models.department import Department
+from domains.appraisal.models.staff import Staff
+from domains.auth.models.users import User
+from fastapi import HTTPException,status
+from sqlalchemy.orm import Session
+from db.base_class import UUID
+from typing import List, Any
+
+
+
+
 
 
 class StaffService:
@@ -24,13 +25,13 @@ class StaffService:
 
         
         #check for duplicate email entries in staff table
-        check_email = db.query(Staff).filter(Staff.email ==Staff.email).first()
+        check_email = db.query(Staff).filter(Staff.email ==staff.email).first()
         if check_email:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Email already exist")
 
 
         #check if department_id exists in department table 
-        check_department_id = db.query(Department).filter(Department.id ==Staff.department_id).first()
+        check_department_id = db.query(Department).filter(Department.id ==staff.department_id).first()
         if not check_department_id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Department not found")
         

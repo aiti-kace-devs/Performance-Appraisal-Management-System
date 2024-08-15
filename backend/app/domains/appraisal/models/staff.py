@@ -7,20 +7,13 @@ from db.base_class import APIBase
 
 
 class Staff(APIBase):
+    title = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     other_name = Column(String, nullable=True)
     gender = Column(String)
     position = Column(String, nullable=False)
-    user_id = Column(UUID(as_uuid=True))
+    email = Column(String, unique=True)
     department_id = Column(UUID(as_uuid=True))
     grade = Column(String(255), nullable=False)
     appointment_date = Column(Date, nullable=True)
-
-    def serialize(self):
-        return {
-            'name': self.name,
-            'description': self.description,
-            'created_date': self.created_date,
-            'updated_date': self.updated_date
-        }

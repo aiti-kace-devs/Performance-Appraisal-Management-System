@@ -85,20 +85,20 @@ def get_users_forms(
     return users_router
 
 
-@users_router.delete(
-    "/{id}",
-    response_model=schemas.UserSchema
-)
-def delete_users_forms(
-        *, db: Session = Depends(get_db),
+# @users_router.delete(
+#     "/{id}",
+#     response_model=schemas.UserSchema
+# )
+# def delete_users_forms(
+#         *, db: Session = Depends(get_db),
 
-        id: UUID4
-) -> Any:
-    users_forms_router = actions.get_users_forms(db=db, id=id)
-    if not users_forms_router:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="users_forms_router not found"
-        )
-    users_router = actions.delete_users_forms(db=db, id=id)
-    return users_router
+#         id: UUID4
+# ) -> Any:
+#     users_forms_router = actions.get_users_forms(db=db, id=id)
+#     if not users_forms_router:
+#         raise HTTPException(
+#             status_code=HTTP_404_NOT_FOUND,
+#             detail="users_forms_router not found"
+#         )
+#     users_router = actions.delete_users_forms(db=db, id=id)
+#     return users_router
