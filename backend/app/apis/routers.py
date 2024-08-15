@@ -15,6 +15,7 @@ from domains.appraisal.apis.roles import role_router
 from domains.appraisal.apis.permissions import perm_router
 from domains.appraisal.apis.role_permission import role_perm_router
 from fastapi import APIRouter
+from domains.appraisal.apis.staff_permissions import staff_permission_router
 
 
 
