@@ -2,37 +2,28 @@ from dateutil.parser import parse
 from datetime import date, datetime,time
 from typing import Annotated, Optional, Any, Dict
 import uuid
-from enum import Enum
+
 from pydantic import BaseModel, Field, field_validator,UUID4
 from sqlalchemy import JSON
 
 
-class Status(str, Enum):
-    NoSubmission = 'No Submission'
-    NotCompleted = 'Not Completed'
-    Pending = 'Pending'
-    Approved = 'Approved'
-    Declined = 'Declined'
-    WithMinorIssues = 'Approved with minor issue'
-    WithMajorIssues = 'Approved with major issue'
-
 class AppraisalSubmissionBase(BaseModel):
-    appraisals_id : UUID4
-    staffs_id : UUID4
-    appraisal_forms_id : UUID4
-    submitted_values : Optional[Dict[str, Any]]
+    appraisals_id : Optional[UUID4]
+    staffs_id : Optional[UUID4]
+    appraisal_forms_id : Optional[UUID4]
+    submitted_values : Dict[str, Any]
     started_at : Optional[date]
     completed_at : Optional[date]
-    submitted : bool = False
-    completed : bool = False
-    approval_status : Status
+    submitted : Optional[bool]
+    completed : Optional[bool]
+    approval_status : Optional[bool]
     approval_date : Optional[date]
     comment : Optional[str]
 
 
 
      # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', mode='before')
+    @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', 'comment', mode='before')
     def check_non_empty_and_not_string(cls, v, info):
         if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
@@ -61,18 +52,18 @@ class AppraisalSubmissionBase(BaseModel):
         return v
     
 
-    @field_validator('submitted', 'completed', mode='before')
+    @field_validator('submitted', 'completed', 'approval_status', mode='before')
     def validate_boolean(cls, v, info) -> bool:
         if not isinstance(v, bool):
             raise ValueError(f'{info.field_name} must be a boolean value')
         return v
 
 
-    # @field_validator('submitted_values')
-    # def validate_competency_type(value: Dict[str, Any]) -> Dict[str, Any]:
-    #      if not isinstance(value, dict) or not value:
-    #         raise ValueError('Competency type must be a non-empty valid JSON object')
-    #      return value
+    @field_validator('submitted_values')
+    def validate_competency_type(value: Dict[str, Any]) -> Dict[str, Any]:
+         if not isinstance(value, dict) or not value:
+            raise ValueError('Competency type must be a non-empty valid JSON object')
+         return value
     
 
 class AppraisalSubmissionCreate(AppraisalSubmissionBase):

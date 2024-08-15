@@ -7,12 +7,18 @@ import uuid
 
 
 class StaffDeadlineBase(BaseModel):
-    appraisal_sections_id: UUID4
-    staffs_id: UUID4
+    appraisal_sections_id: Optional[UUID4]
+    staffs_id: Optional[UUID4]
     supervisor_id: Optional[UUID4]
     start_date:Optional[date]
     end_date: Optional[date]
     comment: Optional[str]
+
+
+
+class StaffDeadlineCreate(StaffDeadlineBase):
+    pass
+
 
 
     # Checking if fields are not empty and also not allowing the word string as value
@@ -27,7 +33,7 @@ class StaffDeadlineBase(BaseModel):
     @field_validator('appraisal_sections_id', 'staffs_id', 'supervisor_id', mode='before')
     def validate_fields_with_uuid4(cls, v, info):
         try:
-            uuid.UUID(str(v), version=4)
+            uuid.UUID(v, version=4)
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
@@ -43,15 +49,6 @@ class StaffDeadlineBase(BaseModel):
             except ValueError:
                 raise ValueError(f'\n{info.field_name} must be a valid date format and will be converted to YYYY-MM-DDTHH:MM:SS')
         return v
-
-
-
-class StaffDeadlineCreate(StaffDeadlineBase):
-    pass
-
-
-
-    
 
 
 

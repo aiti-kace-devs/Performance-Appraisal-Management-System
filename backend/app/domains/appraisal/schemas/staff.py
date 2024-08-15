@@ -1,42 +1,25 @@
-from pydantic import UUID4,BaseModel,field_validator, EmailStr
+from pydantic import UUID4,BaseModel,field_validator
 from datetime import datetime,date
 from dateutil.parser import parse
 from typing import Optional, Any, Dict 
 import uuid
-from enum import Enum
-
-
-class Gender(str, Enum):
-    Male = 'Male'
-    Female = 'Female'
-    Other = 'Other'
-
-class Title(str, Enum):
-    Mr = 'Mr.'
-    Mrs = 'Mrs.'
-    Prof = 'Prof.'
-    Dr = 'Dr.'
-    Ms = 'Ms.'
-    Other = 'Other'
-
 
 
 
 class StaffBase(BaseModel):
-    title: Title
     first_name : str
     last_name : str
     other_name : Optional[str]
-    gender : Gender
-    email: EmailStr
+    gender : str
     position : str
-    department_id : UUID4
+    user_id : Optional[UUID4]
+    department_id : Optional[UUID4]
     grade : str
     appointment_date : Optional[date]
 
 
     # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('title', 'first_name', 'last_name', 'gender','email', 'position', 'grade',  mode='before')
+    @field_validator('first_name', 'last_name', 'other_name', 'gender','position', 'grade',  mode='before')
     def check_non_empty_and_not_string(cls,v,info):
         if isinstance(v,str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty "string"') 
@@ -44,7 +27,7 @@ class StaffBase(BaseModel):
 
 
     # Checking if UUID4 fields accept only UUID4 as value
-    @field_validator( 'department_id',  mode='before')
+    @field_validator('user_id', 'department_id',  mode='before')
     def validate_fields_with_uuid4(cls, v, info):
         try:
             uuid.UUID(str(v), version=4)
@@ -68,8 +51,6 @@ class StaffBase(BaseModel):
         return v
 
 
-class StaffCreate(StaffBase):
-    pass
 
 
 class StaffUpdate(StaffBase):
@@ -81,7 +62,7 @@ class StaffInDBBase(StaffBase):
     class Config:
         orm_mode= True
 
-class StaffSchema(StaffInDBBase):
+class StaffSchema(StaffBase):
     pass
 
 

@@ -8,6 +8,8 @@ class StaffPermissionBase(BaseModel):
     roles_id : UUID4
     permissions_id : UUID4
 
+class StaffPermissionCreate(StaffPermissionBase):
+    pass
 
     # Checking if fields are not empty and also not allowing the word string as value
     @field_validator('staffs_id', 'roles_id', 'permissions_id', mode='before')
@@ -24,11 +26,6 @@ class StaffPermissionBase(BaseModel):
         except ValueError:
             raise ValueError(f'\n{info.field_name} must have a valid UUID4')
         return v
-
-class StaffPermissionCreate(StaffPermissionBase):
-    pass
-
-    
 
 class StaffPermissionUpdate(StaffPermissionBase):
     pass
