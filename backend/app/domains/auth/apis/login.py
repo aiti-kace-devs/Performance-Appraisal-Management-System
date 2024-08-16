@@ -39,11 +39,10 @@ def get_new_access_token(response:Response, refresh_token: schema.Token, db: Ses
                         headers={"WWW-Authenticate": "Bearer"}
                         )
     
+    # Get current user information
     user_data = users_forms_service.get_user_by_id(db=db, id=refresh_token_check.user_id)
 
-
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
     new_access_token = Security.create_access_token(data={"email": user_data.email}, expires_delta=access_token_expires)
     new_refresh_token = Security.create_refresh_token(jsonable_encoder(user_data))
 
