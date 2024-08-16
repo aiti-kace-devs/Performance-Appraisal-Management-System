@@ -47,6 +47,29 @@ def get_new_access_token(response:Response, refresh_token: schema.Token, db: Ses
     new_refresh_token = Security.create_refresh_token(jsonable_encoder(user_data))
 
 
+    # Set Cookie for new access token
+    response.set_cookie(
+        key="AccessToken",
+        value=new_access_token,
+        samesite='none',
+        httponly=True,
+        expires=settings.COOKIE_ACCESS_EXPIRE,
+        # domain=settings.COOKIE_DOMAIN,
+        secure=True
+    )
+
+    # Set Cookie for new refresh token
+    response.set_cookie(
+        key="RefreshToken",
+        value=new_refresh_token,
+        samesite='none',
+        httponly=True,
+        expires=settings.COOKIE_REFRESH_EXPIRE,
+        # domain=settings.COOKIE_DOMAIN,
+        secure=True
+    )
+
+
     # delete user refresh token after requesting for a new access token
     refresh_token_check = db.query(RefreshToken).filter(RefreshToken.user_id == user_data.id)
     if refresh_token_check.first():
