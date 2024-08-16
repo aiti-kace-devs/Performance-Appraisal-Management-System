@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship
 from db.base_class import APIBase
 
 
-
 # Define the association table
 role_permissions = Table(
     'role_permissions',
