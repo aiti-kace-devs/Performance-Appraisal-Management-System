@@ -109,7 +109,11 @@ async def validate_configuration_middleware(request: Request, call_next):
                     raise HTTPException(status_code=400, detail=f"{model_name} column 'name' already exist")
                 db.close()
         except Exception as e:
-            raise HTTPException(status_code=400, detail=str(e))
+            selected_models = ["appraisal_configurations", "appraisal_sections"]
+            if path in selected_models:
+                raise HTTPException(status_code=400, detail=str(e))
+            
+            print(f"Unintended Exception: {e}\n NOT intended for this model")
     
     response = await call_next(request)
     return response
