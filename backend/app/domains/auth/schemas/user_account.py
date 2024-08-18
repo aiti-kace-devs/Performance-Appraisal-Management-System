@@ -1,7 +1,8 @@
-from datetime import date,time
+from datetime import date,time, datetime
+import sqlalchemy
 from typing import Optional, Any, Dict
 import uuid
-
+from sqlalchemy import DateTime
 from pydantic import BaseModel, field_validator, EmailStr
 from pydantic import UUID4
 
@@ -12,6 +13,9 @@ class UserBase(BaseModel):
     reset_password_token:Optional[str]
     staff_id: UUID4
     role_id: Optional[UUID4]
+    failed_login_attempts: int 
+    account_locked_until: datetime
+
 
     @field_validator('email','reset_password_token' ,mode='before')
     def check_non_empty_and_not_string(cls,v,info):

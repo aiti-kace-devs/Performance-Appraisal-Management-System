@@ -122,3 +122,13 @@ class Security():
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.ALGORITHM)
         return encoded_jwt
+    
+    @staticmethod
+    def decode_token(token: str):
+        try:
+            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+            return payload
+        except JWTError:
+            return None
+    
+    

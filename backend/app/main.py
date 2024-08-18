@@ -6,12 +6,11 @@ from fastapi.exceptions import RequestValidationError
 from apis.routers import router as api_router
 from config.settings import Settings
 from db.init_db import init_db
-from fastapi import FastAPI,Request,status, HTTPException
+from fastapi import FastAPI,Request,status, HTTPException, Response
 import uvicorn
 from db.init_models import create_tables
 from domains.appraisal.schemas.appraisal_section import validate_appraisal_cycles_id
 from crud.base import validate_name_uniqueness
-
 
 
 
@@ -48,6 +47,7 @@ def start_application():
     initial_data_insert()
     return app
 app = start_application()
+
 
 
 
