@@ -23,7 +23,7 @@ class User(APIBase):
             return self.account_locked_until > datetime.utcnow()
         return False
     
-    def lock_account(self, lock_time_minutes=15):
+    def lock_account(self, lock_time_minutes=10):
         self.account_locked_until = datetime.utcnow() + timedelta(minutes=lock_time_minutes)
         self.failed_login_attempts = 0  # Reset failed attempts after locking
 

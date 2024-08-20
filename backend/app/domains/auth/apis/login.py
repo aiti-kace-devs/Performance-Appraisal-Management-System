@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter,Depends,status,Response,Cookie,Request
 from domains.auth.services.user_account import users_forms_service
 from domains.auth.models.refresh_token import RefreshToken
+from domains.auth.models.users import User
 from fastapi.security import OAuth2PasswordRequestForm
 from domains.auth.schemas import auth as schema
 from fastapi.encoders import jsonable_encoder
@@ -47,11 +48,20 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
 
 #@auth_router.post("/token", dependencies=[Depends(RateLimiter(times=5, seconds=60))]) dependant on redis
 @auth_router.post("/token")
-@limiter.limit("5/minute")  # Brute force protection
+@limiter.limit("3/minute")  # Brute force protection
 async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user_sign_in = login_service.log_user_in(db=db, form_data=form_data)
-    print("user_sign_in response: ", user_sign_in)
-    return user_sign_in
+    try:
+        
+        user_sign_in = login_service.log_user_in(db=db, form_data=form_data)
+        print("user_sign_in response: ", user_sign_in)
+
+        return user_sign_in
+    except Exception as ex:
+        print("ex in login: ", ex)
+        if ex == status.HTTP_429_TOO_MANY_REQUESTS:
+            User.lock_account(lock_time_minutes=10)
+            return "Account locked due to many attempts, please try again in 10 minutes time."
+        return str(ex)
 
 
 @auth_router.get("/logged_in_users")
