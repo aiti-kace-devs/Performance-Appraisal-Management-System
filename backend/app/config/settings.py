@@ -22,19 +22,22 @@ class Settings:
 
     set_allow_origin = "http://localhost:4200,https://smconf.gikace.dev, https://smconf-test.web.app"
 
-    # POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    # POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
-    # POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
-    # POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
-    # POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
-
-    #SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "appraisal_user")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "XSC79Nvr225grMygGYMPP9nomFd550ei")
-    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "dpg-cr28tljqf0us739p3hj0-a")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
+
+    SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+    # POSTGRES_USER: str = os.getenv("POSTGRES_USER", "appraisal_user")
+    # POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "XSC79Nvr225grMygGYMPP9nomFd550ei")
+    # POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "dpg-cr28tljqf0us739p3hj0-a")
+    # POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
+    # POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
+    # SQLALCHEMY_DATABASE_URL = f"postgresql://appraisal_user:XSC79Nvr225grMygGYMPP9nomFd550ei@dpg-cr28tljqf0us739p3hj0-a/appraisal_db"
+
+
     INSTANCE_CONNECTION_NAME: str = os.getenv("INSTANCE_CONNECTION_NAME", None)
     UNIX_SOCKET: str = os.getenv("INSTANCE_UNIX_SOCKET", '/cloudsql/')
     PROJECT_ID: str = os.getenv("PROJECT_ID")
@@ -47,7 +50,7 @@ class Settings:
     SYSTEM_LOGO: str = os.getenv("SYSTEM_LOGO", "https://storage.googleapis.com/developers-bucket/developers-bucket/smart-conference-app/flyers/GI-KACE-Logo.jpeg")
 
 
-    SQLALCHEMY_DATABASE_URL = f"postgresql://appraisal_user:XSC79Nvr225grMygGYMPP9nomFd550ei@dpg-cr28tljqf0us739p3hj0-a/appraisal_db"
+
 
     MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
