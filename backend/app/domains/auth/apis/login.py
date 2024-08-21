@@ -15,7 +15,11 @@ from domains.auth.services.login import login_service
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
+from slowapi.middleware import SlowAPIMiddleware 
+from domains.auth.schemas.password_reset import ResetPasswordRequest
+from domains.auth.services.password_reset import password_reset_service
+from domains.auth.models.users import User
+from fastapi.responses import JSONResponse
 
 
 app = FastAPI()
@@ -107,3 +111,31 @@ def get_new_access_token(response:Response, refresh_token: schema.Token, db: Ses
         }
 
 
+@auth_router.post("/password-reset-request/")
+async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
+    ## confirm user email 
+    user = db.query(User).filter(User.email == reset_password_request.email).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Generate reset token
+    token = password_reset_service.generate_reset_token()
+    user.reset_password_token = token
+    db.commit()
+
+    # Send email with the reset link
+    reset_link = f"http://example.com/reset-password?token={token}"
+    
+    # For demo purposes, print the reset link (use an email sender in production)
+    print(f"Reset link: {reset_link}")
+    
+    # In production, send email with aiosmtplib or any other email library
+    await send_reset_email(user.email, reset_link)
+    
+    return JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
+
+
+@auth_router.post("/reset-password/")
+async def reset_password(r):
+    pass 
