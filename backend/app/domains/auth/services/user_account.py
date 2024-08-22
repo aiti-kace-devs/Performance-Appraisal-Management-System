@@ -26,7 +26,7 @@ class UserService:
         users_form_ = users_form_repo.update(db=db, db_obj=users_form_, obj_in=users_form)
         return users_form_
 
-    def get_users_forms(self, *, db: Session, id: UUID) -> UserSchema:
+    def get_user_by_id(self, *, db: Session, id: UUID) -> UserSchema:
         users_form = users_form_repo.get(db=db, id=id)
         if not users_form:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="users_form not found")
