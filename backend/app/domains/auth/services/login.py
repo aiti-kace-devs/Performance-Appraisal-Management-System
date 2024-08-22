@@ -10,6 +10,8 @@ from utils.security import Security
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from db.session import get_db
+from domains.appraisal.models.role_permissions import Role
+from domains.appraisal.models.staff import Staff
 
 
 
@@ -21,9 +23,7 @@ from db.session import get_db
 
 
 
-
-
-def get_new_access_token(response:Response, refresh_token: schema.Token, db: Session = Depends(get_db)):
+def get_new_access_token(response:Response, refresh_token: schema.RefreshToken, db: Session = Depends(get_db)):
 
     refresh_token_check = db.query(RefreshToken).filter(RefreshToken.refresh_token == refresh_token.refresh_token).first()
     if not refresh_token_check:
@@ -87,3 +87,43 @@ def get_new_access_token(response:Response, refresh_token: schema.Token, db: Ses
         "refresh_token":new_refresh_token,
         "status": status.HTTP_200_OK
         }
+
+
+
+
+
+
+
+
+
+
+
+def get_current_user_by_access_token(token:schema.AccessToken, request: Request,db: Session = Depends(get_db)):
+    
+    ####decoding access token
+    ## check for access token
+    access_token = request.cookies.get('AccessToken')
+    if access_token == None or access_token != token.access_token:
+        raise HTTPException(status_code=401, detail="Access token is invalidated")
+    else:
+        refesh_data = Security.verify_access_token(token.access_token)
+        get_user_data = Security.get_user_by_email(username=refesh_data.email, db=db)
+
+        check_user_role = db.query(Role).filter(Role.id == get_user_data.role_id).first()
+
+        get_user_staff_info = db.query(Staff).filter(Staff.id == get_user_data.staff_id).first()
+    
+        db_role = {
+            "role_id": check_user_role.id,
+            "name": check_user_role.name
+        }
+
+        current_user_data = {
+            "id": get_user_data.id,
+            "email": get_user_data.email,
+            "first_name": get_user_staff_info.first_name,
+            "last_name": get_user_staff_info.last_name,
+            "role": db_role
+        }
+
+        return current_user_data

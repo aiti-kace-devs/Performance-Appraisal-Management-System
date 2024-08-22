@@ -1,3 +1,4 @@
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.exceptions import HTTPException
 from domains.auth.models.users import User
 from passlib.context import CryptContext
@@ -12,7 +13,7 @@ from typing import Optional
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 class Security():
@@ -90,22 +91,22 @@ class Security():
 
 
 
-    # @staticmethod
-    # def verify_access_token(token:str = Depends(rbac.oauth2_scheme)):
-    #     credentials_exception = HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Could not validate new access token credentials",
-    #         headers={"WWW-Authenticate": "Bearer"}        
-    #     )
-    #     try:
-    #         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
-    #         username:str = payload.get("email")
-    #         if username is None:
-    #             raise credentials_exception
-    #         user = User(email=username)
-    #     except JWTError:
-    #         raise credentials_exception
-    #     return user
+    @staticmethod
+    def verify_access_token(token:str = Depends(oauth2_scheme)):
+        credentials_exception = HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate new access token credentials",
+            headers={"WWW-Authenticate": "Bearer"}        
+        )
+        try:
+            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+            username:str = payload.get("email")
+            if username is None:
+                raise credentials_exception
+            user = User(email=username)
+        except JWTError:
+            raise credentials_exception
+        return user
     
 
 
