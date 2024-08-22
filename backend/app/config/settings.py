@@ -58,6 +58,7 @@ class Settings:
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 45
     REFRESH_TOKEN_DURATION_IN_MINUTES: int =  2592000
+    REFRESH_TOKEN_REMEMBER_ME_DAYS: int = 30  # or any appropriate value
     COOKIE_ACCESS_EXPIRE = 1800
     COOKIE_REFRESH_EXPIRE = 2592000 # 1 Month
     COOKIE_DOMAIN: str = os.getenv("COOKIE_DOMAIN", "gikace.dev")

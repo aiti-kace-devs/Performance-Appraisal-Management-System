@@ -40,28 +40,45 @@ app.add_middleware(SlowAPIMiddleware)
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     return Response(
-        content="Rate limit exceeded, please try again later.",
+        content="Rate limit exceeded, resulting in the account been locked.\nPlease try again in 10minutes later.",
         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
     )
 
 
 
-#@auth_router.post("/token", dependencies=[Depends(RateLimiter(times=5, seconds=60))]) dependant on redis
 @auth_router.post("/token")
 @limiter.limit("3/minute")  # Brute force protection
-async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_access_token(request: Request, response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     try:
-        
-        user_sign_in = login_service.log_user_in(db=db, form_data=form_data)
-        print("user_sign_in response: ", user_sign_in)
-
+        # Attempt to log in the user
+        user_sign_in = login_service.log_user_in(response=response, db=db, form_data=form_data)
         return user_sign_in
+
+    except HTTPException as ex:
+        if ex.status_code == status.HTTP_401_UNAUTHORIZED:
+            print("ex error: ", ex)
+            return Response(content=str(ex.detail), status_code=ex.status_code)
+        else:
+            # Handle specific HTTP exceptions
+            return Response(content=str(ex.detail), status_code=ex.status_code)
+
+    except RateLimitExceeded as ex:
+        # Handle rate limit exceeded
+        user = db.query(User).filter(User.email == form_data.username).first()
+        if user:
+            user.lock_account(lock_time_minutes=10)
+            db.commit()
+        return Response(
+            content="Account locked due to too many attempts, please try again in 10 minutes.",
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+
     except Exception as ex:
-        print("ex in login: ", ex)
-        if ex == status.HTTP_429_TOO_MANY_REQUESTS:
-            User.lock_account(lock_time_minutes=10)
-            return "Account locked due to many attempts, please try again in 10 minutes time."
-        return str(ex)
+        # Handle all other exceptions
+        print("Unexpected error in login: ", ex)
+        return Response(content="An unexpected error occurred. Please try again later.", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 @auth_router.get("/logged_in_users")

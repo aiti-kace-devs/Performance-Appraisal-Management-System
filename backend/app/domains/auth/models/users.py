@@ -1,5 +1,4 @@
-import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 import uuid
 from sqlalchemy import JSON, Boolean, Column, Date, DateTime, ForeignKey, String, Text,Integer
@@ -20,11 +19,12 @@ class User(APIBase):
 
     def is_account_locked(self):
         if self.account_locked_until:
-            return self.account_locked_until > datetime.utcnow()
+            print("datetime.now(timezone.utc): ", datetime.now())
+            return self.account_locked_until > datetime.now()
         return False
     
     def lock_account(self, lock_time_minutes=10):
-        self.account_locked_until = datetime.utcnow() + timedelta(minutes=lock_time_minutes)
+        self.account_locked_until = datetime.now() + timedelta(minutes=lock_time_minutes)
         self.failed_login_attempts = 0  # Reset failed attempts after locking
 
     def reset_failed_attempts(self):

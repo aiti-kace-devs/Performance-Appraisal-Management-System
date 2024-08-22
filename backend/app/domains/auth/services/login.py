@@ -77,8 +77,29 @@ class LoginService:
 
     def log_user_in(self, response: Response, db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
         user = db.query(User).filter(User.email == form_data.username).first()
+        print("user in log: ", user.failed_login_attempts)
+        print("user account locked until: ", user.account_locked_until)
+        print("is user account blocked? ", user.is_account_locked())
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+            )
 
-        if not user or not Security.verify_password(form_data.password, user.password):
+        if not Security.verify_password(form_data.password, user.password):
+            user.failed_login_attempts += 1
+        
+            print("Failed login attempts incremented to:", user.failed_login_attempts)
+
+            if user.failed_login_attempts >= 3:
+                user.lock_account(lock_time_minutes=10)
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Account is locked due to multiple failed login attempts.",
+                )  
+            
+            db.commit()
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect email or password",
@@ -90,12 +111,16 @@ class LoginService:
                 detail="Account is locked due to multiple failed login attempts.",
             )
 
+        # Reset failed attempts after successful login
+        user.reset_failed_attempts()
+        db.commit()
+        
+        # Token creation logic
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
         
-        # Extend refresh token expiration for "Remember Me"
         if form_data.scopes and "remember_me" in form_data.scopes:
-            refresh_token_expires = timedelta(days=settings.refresh_token_remember_me_days)
+            refresh_token_expires = timedelta(days=settings.REFRESH_TOKEN_REMEMBER_ME_DAYS)
 
         access_token = Security.create_access_token(
             data={"sub": str(user.email)}, expires_delta=access_token_expires
@@ -104,7 +129,6 @@ class LoginService:
             data={"sub": str(user)}, expires_delta=refresh_token_expires
         )
 
-        # Store or update the refresh token in the database
         db_refresh_token = db.query(RefreshToken).filter(RefreshToken.user_id == user.id).first()
         if db_refresh_token:
             db_refresh_token.refresh_token = refresh_token
@@ -114,21 +138,20 @@ class LoginService:
 
         db.commit()
 
-        
-        
         # Set cookies for access and refresh tokens
-        response.set_cookie(key="AccessToken", value=access_token, httponly=True, expires=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, expires=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
-        #response = {"access_token": access_token, "token_type": "bearer"}
+        response.set_cookie(key="AccessToken", value=access_token, httponly=True, secure=True,  expires=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, secure=True, expires=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+
+        
         return {
-        "access_token":access_token,
-        "token_type": "bearer",
-        "user": {"id": user.id, 
-                 "email": user.email,
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": user.id, 
+                "email": user.email,
                 "role": user.role_id
-                },
-        "refresh_token":refresh_token,
-        "response": response
+            },
+            "refresh_token": refresh_token,
         }
     
 
