@@ -18,10 +18,7 @@ class User(APIBase):
     account_locked_until = Column(DateTime, nullable=True)
 
     def is_account_locked(self):
-        if self.account_locked_until:
-            print("datetime.now(timezone.utc): ", datetime.now())
-            return self.account_locked_until > datetime.now()
-        return False
+        return self.account_locked_until and self.account_locked_until > datetime.now()
     
     def lock_account(self, lock_time_minutes=10):
         self.account_locked_until = datetime.now() + timedelta(minutes=lock_time_minutes)

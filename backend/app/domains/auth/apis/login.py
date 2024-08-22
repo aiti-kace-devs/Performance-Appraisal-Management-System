@@ -47,8 +47,8 @@ async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
 
 
 @auth_router.post("/token")
-@limiter.limit("3/minute")  # Brute force protection
-async def login_for_access_token(request: Request, response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+#@limiter.limit("3/minute")  # Brute force protection
+async def login_for_both_access_and_refresh_tokens(request: Request, response:Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     try:
         # Attempt to log in the user
         user_sign_in = login_service.log_user_in(response=response, db=db, form_data=form_data)
@@ -57,10 +57,12 @@ async def login_for_access_token(request: Request, response: Response, form_data
     except HTTPException as ex:
         if ex.status_code == status.HTTP_401_UNAUTHORIZED:
             print("ex error: ", ex)
-            return Response(content=str(ex.detail), status_code=ex.status_code)
+            raise HTTPException(status_code=ex.status_code, detail=str(ex.detail))
+            #return Response(content=str(ex.detail), status_code=ex.status_code)
         else:
             # Handle specific HTTP exceptions
-            return Response(content=str(ex.detail), status_code=ex.status_code)
+            raise HTTPException(status_code=ex.status_code, detail=str(ex.detail))
+            #return Response(content=str(ex.detail), status_code=ex.status_code)
 
     except RateLimitExceeded as ex:
         # Handle rate limit exceeded
@@ -68,17 +70,23 @@ async def login_for_access_token(request: Request, response: Response, form_data
         if user:
             user.lock_account(lock_time_minutes=10)
             db.commit()
-        return Response(
-            content="Account locked due to too many attempts, please try again in 10 minutes.",
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-        )
+            #info = await intruder_info(request=request)
+            #log = await log_intruder_info(info.get('ip_address'), info.get('mac_address'), info.get('user_agent'), info.get('location'))
+
+            #print("log info: ", log)
+            ###log_intruder_info(user_id=user.id, reason="Rate limit exceeded")
+
+        raise HTTPException(status_code=ex.status_code, detail="Account locked due to too many attempts, please try again in 10 minutes.")
+        # return Response(
+        #     content="Account locked due to too many attempts, please try again in 10 minutes.",
+        #     status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        # )
 
     except Exception as ex:
         # Handle all other exceptions
         print("Unexpected error in login: ", ex)
-        return Response(content="An unexpected error occurred. Please try again later.", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred. Please try again later.")
+        #return Response(content="An unexpected error occurred. Please try again later.", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @auth_router.get("/logged_in_users")

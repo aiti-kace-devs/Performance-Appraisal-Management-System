@@ -14,7 +14,7 @@ class UserBase(BaseModel):
     staff_id: UUID4
     role_id: Optional[UUID4]
     failed_login_attempts: int 
-    account_locked_until: datetime
+    account_locked_until: Optional[datetime]
 
 
     @field_validator('email','reset_password_token' ,mode='before')
