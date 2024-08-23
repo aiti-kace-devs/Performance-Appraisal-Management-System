@@ -1,16 +1,15 @@
 from fastapi_mail import ConnectionConfig,FastMail,MessageSchema
-from models.models import Event,Participants,User,UploadedFile
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 from config.settings import Settings
 from typing import List,Any,Dict
 from jinja2 import Environment, select_autoescape, PackageLoader
+# from jinja2 import Environment, select_autoescape, PackageLoader
 import os
 from fastapi import Response, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import UUID4
-from services import date_time_format
-from datetime import datetime 
+from domains.auth.models.users import User
 
 env = Environment(
     loader=PackageLoader('templates', 'templates'),
@@ -21,24 +20,19 @@ env = Environment(
 
 class EmailSchema(BaseModel):
     email: List[EmailStr]
-    # body: Dict[str, Any]
+
 
 
 
 class Email:
-    def __init__(self,  user: User,  url: str,  email: EmailSchema,  db: Session):
+    def __init__(self, url: str, email: EmailSchema):
 
-        self.name = user.name
+        # self.name = user.name
         self.sender = Settings.MAIL_USERNAME
         self.email = email
         self.url = url
-        pass
-
-
-    async def sendMailService(self, subject, template, message_body: str) -> JSONResponse:
+        # self.db = db
         
-        
-      
 
         conf = ConnectionConfig(
             MAIL_USERNAME = Settings.MAIL_USERNAME,
@@ -52,39 +46,30 @@ class Email:
             VALIDATE_CERTS = Settings.VALIDATE_CERTS
         )
 
- 
-        # Generate the HTML template base on the template name
+    async def sendMailService(self, subject, template, message_body: str) -> JSONResponse:
+        
+        # # Generate the HTML template base on the template name
         template = env.get_template(f'{template}.html')
 
         html = template.render(
-            url=self.url,
-            name=self.name,
             email=self.email,
             subject=subject,
+            url=self.url,
             body=self.message_body
         )
 
 
-        # self.qr_code_image.seek(0)
         # Define the message options
         message = MessageSchema(
             subject=subject,
-            recipients=self.email,
+            recipients=[self.email],
             body=html,
             subtype="html",
 
         )
 
-
-        # Send the email
-        fm = FastMail(conf)
+        # Send the email using FastMail
+        fm = FastMail(self.conf)
         await fm.send_message(message)
 
-       
-        
-
-
-    async def email_to_reset_password(self):
-        await self.sendMailService(self.message_body, 'send_email_to_registered_participant',)
-
- 
+      
