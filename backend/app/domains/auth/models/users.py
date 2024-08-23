@@ -14,8 +14,10 @@ class User(APIBase):
     password = Column(String(255), nullable=True)
     reset_password_token = Column(String(255),nullable=True)
     role_id = Column(UUID(as_uuid=True))
+    is_active = Column(Boolean, default=True)
     failed_login_attempts = Column(Integer, default=0)
     account_locked_until = Column(DateTime, nullable=True)
+    lock_count = Column(Integer, default=0)
 
     def is_account_locked(self):
         return self.account_locked_until and self.account_locked_until > datetime.now()

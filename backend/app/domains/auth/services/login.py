@@ -16,7 +16,10 @@ from domains.auth.models.refresh_token import RefreshToken
 from db.session import get_db
 from config.settings import settings
 from fastapi.encoders import jsonable_encoder
-
+from .user_account_mail import *
+import os
+import requests
+import json
 
 class LoginService:
 
@@ -74,26 +77,107 @@ class LoginService:
         return {"logged_in_users": user_list}
 
 
+    def secure_log_intruder_info(self, intruder_info: dict):
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        log_file_name = f"intruder_log_{current_date}.txt"
+        log_directory = "security/logs/"
 
-    def log_user_in(self, response: Response, db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+        # Secure the logging directory
+        #os.makedirs(log_directory, mode=0o750, exist_ok=True)
+        os.makedirs(log_directory,  exist_ok=True)
+        log_filepath = os.path.join(log_directory, log_file_name)
+
+        print("log directory: ", log_filepath)
+
+        log_entry = (
+            f"Timestamp: {intruder_info.get('timestamp', 'N/A')}\n"
+            f"IP Address: {intruder_info.get('ip_address', 'N/A')}\n"
+            f"MAC Address: {intruder_info.get('mac_address', 'N/A')}\n"
+            f"User-Agent: {intruder_info.get('user_agent', 'N/A')}\n"
+            f"Location: {json.dumps(intruder_info.get('location', {}))}\n"
+            f"Username Attempted: {intruder_info.get('username', 'N/A')}\n"
+            "\n================================================================================\n\n"
+        )
+
+        # Use a try-except block to catch potential errors
+        try:
+            with open(log_filepath, "a", encoding="utf-8") as log_file:
+                log_file.write(log_entry)
+            
+            print(f"successfully log intruder's info.\ninfo: {log_entry}")
+        except Exception as e:
+            print(f"Error writing to log file: {e}")
+    
+    #get location data
+    async def get_location_data(self, ip_address: str) -> dict:
+        try:
+            response = await requests.get(f"https://ipinfo.io/{ip_address}/geo")
+            if response.status_code == 200:
+                return response.json()
+            
+            print("intruder's location identified: ", response.json())
+        except Exception as e:
+            print(f"Error fetching location data: {e}")
+        return {}
+    
+    
+    async def log_intruder_attempt(self, username: str, request: Request):
+        # try:
+        #     print("finding device location...")
+        #     # Asynchronous request to get location data
+        #     await LoginService.get_location_data(self, request.client.host)
+        #     #print("\nlocation: ", location)
+        #     #return location
+        # except Exception as e:
+        #     print(f"Error fetching location data: {e}")
+        #     location = {}
+
+        location = {}
+        try:
+            response = requests.get(f"https://ipinfo.io/{request.client.host}/geo")
+            if response.status_code == 200:
+                print("response success: ", response)
+                location = response.json()
+                #return response.json()
+            print("response location: ", response)
+            print("intruder's location identified: ", response.json())
+        except Exception as e:
+            print(f"Error fetching location data: {e}")
+        #return {}
+        print("location: ", location)
+        intruder_info = {
+            "username": username,
+            "ip_address": request.client.host,
+            "mac_address": request.headers.get("X-MAC-Address", "N/A"),
+            "user_agent": request.headers.get("User-Agent", "N/A"),
+            "location": location,
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+        # Log the intruder information
+        return LoginService.secure_log_intruder_info(self,intruder_info)
+
+
+    async def log_user_in(self, request:Request, response: Response, db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
         user = db.query(User).filter(User.email == form_data.username).first()
-        
+        print("user in log: ", user.failed_login_attempts)
+        print("user account locked until: ", user.account_locked_until)
+        print("is user account blocked? ", user.is_account_locked())
 
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
             )
-        
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_423_LOCKED,
+                detail="Account Disabled, please contact system administrator for redress.",
+            )
         # Ensure datetime.now() is timezone-aware by setting it to UTC
         now_utc = datetime.now()
         print("now_utc: ", now_utc)
-        
-        print("user in log: ", user.failed_login_attempts)
-        print("user account locked until: ", user.account_locked_until)
-        print("is user account blocked? ", user.is_account_locked())
-
-        
         if user.is_account_locked():
             if now_utc < user.account_locked_until:
                 raise HTTPException(
@@ -112,14 +196,27 @@ class LoginService:
 
             if user.failed_login_attempts >= 3:
                 user.lock_account(lock_time_minutes=10)
+                if user.lock_count <= 2:
+                    user.lock_count += 1
+                elif user.lock_count >= 3:
+                    user.is_active = False
+                    user.lock_count = 0
+                    db.commit()
+                    email_body = account_emergency("")
+                    await send_email(email=user.email, subject="Account Status", body=email_body)  #send email message
+                
+                print("lock count = ", user.lock_count)    
                 db.commit()
                 
+                await LoginService.log_intruder_attempt(self, user.email, request)
+                #await LoginService.log_intruder_attempt(user.username, request)
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Account is locked due to multiple failed login attempts.",
                 )
             
             db.commit()
+            
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
@@ -158,7 +255,7 @@ class LoginService:
 
         # Set cookies for access and refresh tokens
         response.set_cookie(key="AccessToken", value=access_token, httponly=True, secure=True, samesite='none', expires=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, secure=True, samesite='none', expires=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+        response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, secure=True, samesite='none' ,expires=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
 
         return {
             "access_token": access_token,
@@ -172,8 +269,12 @@ class LoginService:
             "refresh_token": refresh_token,
             "refresh_token_expiration": expiration_time
         }
-    
 
+
+
+
+
+    
 
 
     
