@@ -110,6 +110,17 @@ def get_new_access_token(response:Response, refresh_token: schema.Token, db: Ses
         "status": status.HTTP_200_OK
         }
 
+async def send_reset_email(email: str, reset_link: str):
+    ## prepare the email data
+    email_data = {
+        "subject": "Password Reset Request",
+        "email": [email],
+        "body": {
+            "name": email, 
+            "reset_link": reset_link,
+            "app_name": "Appraisal Management System"
+        }
+    }
 
 @auth_router.post("/password-reset-request/")
 async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
@@ -136,6 +147,4 @@ async def request_password_reset(reset_password_request: ResetPasswordRequest, d
     return JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
 
 
-@auth_router.post("/reset-password/")
-async def reset_password(r):
-    pass 
+
