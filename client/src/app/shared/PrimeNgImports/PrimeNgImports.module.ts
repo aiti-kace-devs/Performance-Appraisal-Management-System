@@ -6,6 +6,8 @@ import { RippleModule } from 'primeng/ripple';
 import { CheckboxModule } from 'primeng/checkbox';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ChipModule } from 'primeng/chip';
+import { CalendarModule } from 'primeng/calendar';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 const sharedImports = [
   ButtonModule,
@@ -14,6 +16,8 @@ const sharedImports = [
   CheckboxModule,
   StyleClassModule,
   ChipModule,
+  CalendarModule,
+  InputNumberModule,
 ];
 
 @NgModule({

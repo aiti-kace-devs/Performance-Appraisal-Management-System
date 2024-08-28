@@ -10,6 +10,10 @@ import { PrimeNgImportsModule } from './shared/PrimeNgImports/PrimeNgImports.mod
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { SideBarComponent } from './layout/side-bar/side-bar.component';
 import { MainAppModule } from './main-app/main-app.module';
+import { NgxsModule } from '@ngxs/store';
+import { StaffState } from './store/staff/staff.state';
+import { DepartmentState } from './store/department/department.state';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, MainLayoutComponent, SideBarComponent],
@@ -22,6 +26,8 @@ import { MainAppModule } from './main-app/main-app.module';
     AlertsModule,
     PrimeNgImportsModule,
     MainAppModule,
+    HttpClientModule,
+    NgxsModule.forRoot([StaffState, DepartmentState]),
   ],
   bootstrap: [AppComponent],
 })

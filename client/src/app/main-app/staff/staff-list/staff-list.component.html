@@ -1,0 +1,29 @@
+<div class="surface-card p-4 shadow-2 border-round">
+  <div
+    class="mb-3 flex flex-column align-items-start md:flex-row md:align-items-center md:justify-content-between"
+  >
+    <div class="mb-3 md:mb-0">
+      <div class="text-3xl font-medium text-900 mb-3">Staff Information</div>
+      <div class="font-medium text-500 mb-3">Vivamus id nisl interdum.</div>
+    </div>
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      (click)="addNewStaff()"
+    ></button>
+  </div>
+
+  <app-table
+    [data]="(staff$ | async) || []"
+    [columnsDefinition]="columns"
+    [title]="title"
+    [showCaption]="true"
+    [showDownload]="true"
+    [filename]="filename"
+    [showAction]="false"
+    [actionPositionLeft]="true"
+  >
+  </app-table>
+</div>

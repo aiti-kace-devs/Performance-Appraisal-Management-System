@@ -5,7 +5,11 @@ import {
   DynamicDialogConfig,
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { DialogPosition, PrimeNgAlerts, TOAST_TIME } from '../app-config';
+import {
+  DialogPosition,
+  PrimeNgAlerts,
+  TOAST_TIME,
+} from '../../../config/app-config';
 import { ToastTypes } from '../app-toasts/app-toasts.component';
 
 @Injectable({
@@ -19,12 +23,12 @@ export class AppAlertService {
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    public dialogService: DialogService,
+    public dialogService: DialogService
   ) {}
 
   private getMessageObject = (
     message: string,
-    type: PrimeNgAlerts,
+    type: PrimeNgAlerts
   ): Message => {
     return {
       life: type === PrimeNgAlerts.ERROR ? TOAST_TIME + 3000 : TOAST_TIME,
@@ -35,8 +39,8 @@ export class AppAlertService {
         type === PrimeNgAlerts.ERROR
           ? ToastTypes.Error
           : type === PrimeNgAlerts.UNOBSTRUSIVE
-            ? ToastTypes.Unobstrusive
-            : ToastTypes.General,
+          ? ToastTypes.Unobstrusive
+          : ToastTypes.General,
     };
   };
 
@@ -51,7 +55,7 @@ export class AppAlertService {
 
   openDialog(
     component: Type<any>,
-    config?: DynamicDialogConfig,
+    config?: DynamicDialogConfig
   ): DynamicDialogRef {
     return this.dialogService.open(component, {
       closable: false,
@@ -80,8 +84,8 @@ export class AppAlertService {
       key: config.position
         ? 'positionDialog'
         : config.popupTarget
-          ? 'popup'
-          : 'default',
+        ? 'popup'
+        : 'default',
       target: config.popupTarget ? config.popupTarget : undefined,
 
       accept: () => {

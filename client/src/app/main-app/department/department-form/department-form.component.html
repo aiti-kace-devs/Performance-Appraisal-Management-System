@@ -1,0 +1,22 @@
+<div class="surface-card p-4 p-fluid" [formGroup]="departmentForm">
+  <div class="grid formgrid p-fluid">
+    <div class="field mb-4 col-12">
+      <label for="name" class="font-medium text-900">Name</label>
+      <input type="text" pInputText formControlName="name" />
+    </div>
+    <div class="field mb-4 col-12">
+      <label for="description" class="font-medium text-900">Description</label>
+      <input type="text" pInputText formControlName="description" />
+    </div>
+    <div class="surface-border border-top-1 opacity-50 mb-4 col-12"></div>
+  </div>
+  <button
+    [disabled]="departmentForm.invalid"
+    pButton
+    pRipple
+    label="Submit"
+    icon="pi pi-send"
+    class="w-auto"
+    (click)="submitForm()"
+  ></button>
+</div>
