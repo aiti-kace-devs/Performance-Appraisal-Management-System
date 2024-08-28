@@ -5,7 +5,7 @@ import json
 from fastapi.exceptions import RequestValidationError
 from apis.routers import router as api_router
 from config.settings import Settings
-from db.init_db import init_db
+from db.init_db import init_db,create_super_admin
 from fastapi import FastAPI,Request,status, HTTPException
 import uvicorn
 from db.init_models import create_tables
@@ -26,6 +26,7 @@ def initial_data_insert():
     db = SessionLocal()
     try:
         init_db(db)
+        create_super_admin(db)
     finally:
         db.close()
 
