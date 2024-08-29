@@ -16,7 +16,7 @@ logout_auth_router = APIRouter(
 
 
 
-
+  
 
 @logout_auth_router.post("/logout")
 async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
