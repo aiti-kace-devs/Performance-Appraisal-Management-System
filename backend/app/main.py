@@ -5,8 +5,8 @@ import json
 from fastapi.exceptions import RequestValidationError
 from apis.routers import router as api_router
 from config.settings import Settings
-from db.init_db import init_db
-from fastapi import FastAPI,Request,status, HTTPException, Response
+from db.init_db import init_db,create_super_admin
+from fastapi import FastAPI,Request,status, HTTPException
 import uvicorn
 from db.init_models import create_tables
 from domains.appraisal.schemas.appraisal_section import validate_appraisal_cycles_id
@@ -25,6 +25,7 @@ def initial_data_insert():
     db = SessionLocal()
     try:
         init_db(db)
+        create_super_admin(db)
     finally:
         db.close()
 
