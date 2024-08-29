@@ -53,7 +53,7 @@ def init_db(db: Session):
 
 
 
-
+from utils.security import pwd_context
 
 
 def create_super_admin(db: Session):
@@ -69,7 +69,7 @@ def create_super_admin(db: Session):
     else:
         admin_in = User(
         email=SUPER_ADMIN_EMAIL,
-        password=SUPER_ADMIN_PASSWORD,
+        password=pwd_context.hash(SUPER_ADMIN_PASSWORD),
         reset_password_token=None,
         staff_id=uuid4(),
         role_id=role.id
