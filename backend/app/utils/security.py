@@ -126,7 +126,9 @@ class Security():
     @staticmethod
     def decode_token(token: str):
         try:
+            #print("token in decode_token: ", token)
             payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+            #print("\npayload in decode_token: ", payload)
             return payload
         except JWTError:
             return None

@@ -38,7 +38,7 @@ class LoginService:
     def list_logged_in_users(self,  request: Request, db: Session = Depends(get_db), skip: int = 0, limit: int = 100) :
          # Fetch tokens from cookies
         tokens = login_service.get_tokens(request)
-
+        #print("tokens: ", tokens)
         if not tokens['AccessToken'] or not tokens['RefreshToken']:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No token provided")
 
@@ -47,6 +47,7 @@ class LoginService:
         # Verify Access Token
         try:
             payload = Security.decode_token(tokens['AccessToken'])
+            #print("\npayload: ", payload)
             user_email = payload.get("sub")
         except JWTError:
             # If Access Token is invalid, try verifying the Refresh Token
