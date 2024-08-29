@@ -42,10 +42,9 @@ def start_application():
     allow_methods=["*"],
     allow_headers=["*"]
     )
-    #initial_data_insert()
     include(app)
     create_tables()
-    initial_data_insert()
+    #initial_data_insert()
     return app
 app = start_application()
 
