@@ -5,6 +5,7 @@ import { DepartmentListComponent } from './department-list/department-list.compo
 import { DepartmentFormComponent } from './department-form/department-form.component';
 import { PrimeNgImportsModule } from '../../shared/PrimeNgImports/PrimeNgImports.module';
 import { AppTableModule } from '../../shared/app-table/app-table.module';
+import { errorTailorImports } from '@ngneat/error-tailor';
 
 @NgModule({
   declarations: [DepartmentListComponent, DepartmentFormComponent],
@@ -14,6 +15,7 @@ import { AppTableModule } from '../../shared/app-table/app-table.module';
     AppTableModule,
     FormsModule,
     ReactiveFormsModule,
+    errorTailorImports,
   ],
   exports: [DepartmentListComponent],
 })

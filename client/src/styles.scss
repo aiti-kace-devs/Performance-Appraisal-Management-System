@@ -11,3 +11,24 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.control-error {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 12px;
+  color: #dc3545;
+}
+
+.error-tailor-has-error {
+  input,
+  select,
+  textarea,
+  .p-dropdown,
+  .p-inputtext {
+    border: 1px solid red;
+  }
+
+  li.p-chips-input-token > input {
+    border: none !important;
+  }
+}

@@ -14,6 +14,15 @@ import { NgxsModule } from '@ngxs/store';
 import { StaffState } from './store/staff/staff.state';
 import { DepartmentState } from './store/department/department.state';
 import { HttpClientModule } from '@angular/common/http';
+import {
+  errorTailorImports,
+  provideErrorTailorConfig,
+} from '@ngneat/error-tailor';
+import {
+  ERROR_MESSAGES_MAPPING,
+  anchorErrorComponentFn,
+  blurPrdicateFunction,
+} from './config/app-config';
 
 @NgModule({
   declarations: [AppComponent, MainLayoutComponent, SideBarComponent],
@@ -28,6 +37,14 @@ import { HttpClientModule } from '@angular/common/http';
     MainAppModule,
     HttpClientModule,
     NgxsModule.forRoot([StaffState, DepartmentState]),
+    errorTailorImports,
+  ],
+  providers: [
+    provideErrorTailorConfig({
+      ...ERROR_MESSAGES_MAPPING,
+      blurPredicate: blurPrdicateFunction,
+      controlErrorComponentAnchorFn: anchorErrorComponentFn,
+    }),
   ],
   bootstrap: [AppComponent],
 })
