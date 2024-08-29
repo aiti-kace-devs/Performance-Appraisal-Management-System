@@ -64,6 +64,7 @@ class Settings:
     # VALIDATE_CERTS: bool = True
 
 
+
     MAIL_USERNAME: str = os.getenv("MAIL_USERNAME", 'dev.aiti.com.gh@gmail.com')
     MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", 'palvpbokbnisspps') #uefuovgtfwyfgskv previous password
     MAIL_FROM: str = os.getenv("MAIL_FROM", "dev.aiti.com.gh@gmail.com")
