@@ -57,7 +57,7 @@ def update_users_forms(
         id: UUID4,
         users_forms_in: schemas.UserUpdate,
 ) -> Any:
-    users_router = actions.get_users_forms(db=db, id=id)
+    users_router = actions.get_user_by_id(db=db, id=id)
     if not users_router:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,

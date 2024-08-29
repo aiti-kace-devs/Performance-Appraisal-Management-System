@@ -1,10 +1,11 @@
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.exceptions import HTTPException
 from domains.auth.models.users import User
 from passlib.context import CryptContext
 from datetime import datetime,timedelta
 from config.settings import settings
 from sqlalchemy.orm import Session
-from fastapi import status,Depends
+from fastapi import status,Depends,Request
 from jose import jwt,JWTError
 from typing import Optional
 
@@ -12,7 +13,7 @@ from typing import Optional
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 class Security():
@@ -91,15 +92,22 @@ class Security():
 
 
     @staticmethod
-    def verify_access_token(token:str = Depends(rbac.oauth2_scheme)):
+    def verify_access_token(request: Request, token:str):
+
+            ## decode the token to get the user id and then fetch the user role 
+         ## lets check if the cookies for access token is set
+        cookie_access_token = request.cookies.get('AccessToken')
+
+        if cookie_access_token == None or cookie_access_token != token:
+            raise HTTPException(status_code=401, detail="Access token is invalidated")
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate new access token credentials",
             headers={"WWW-Authenticate": "Bearer"}        
         )
         try:
-            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
-            username:str = payload.get("email")
+            payload = jwt.decode(cookie_access_token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+            username:str = payload.get("sub")
             if username is None:
                 raise credentials_exception
             user = User(email=username)
@@ -122,3 +130,15 @@ class Security():
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.ALGORITHM)
         return encoded_jwt
+    
+    @staticmethod
+    def decode_token(token:str):
+        try:
+            #print("token in decode_token: ", token)
+            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+            #print("\npayload in decode_token: ", payload)
+            return payload
+        except JWTError:
+            return None
+    
+    

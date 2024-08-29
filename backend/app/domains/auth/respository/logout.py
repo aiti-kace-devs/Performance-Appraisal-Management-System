@@ -5,6 +5,6 @@ from domains.auth.schemas.user_account import (
 )
 
 
-class CRUDLoggedUser(CRUDBase[User, UserCreate, UserUpdate]):
+class CRUDLoggedOutUser(CRUDBase[User, UserCreate, UserUpdate]):
     pass
-logged_in_users_actions = CRUDLoggedUser(User)
+logged_out_users_actions = CRUDLoggedOutUser(User)

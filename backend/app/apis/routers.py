@@ -15,11 +15,13 @@ from domains.auth.apis.user_account import users_router
 from domains.appraisal.apis.staff import staff_router
 from domains.appraisal.apis.roles import role_router
 from domains.auth.apis.login import auth_router
+from domains.auth.apis.logout import logout_auth_router
 from fastapi import APIRouter
 
 
 router = APIRouter()
 router.include_router(auth_router)
+router.include_router(logout_auth_router)
 router.include_router(department_router)
 router.include_router(staff_router)
 router.include_router(users_router)
