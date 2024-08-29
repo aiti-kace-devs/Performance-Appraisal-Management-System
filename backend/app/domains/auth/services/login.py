@@ -16,10 +16,12 @@ from domains.auth.models.refresh_token import RefreshToken
 from db.session import get_db
 from config.settings import settings
 from fastapi.encoders import jsonable_encoder
+from domains.appraisal.models.role_permissions import Role
 from .user_account_mail import *
 import os
 import requests
 import json
+
 
 class LoginService:
 
@@ -227,11 +229,15 @@ class LoginService:
         db.commit()
         
         # Token creation logic
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+        access_token_expires = timedelta(seconds=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        refresh_token_expires = timedelta(seconds=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+        print("refresh token expires: ", refresh_token_expires)
+        # access_token_expires = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        # refresh_token_expires = settings.REFRESH_TOKEN_DURATION_IN_MINUTES
         
         if form_data.scopes and "remember_me" in form_data.scopes:
-            refresh_token_expires = timedelta(days=settings.REFRESH_TOKEN_REMEMBER_ME_DAYS)
+            refresh_token_expires = timedelta(days=60)
+            print("refresh token expiration on remeber_me: ", refresh_token_expires)
 
         access_token = Security.create_access_token(
             data={"sub": str(user.email)}, expires_delta=access_token_expires
@@ -241,7 +247,13 @@ class LoginService:
         )
 
 
-        expiration_time = datetime.now(timezone.utc) + refresh_token_expires
+        #expiration_time = datetime.now(timezone.utc) + refresh_token_expires
+        #expiration_time = timedelta(seconds=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+
+        expiration_time = datetime.now() + refresh_token_expires
+        access_token_expiration = datetime.now() + timedelta(seconds=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+        print("expiration time for refresh token: ", expiration_time)
 
         db_refresh_token = db.query(RefreshToken).filter(RefreshToken.user_id == user.id).first()
         if db_refresh_token:
@@ -253,18 +265,27 @@ class LoginService:
 
         db.commit()
 
+        refresh_token_expires = expiration_time
+        print("\n\nrefresh_token_expires: ",refresh_token_expires)
         # Set cookies for access and refresh tokens
         response.set_cookie(key="AccessToken", value=access_token, httponly=True, secure=True, samesite='none', expires=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, secure=True, samesite='none' ,expires=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+
+        if form_data.scopes and "remember_me" in form_data.scopes:
+            response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, secure=True, samesite='none' ,expires=(settings.REFRESH_TOKEN_DURATION_IN_MINUTES+settings.REFRESH_TOKEN_DURATION_IN_MINUTES))
+        else:
+            response.set_cookie(key="RefreshToken", value=refresh_token, httponly=True, secure=True, samesite='none' ,expires=settings.REFRESH_TOKEN_DURATION_IN_MINUTES)
+        
+        user_role = db.query(Role).filter(Role.id == user.role_id).first()
 
         return {
-            "access_token": access_token,
+            "access_token":  access_token,
             "token_type": "bearer",
-            "access_token_expiration": access_token_expires,
+            "access_token_expiration": access_token_expiration,
             "user": {
                 "id": user.id, 
                 "email": user.email,
-                "role": user.role_id
+                "role_id": user.role_id,
+                "role": user_role.name
             },
             "refresh_token": refresh_token,
             "refresh_token_expiration": expiration_time
