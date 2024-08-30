@@ -18,9 +18,9 @@ from sqlalchemy import MetaData
 
 
 def create_tables():
-    APIBase.metadata.create_all(bind=engine)
+    #APIBase.metadata.create_all(bind=engine)
 
-    #APIBase.metadata.drop_all(bind=engine)
+    APIBase.metadata.drop_all(bind=engine)
 
    
 
