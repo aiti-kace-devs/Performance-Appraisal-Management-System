@@ -23,9 +23,15 @@ import {
   anchorErrorComponentFn,
   blurPrdicateFunction,
 } from './config/app-config';
+import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.component';
 
 @NgModule({
-  declarations: [AppComponent, MainLayoutComponent, SideBarComponent],
+  declarations: [
+    AppComponent,
+    MainLayoutComponent,
+    SideBarComponent,
+    PageNotFoundComponent,
+  ],
   imports: [
     CommonModule,
     RouterOutlet,

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -12,6 +13,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./main-app/main-app.module').then((m) => m.MainAppModule),
   },
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
