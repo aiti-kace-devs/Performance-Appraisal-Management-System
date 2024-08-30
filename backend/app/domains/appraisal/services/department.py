@@ -2,12 +2,12 @@ from typing import List, Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-
+from domains.appraisal.schemas.staff import StaffSchema
 from db.base_class import UUID
 from domains.appraisal.respository.department import department_actions as department_repo
 from domains.appraisal.models.department import Department
 from domains.appraisal.schemas.department import DepartmentSchema, DepartmentUpdate, DepartmentCreate
-
+from domains.appraisal.models.staff import Staff
 
 class AppraisalService:
 
@@ -60,6 +60,12 @@ class AppraisalService:
 
     def read_by_kwargs(self, *, db: Session, **kwargs) -> Any:
         return department_repo.get_by_kwargs(self, db, kwargs)
+    
+
+
+    def list_all_staff_under_department(self, *, db: Session, id: UUID, skip: int = 0, limit: int = 100)  -> List[StaffSchema]:
+        list_all_staff_under_department = db.query(Staff).filter(Staff.department_id == id).offset(skip).limit(limit).all()
+        return list_all_staff_under_department
 
 
 department_service = AppraisalService()
