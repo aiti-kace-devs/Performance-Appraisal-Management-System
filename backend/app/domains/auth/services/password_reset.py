@@ -10,10 +10,10 @@ from domains.auth.schemas.password_reset import ResetPasswordRequest
 
 class PasswordResetService:
 
-    def generate_reset_token(self):
+    def generate_reset_token():
         return ''.join(random.choices(string.ascii_letters + string.digits, k=50))
     
-    def get_current_user_email(self, schemas: ResetPasswordRequest, db: Session = Depends(get_db)):
+    def get_current_user_email(schemas: ResetPasswordRequest, db: Session = Depends(get_db)):
         user = db.query(User).filter(User.email == schemas.email).first() 
 
         if not user:
