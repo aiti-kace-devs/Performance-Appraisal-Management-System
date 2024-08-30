@@ -21,6 +21,8 @@ from domains.auth.services.password_reset import password_reset_service
 from domains.auth.models.users import User
 from fastapi.responses import JSONResponse
 
+from services.email_service import EmailSchema, Email 
+
 
 app = FastAPI()
 
@@ -110,17 +112,19 @@ def get_new_access_token(response:Response, refresh_token: schema.Token, db: Ses
         "status": status.HTTP_200_OK
         }
 
-async def send_reset_email(email: str, reset_link: str):
+async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
     ## prepare the email data
-    email_data = {
-        "subject": "Password Reset Request",
-        "email": [email],
-        "body": {
+    email_data = EmailSchema(
+        subject= "Password Reset Request",
+        email=  [email],
+        body= {
             "name": email, 
             "reset_link": reset_link,
             "app_name": "Appraisal Management System"
         }
-    }
+    )
+
+    return email_data
 
 @auth_router.post("/password-reset-request/")
 async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
@@ -139,10 +143,15 @@ async def request_password_reset(reset_password_request: ResetPasswordRequest, d
     reset_link = f"http://example.com/reset-password?token={token}"
     
     # For demo purposes, print the reset link (use an email sender in production)
-    print(f"Reset link: {reset_link}")
+    # print(f"Reset link: {reset_link}")
+    # print(f"User Emaail: {user.email}")
     
     # In production, send email with aiosmtplib or any other email library
-    await send_reset_email(user.email, reset_link)
+    email_data = await send_reset_email(user.email, reset_link)
+
+    # print(f"email_data: {email_data}")
+
+    await Email.sendMailService(email_data, template_name='password_reset.html')
     
     return JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
 
