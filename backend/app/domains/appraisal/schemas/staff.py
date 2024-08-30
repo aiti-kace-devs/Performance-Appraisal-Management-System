@@ -4,6 +4,7 @@ from dateutil.parser import parse
 from typing import Optional, Any, Dict 
 import uuid
 from enum import Enum
+from domains.appraisal.schemas.department import DepartmentInDBBase
 
 
 class Gender(str, Enum):
@@ -76,11 +77,27 @@ class StaffCreate(StaffBase):
 class StaffUpdate(StaffBase):
     pass
 
-class StaffInDBBase(StaffBase):
+
+
+
+class StaffInDBBase(BaseModel):
     id: UUID4
+    title: Title
+    first_name : str
+    last_name : str
+    other_name : str
+    gender : Gender
+    email: EmailStr
+    position : str
+    department_id : str
+    grade : str
+    appointment_date : Optional[date]
 
     class Config:
         orm_mode= True
+        
+
+
 
 class StaffSchema(StaffInDBBase):
     pass
