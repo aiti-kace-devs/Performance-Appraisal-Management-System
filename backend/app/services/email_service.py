@@ -21,7 +21,7 @@ env = Environment(
 class EmailSchema(BaseModel):
     subject: str
     email: List[EmailStr]
-    body: dict
+    body: Dict[str, str]
 
 
 
@@ -50,34 +50,44 @@ class Email:
             USE_CREDENTIALS = Settings.USE_CREDENTIALS,
             VALIDATE_CERTS = Settings.VALIDATE_CERTS
         )
-        # load the html template
-        template = env.get_template(template_name)
+     
+        try: 
+            # load the html template
+            template = env.get_template(template_name)
 
-        ## Render the template with the data provided in 'body'
-        html_content = template.render(data.body)
-
-        # html = template.render(
-        #     url=self.url,
-        #     name=self.name,
-        #     email=self.email,
-        #     subject=subject
         
-    
-        # )
+            ## Render the template with the data provided in 'body'
+            html_content = template.render(data.body)
+
+            # html = template.render(
+            #     url=self.url,
+            #     name=self.name,
+            #     email=self.email,
+            #     subject=subject
+            
+        
+            # )
 
 
-        # Define the message options
-        message = MessageSchema(
-            subject=data.subject,
-            recipients=data.email,
-            body=html_content,
-            subtype="html",
+            # Define the message options
+            message = MessageSchema(
+                subject=data.subject,
+                recipients=data.email,
+                body=html_content,
+                subtype="html",
 
-        )
+            )
 
-        # Send the email using FastMail
-        fm = FastMail(conf)
-        await fm.send_message(message, template_name=template_name)
-        return JSONResponse(status_code=200, content={"message": "Email has been sent."})
+        
 
-      
+            # Send the email using FastMail
+            fm = FastMail(conf)
+            await fm.send_message(message, template_name=template_name)
+            return JSONResponse(status_code=200, content={"message": "Email has been sent."})
+
+        except Exception as e:
+            # Log the exception or handle it appropriately
+            print(f"Failed to send email: {str(e)}")
+            return JSONResponse(status_code=500, content={"message": "Failed to send email."})
+
+
