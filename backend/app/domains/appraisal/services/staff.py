@@ -9,7 +9,11 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from typing import List, Any
 
-
+from domains.auth.schemas.password_reset import ResetPasswordRequest
+from domains.auth.services.password_reset import password_reset_service
+from fastapi.responses import JSONResponse
+from services.email_service import EmailSchema, Email
+from domains.auth.apis.login import send_reset_email
 
 
 
@@ -21,7 +25,7 @@ class StaffService:
         staff = Staff_form_repo.get_all(db=db, skip=skip, limit=limit)
         return staff
 
-    def create_staff(self, *, db: Session, staff: StaffCreate) -> StaffSchema:
+    async def create_staff(self, *, db: Session, staff: StaffCreate) -> StaffSchema:
 
         
         #check for duplicate email entries in staff table
@@ -46,7 +50,7 @@ class StaffService:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="staff with email %s already exists" % staff.email)
         
 
-        staff_obj = Staff_form_repo.create(db=db, obj_in=staff)
+        staff_obj = await Staff_form_repo.create(db=db, obj_in=staff)
 
         user_in = User()
         user_in.email = staff.email
@@ -56,6 +60,39 @@ class StaffService:
         db.add(user_in)
         db.commit()
         db.refresh(user_in)
+
+        ## if staff is created successfully 
+        ## send an email to reset the password 
+        ## confirm user email 
+    # user = db.query(User).filter(User.email == reset_password_request.email).first()
+
+    # if not user:
+    #     raise HTTPException(status_code=404, detail="User not found")
+    
+    # Generate reset token
+
+        token = password_reset_service.generate_reset_token()
+        user_in.reset_password_token  = token
+        # user.reset_password_token = token
+        db.commit()
+
+        # Send email with the reset link
+        reset_link = f"http://example.com/reset-password?token={token}"
+        
+        # For demo purposes, print the reset link (use an email sender in production)
+        # print(f"Reset link: {reset_link}")
+        # print(f"User Emaail: {user.email}")
+        
+        # In production, send email with aiosmtplib or any other email library
+        email_data = await send_reset_email(staff.email, reset_link)
+
+        # print(f"email_data: {email_data}")
+
+        await Email.sendMailService(email_data, template_name='password_reset.html')
+        
+        JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
+
+
         return staff_obj
     
     
