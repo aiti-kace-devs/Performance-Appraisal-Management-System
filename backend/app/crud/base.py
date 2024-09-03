@@ -76,7 +76,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
     def get_by_name(self, db: Session, name: Any) -> Optional[ModelType]:
         return db.query(self.model).filter(self.model.name == name).first()
 
-    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
+    async def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
 
         try:
             if not obj_in:
