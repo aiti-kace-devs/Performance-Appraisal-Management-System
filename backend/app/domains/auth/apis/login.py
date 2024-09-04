@@ -126,7 +126,7 @@ async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
 
     return email_data
 
-@auth_router.post("/password-reset-request/")
+@auth_router.post("/forgot_password/")
 async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
     ## confirm user email 
     user = db.query(User).filter(User.email == reset_password_request.email).first()
