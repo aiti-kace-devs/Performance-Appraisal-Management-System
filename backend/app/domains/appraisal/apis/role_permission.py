@@ -4,7 +4,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 
 
-from domains.appraisal.schemas import role_permissions as schema
+from domains.appraisal.schemas.role_permissions import RoleWithPermissions, RolePermissionRead, RolePermissionCreate, RolePermissionUpdate
 from domains.appraisal.services.role_permission import role_perm_service  as actions 
 
 
@@ -18,13 +18,13 @@ role_perm_router = APIRouter(
 )
 
 
-@role_perm_router.post("/", response_model=schema.RoleWithPermissions)
-def create_new_role_permission(*, payload: schema.RolePermissionCreate, db:Session=Depends(get_db)):
+@role_perm_router.post("/", response_model=RoleWithPermissions)
+def create_new_role_permission(*, payload: RolePermissionCreate, db:Session=Depends(get_db)):
     new_role_perm = actions.create_role_perm(role_perm=payload, db=db)
     return new_role_perm
 
 ## returns a role and it associate permissions
-@role_perm_router.get("/{role_id}", response_model=schema.RolePermissionRead)
+@role_perm_router.get("/{role_id}", response_model=RolePermissionRead)
 def get_permissions_by_role_id(role_id: UUID4, db: Session = Depends(get_db)):
     try:
         role_permissions = actions.get_permissions_by_role_id(db=db, role_id=role_id)
@@ -38,7 +38,7 @@ def get_permissions_by_role_id(role_id: UUID4, db: Session = Depends(get_db)):
         )
 
 ## endpoint to 
-@role_perm_router.get("/", response_model=List[schema.RolePermissionRead])
+@role_perm_router.get("/", response_model=List[RolePermissionRead])
 def get_all_roles_perms(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     all_roles_perms = actions.get_all_roles_perms(db=db, skip=skip, limit=limit)
     return all_roles_perms
@@ -50,7 +50,7 @@ async def update_roles_perm(role_id: UUID4, db: Session = Depends(get_db)):
     return update_role_perm
 
 ## endpoint to delete role and permission
-@role_perm_router.delete("/{role_id}/permissions/{permission_id}")
+@role_perm_router.delete("/{role_id}/remove_permission", response_model=RoleWithPermissions)
 def remove_permission_from_role(*, role_id: UUID4, permission_name: str, db: Session = Depends(get_db)):
     remove_perm_role = actions.remove_permission_from_role(db=db, role_id=role_id, permission_name=permission_name)
-    return {"details": f"Permission {permission_name} removed from Role {role_id}"}
+    return remove_perm_role
