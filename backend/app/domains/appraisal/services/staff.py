@@ -8,7 +8,7 @@ from fastapi import HTTPException,status
 from sqlalchemy.orm import Session
 from db.base_class import UUID
 from typing import List, Any
-
+from config.settings import settings
 from domains.auth.schemas.password_reset import ResetPasswordRequest
 from domains.auth.services.password_reset import password_reset_service
 from fastapi.responses import JSONResponse
@@ -77,7 +77,7 @@ class StaffService:
         db.commit()
 
         # Send email with the reset link
-        reset_link = f"http://example.com/reset-password?token={token}"
+        reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
         
         # For demo purposes, print the reset link (use an email sender in production)
         # print(f"Reset link: {reset_link}")

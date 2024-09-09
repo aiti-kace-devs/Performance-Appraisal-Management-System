@@ -140,7 +140,7 @@ async def request_password_reset(reset_password_request: ResetPasswordRequest, d
     db.commit()
 
     # Send email with the reset link
-    reset_link = f"http://example.com/reset-password?token={token}"
+    reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
     
     # For demo purposes, print the reset link (use an email sender in production)
     # print(f"Reset link: {reset_link}")
