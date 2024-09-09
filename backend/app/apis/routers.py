@@ -11,15 +11,17 @@ from domains.appraisal.apis.department import department_router
 from domains.appraisal.apis.appraisal import appraisals_router
 from domains.appraisal.apis.kra_bank import kra_bank_router
 from domains.appraisal.apis.permissions import perm_router
+from domains.auth.apis.logout import logout_auth_router
+from domains.auth.apis.email_router import email_router
 from domains.auth.apis.user_account import users_router
 from domains.appraisal.apis.staff import staff_router
 from domains.appraisal.apis.roles import role_router
 from domains.auth.apis.login import auth_router
-from domains.auth.apis.logout import logout_auth_router
 from fastapi import APIRouter
 
 
 router = APIRouter()
+router.include_router(email_router)
 router.include_router(auth_router)
 router.include_router(logout_auth_router)
 router.include_router(department_router)

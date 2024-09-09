@@ -1,28 +1,26 @@
-from fastapi import FastAPI, APIRouter,Depends,status,Response,Cookie,Request
-from domains.auth.services.user_account import users_forms_service
-from domains.auth.models.refresh_token import RefreshToken
-from domains.auth.models.users import User
-from fastapi.security import OAuth2PasswordRequestForm
-from domains.auth.schemas import auth as schema
-from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import HTTPException
-from config.settings import settings
-from utils.security import Security
-from sqlalchemy.orm import Session
-from datetime import timedelta
-from db.session import get_db
-from fastapi_limiter.depends import RateLimiter
-from domains.auth.services.login import login_service
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
-import os
-from fastapi.responses import PlainTextResponse
-from fastapi.responses import FileResponse
-from datetime import datetime
-
+from domains.auth.services.password_reset import password_reset_service
+from fastapi import FastAPI, APIRouter,Depends,status,Response,Request
+from domains.auth.schemas.password_reset import ResetPasswordRequest
 from domains.auth.services import login as service_login
+from fastapi.security import OAuth2PasswordRequestForm
+from domains.auth.services.login import login_service
+from services.email_service import EmailSchema,Email 
+from slowapi.middleware import SlowAPIMiddleware 
+from fastapi.responses import PlainTextResponse
+from domains.auth.schemas import auth as schema
+from slowapi.errors import RateLimitExceeded
+from fastapi.exceptions import HTTPException
+from slowapi.util import get_remote_address
+from domains.auth.models.users import User
+from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
+from config.settings import settings
+from sqlalchemy.orm import Session
+from datetime import datetime
+from db.session import get_db
+from slowapi import Limiter
+import os
+
 
 app = FastAPI()
 
@@ -160,8 +158,48 @@ def get_new_access_token(response:Response, refresh_token: schema.RefreshToken, 
 
 
 
-@auth_router.post("/current_user")
-def get_current_user_by_access_token(token:schema.AccessToken, request: Request,db: Session = Depends(get_db)):
+async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
+    ## prepare the email data
+    email_data = EmailSchema(
+        subject= "Password Reset Request",
+        email=  [email],
+        body= {
+            "name": email, 
+            "reset_link": reset_link,
+            "app_name": "Appraisal Management System"
+        }
+    )
 
-    current_user = service_login.get_current_user_by_access_token(token, request, db)
-    return current_user
+    return email_data
+
+@auth_router.post("/forgot_password/")
+async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
+    ## confirm user email 
+    user = db.query(User).filter(User.email == reset_password_request.email).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Generate reset token
+    token = password_reset_service.generate_reset_token()
+    user.reset_password_token = token
+    db.commit()
+
+    # Send email with the reset link
+    reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
+    
+    # For demo purposes, print the reset link (use an email sender in production)
+    # print(f"Reset link: {reset_link}")
+    # print(f"User Emaail: {user.email}")
+    
+    # In production, send email with aiosmtplib or any other email library
+    email_data = await send_reset_email(user.email, reset_link)
+
+    # print(f"email_data: {email_data}")
+
+    await Email.sendMailService(email_data, template_name='password_reset.html')
+    
+    return JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
+
+    # current_user = service_login.get_current_user_by_access_token(token, request, db)
+    # return current_user

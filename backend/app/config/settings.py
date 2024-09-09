@@ -52,18 +52,6 @@ class Settings:
 
 
 
-    # MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
-    # MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
-    # MAIL_FROM: str = os.getenv("MAIL_FROM", "dev.aiti.com.gh@gmail.com")
-    # MAIL_PORT: str = os.getenv("MAIL_PORT")
-    # MAIL_SERVER: str = os.getenv("MAIL_SERVER")
-    # MAIL_STARTTLS: bool = True
-    # MAIL_SSL_TLS: bool = os.getenv("MAIL_SSL_TLS", False)
-    # USE_CREDENTIALS: bool = True
-    # VALIDATE_CERTS: bool = True
-
-
-
     MAIL_USERNAME: str = os.getenv("MAIL_USERNAME", 'dev.aiti.com.gh@gmail.com')
     MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", 'palvpbokbnisspps') #uefuovgtfwyfgskv previous password
     MAIL_FROM: str = os.getenv("MAIL_FROM", "dev.aiti.com.gh@gmail.com")
@@ -73,6 +61,10 @@ class Settings:
     MAIL_SSL_TLS: bool = os.getenv("MAIL_SSL_TLS", False)
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
+
+
+
+
 
 
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://smconf-test.web.app")
