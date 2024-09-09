@@ -14,7 +14,8 @@ class Settings:
     SMS_API_KEY:str  = os.getenv("ARKESEL_API_KEY")
     SMS_API_URL: str = os.getenv("ARKESEL_BASE_URL")
     
-
+    intruder_list = []
+    
     MAX_CONCURRENT_THREADS: int = 10  # Maximum number of concurrent threads
     MAX_RETRIES: int = 1  # Maximum number of retry attempts
     RETRY_DELAY_BASE: int = 0  # Initial retry delay in seconds
@@ -27,7 +28,6 @@ class Settings:
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
-
     SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
     # POSTGRES_USER: str = os.getenv("POSTGRES_USER", "appraisal_user")
@@ -63,12 +63,17 @@ class Settings:
     VALIDATE_CERTS: bool = True
 
 
+
+
+
+
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://smconf-test.web.app")
 
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 45
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 2700
     REFRESH_TOKEN_DURATION_IN_MINUTES: int =  2592000
+    REFRESH_TOKEN_REMEMBER_ME_DAYS: int = 5184000  # or any appropriate value
     COOKIE_ACCESS_EXPIRE = 1800
     COOKIE_REFRESH_EXPIRE = 2592000 # 1 Month
     COOKIE_DOMAIN: str = os.getenv("COOKIE_DOMAIN", "gikace.dev")

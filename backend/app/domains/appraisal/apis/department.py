@@ -7,7 +7,7 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import department as schemas
 from domains.appraisal.services.department import department_service as actions
 from db.session import get_db
-
+from domains.appraisal.schemas.staff import StaffSchema
 
 department_router = APIRouter(
        prefix="/department",
@@ -47,6 +47,27 @@ async def create_department(
     return department_router
 
 
+
+@department_router.get(
+    "/{id}",
+    response_model=schemas.DepartmentSchema
+)
+def get_department(
+        *, db: Session = Depends(get_db),
+        
+        id: UUID4
+) -> Any:
+    department_router = actions.get_department(db=db, id=id)
+    if not department_router:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail="department_router not found"
+        )
+    return department_router
+
+
+
+
 @department_router.put(
     "/{id}",
     response_model=schemas.DepartmentSchema
@@ -67,22 +88,26 @@ def update_department(
     return department_router
 
 
+
+
+
 @department_router.get(
-    "/{id}",
-    response_model=schemas.DepartmentSchema
+    "/list/staff/{id}",
+    response_model=List[StaffSchema]
 )
-def get_department(
+def list_all_staff_under_department(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        skip: int = 0,
+        limit: int = 100
 ) -> Any:
-    department_router = actions.get_department(db=db, id=id)
-    if not department_router:
+    lisy_of_staff = actions.list_all_staff_under_department(db=db, id=id, skip=skip, limit=limit)
+    if not lisy_of_staff:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,
-            detail="department_router not found"
+            detail="staffs not found"
         )
-    return department_router
+    return lisy_of_staff
 
 
 @department_router.delete(

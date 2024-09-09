@@ -35,7 +35,6 @@ def list_staff(
 
 @staff_router.post(
     "/",
-    response_model=schemas.StaffSchema,
     status_code=HTTP_201_CREATED
 )
 async def create_staff(
@@ -70,11 +69,9 @@ def update_staff(
 
 @staff_router.get(
     "/{id}",
-    response_model=schemas.StaffSchema
 )
 def get_staff(
         *, db: Session = Depends(get_db),
-        
         id: UUID4
 ) -> Any:
     staff_router = actions.get_staff(db=db, id=id)
