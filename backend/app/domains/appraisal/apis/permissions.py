@@ -68,7 +68,7 @@ def get_all_perms(*, db: Session = Depends(get_db), skip: int=0, limit: int=0):
     all_perms = actions.get_all_perms(db=db)
     return all_perms
 
-@perm_router.put("{permission_id}", response_model=List[PermissionRead])
+@perm_router.put("{permission_id}", response_model=PermissionUpdate)
 def update_permission(permission_id: UUID4, permission_update: PermissionUpdate, db: Session = Depends(get_db)):
     update_permission = actions.update_permission(db, permission_id, permission_update)
     return update_permission
