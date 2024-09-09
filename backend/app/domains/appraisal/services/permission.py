@@ -13,7 +13,8 @@ from domains.appraisal.models.role_permissions import Permission, Role
 class PermissionService:
 
     def add_permission_to_role(self, db: Session, role_id: UUID, permission_name: str):
-        role = db.query(Role).filter(Role.id == role_id)
+        role = db.query(Role).filter(Role.id == role_id).first()
+        
         if not role:
             raise HTTPException(
                 status_code = status.HTTP_404_NOT_FOUND, 
@@ -30,7 +31,7 @@ class PermissionService:
 
         if permission not in role.permissions:
             ## Add the permission to the role only if it's not already present
-            role.permssions.append(permission)
+            role.permissions.append(permission)
             db.commit()
             db.refresh(role)
 
