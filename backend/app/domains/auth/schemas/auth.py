@@ -49,3 +49,4 @@ class RefreshTokenResponse(BaseModel):
     token_type: Optional[str]
     refresh_token: Optional[str]
     status: Optional[str]
+

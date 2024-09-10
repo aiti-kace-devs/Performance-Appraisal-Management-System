@@ -85,7 +85,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
     def get_by_email(self, db: Session, email: Any) -> Optional[ModelType]:
         return db.query(self.model).filter(self.model.email == email).first()
 
-    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
+    async def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
 
         try:
             if not obj_in:

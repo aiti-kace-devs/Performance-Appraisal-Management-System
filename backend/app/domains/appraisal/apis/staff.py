@@ -37,12 +37,13 @@ def list_staff(
     "/",
     status_code=HTTP_201_CREATED
 )
-def create_staff(
+async def create_staff(
         *, db: Session = Depends(get_db),
         # 
         staff_in: schemas.StaffCreate
 ) -> Any:
-    staff_router = actions.create_staff(db=db, staff=staff_in)
+    staff_router = await actions.create_staff(db=db, staff=staff_in)
+
     return staff_router
 
 

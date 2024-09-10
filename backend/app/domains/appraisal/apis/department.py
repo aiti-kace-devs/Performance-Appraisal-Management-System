@@ -38,12 +38,12 @@ def list_department(
     response_model=schemas.DepartmentSchema,
     status_code=HTTP_201_CREATED
 )
-def create_department(
+async def create_department(
         *, db: Session = Depends(get_db),
         # 
         department_in: schemas.DepartmentCreate
 ) -> Any:
-    department_router = actions.create_department(db=db, department=department_in)
+    department_router = await actions.create_department(db=db, department=department_in)
     return department_router
 
 
