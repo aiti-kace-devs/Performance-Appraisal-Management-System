@@ -1,0 +1,24 @@
+<p-tabView styleClass="tabview-custom">
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-user-edit mr-2"></i>
+        <span class="font-bold white-space-nowrap m-0">
+          Roles and Permissions
+        </span>
+      </div>
+    </ng-template>
+    <app-roles-and-permissions></app-roles-and-permissions>
+  </p-tabPanel>
+  <p-tabPanel>
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-users mr-2"></i>
+        <span class="font-bold white-space-nowrap m-0">
+          Staff Permissions
+        </span>
+      </div>
+    </ng-template>
+    <app-staff-permissions></app-staff-permissions>
+  </p-tabPanel>
+</p-tabView>

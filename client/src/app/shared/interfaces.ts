@@ -25,3 +25,8 @@ export interface IColumnDef {
   label?: string;
   value?: string;
 }
+
+export interface IRole {
+  name: string;
+  id?: string;
+}

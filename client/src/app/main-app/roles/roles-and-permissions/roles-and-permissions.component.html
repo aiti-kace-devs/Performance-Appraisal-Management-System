@@ -1,0 +1,39 @@
+<div class="flex justify-content-center">
+  <div class="col-6">
+    <p-dropdown
+      styleClass="w-full"
+      [options]="roles"
+      placeholder="Select a role"
+      optionLabel="name"
+      [(ngModel)]="selectedRole"
+      (onChange)="onRoleChange($event)"
+    ></p-dropdown>
+  </div>
+</div>
+<div class="flex flex-column m-6">
+  <div class="flex justify-content-end mb-4">
+    <button
+      pButton
+      pRipple
+      label="Save Changes"
+      icon="pi pi-save"
+      (click)="savePermissions()"
+    ></button>
+  </div>
+
+  <p-pickList
+    [source]="unassignedPermission"
+    [target]="assignedPermission"
+    sourceHeader="Unassigned Permissions"
+    targetHeader="Assigned Permissions"
+    [sourceStyle]="{ height: '30rem' }"
+    [targetStyle]="{ height: '30rem' }"
+  >
+    <ng-template let-permission pTemplate="item">
+      <div class="text-primary font-semibold text-lg">
+        {{ permission.name }}
+      </div>
+      <!-- <em>{{ permission.description }}</em> -->
+    </ng-template>
+  </p-pickList>
+</div>

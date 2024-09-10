@@ -8,6 +8,9 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { ChipModule } from 'primeng/chip';
 import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TabViewModule } from 'primeng/tabview';
+import { DropdownModule } from 'primeng/dropdown';
+import { PickListModule } from 'primeng/picklist';
 
 const sharedImports = [
   ButtonModule,
@@ -18,6 +21,9 @@ const sharedImports = [
   ChipModule,
   CalendarModule,
   InputNumberModule,
+  TabViewModule,
+  DropdownModule,
+  PickListModule,
 ];
 
 @NgModule({
