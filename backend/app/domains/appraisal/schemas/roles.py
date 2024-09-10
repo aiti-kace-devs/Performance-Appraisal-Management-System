@@ -13,7 +13,7 @@ class RoleBase(BaseModel):
             raise ValueError("Role name must not be empty or only whitespace or string")
         return value
 
-class RoleCreate(RoleBase):
+class RoleCreate(BaseModel):
     pass
     # permissions: List[PermissionCreate] = []
 
@@ -25,14 +25,7 @@ class RoleCreate(RoleBase):
 
 class RoleUpdate(RoleBase):
     pass
-    #permissions: List[PermissionCreate] = []
-
-    # @field_validator('permissions')
-    # def permissions_must_be_valid(cls, value):
-    #     if not isinstance(value, PermissionCreate):
-    #         raise ValueError("Invalid permission data")
-    #     return value
-
+    
 class RoleRead(RoleBase):
     id: UUID
     name: str 

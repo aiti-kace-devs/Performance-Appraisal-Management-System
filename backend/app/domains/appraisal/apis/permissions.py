@@ -5,8 +5,10 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
-from domains.appraisal.schemas.permissions import PermissionRead
+from domains.appraisal.schemas.permissions import PermissionRead, PermissionUpdate, PermissionCreate
 from domains.appraisal.services.permission import perm_service as actions
+
+from domains.appraisal.schemas.roles import RoleRead
 
 
 
@@ -43,6 +45,11 @@ perm_router = APIRouter(
 #     new_role_perm = actions.create_role_perm(role_perm=payload, db=db)
 #     return new_role_perm
 
+## add a new permission to a role 
+@perm_router.post("/{role_id}/permissions", response_model=RoleRead)
+def add_permission_to_role(role_id: UUID4, permission: PermissionCreate, db: Session = Depends(get_db)):
+    add_perm_role = actions.add_permission_to_role(db, role_id, permission.name)
+    return add_perm_role
 
 ## get role by the row_id 
 @perm_router.get("/{id}", response_model=PermissionRead)
@@ -60,5 +67,10 @@ def get_perm(*, db: Session = Depends(get_db), id: UUID4) -> Any:
 def get_all_perms(*, db: Session = Depends(get_db), skip: int=0, limit: int=0):
     all_perms = actions.get_all_perms(db=db)
     return all_perms
+
+@perm_router.put("{permission_id}", response_model=PermissionUpdate)
+def update_permission(permission_id: UUID4, permission_update: PermissionUpdate, db: Session = Depends(get_db)):
+    update_permission = actions.update_permission(db, permission_id, permission_update)
+    return update_permission
 
 ## endpoint to get current user 

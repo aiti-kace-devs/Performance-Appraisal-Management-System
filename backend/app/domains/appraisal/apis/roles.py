@@ -64,3 +64,8 @@ def get_all_roles(*, db: Session = Depends(get_db), skip: int=0, limit: int=0):
     return all_roles 
 
 ## endpoint to get current user 
+
+@role_router.put("/{role_id}", response_model=RoleUpdate)
+def update_role(role_id: UUID4, role_update: RoleUpdate, db: Session = Depends(get_db)):
+    role_update = actions.updated_role(db, role_id, role_update)
+    return role_update

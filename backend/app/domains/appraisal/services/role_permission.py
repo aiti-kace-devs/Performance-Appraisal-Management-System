@@ -63,7 +63,36 @@ class RolePermssionService:
         db.commit()
         db.refresh(db_role)
         
-        return self._convert_role_to_read(db_role)
+        return self._convert_role_to_read(db_role) 
+    
+    def remove_permission_from_role(self, db: Session, role_id: UUID, permission_name: str):
+        role = db.query(Role).filter(
+            Role.id == role_id,
+        ).first()
+
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Role not found"
+            )
+        
+        permission = db.query(Permission).filter(
+            Permission.name == permission_name, 
+        ).first()
+
+        if not permission:
+            raise HTTPException(
+                status_code = status.HTTP_404_NOT_FOUND, 
+                detail = "Permission not found"
+            )
+        
+        if permission in role.permissions:
+            role.permissions.remove(permission)
+            db.commit()
+        
+        return role
+        
+
     
     def _convert_role_to_read(self, role: Role) -> RolePermissionRead:
         permissions = [

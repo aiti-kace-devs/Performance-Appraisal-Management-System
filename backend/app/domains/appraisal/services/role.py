@@ -24,6 +24,20 @@ class RoleService:
         
         # return role_repo.get_all(db=db, skip=skip, limit=limit)
         return db.query(Role).offset(skip).limit(limit).all()
+    
+    def updated_role(self, db: Session, role_id: UUID, role_update: RoleUpdate):
+        role = db.query(Role).filter(Role.id == role_id).first() 
+        if not role: 
+            raise HTTPException (
+                status_code = status.HTTP_404_NOT_FOUND, 
+                detail = 'Role not found'
+            )
+
+
+        role.name = role_update.name 
+        db.commit()
+        db.refresh(role)
+        return role 
        
         
     
