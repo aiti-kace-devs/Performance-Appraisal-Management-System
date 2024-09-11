@@ -36,6 +36,9 @@ class StaffService:
         StaffWithFullNameInDBBase(
             id=staff.id,
             title=staff.title,
+            first_name=staff.first_name,
+            last_name=staff.last_name,
+            other_name=staff.other_name,
             full_name=f"{staff.first_name} {staff.last_name}" + (f" {staff.other_name}" if staff.other_name else ""),
             gender=staff.gender,
             email=staff.email,
@@ -148,6 +151,9 @@ class StaffService:
         data = {
             'id': get_staff.id,
             'title': get_staff.title,
+            'first_name': get_staff.first_name,
+            'last_name': get_staff.last_name,
+            'other_name': get_staff.other_name,
             'full_name': f"{get_staff.first_name} {get_staff.last_name}" + (f" {get_staff.other_name}" if get_staff.other_name else ""),
             'department_id': {
                 "id": get_staff_department.id,

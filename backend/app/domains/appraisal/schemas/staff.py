@@ -102,6 +102,9 @@ class StaffInDBBase(BaseModel):
 class StaffWithFullNameInDBBase(BaseModel):
     id: UUID4
     title: Title
+    first_name : str
+    last_name : str
+    other_name : str
     full_name : str
     gender : Gender
     email: EmailStr

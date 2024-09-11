@@ -23,9 +23,10 @@ class Staff(APIBase):
     def to_dict(self):
         return {
             "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "other_name": self.other_name,
             "full_name": f"{self.first_name} {self.last_name}" + (f" {self.other_name}" if self.other_name else ""),
-            # "last_name": self.last_name,
-            # "other_name": self.other_name,
             "position": self.position,
             "email": self.email,
             "department_id": self.department_id,
