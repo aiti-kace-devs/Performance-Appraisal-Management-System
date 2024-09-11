@@ -14,7 +14,7 @@ from domains.appraisal.models.appraisal_section import AppraisalSection
 from collections import OrderedDict
 from sqlalchemy import inspect
 from uuid import UUID
-
+from sqlalchemy.exc import NoResultFound
 from db.base_class import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -65,6 +65,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
             except KeyError:
                 return base.offset(skip).limit(limit).all()
         return base.offset(skip).limit(limit).all()
+    
+
+
+
+
     
 
     async def read_by_id(self, id, db: Session):

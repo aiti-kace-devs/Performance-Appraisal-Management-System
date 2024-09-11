@@ -1,5 +1,5 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
-from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
+from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase
 from domains.appraisal.models.role_permissions import Role
 from domains.appraisal.models.department import Department
 from domains.appraisal.models.staff import Staff
@@ -14,32 +14,39 @@ from domains.auth.services.password_reset import password_reset_service
 from fastapi.responses import JSONResponse
 from services.email_service import EmailSchema, Email
 from domains.auth.apis.login import send_reset_email
-
-
+from sqlalchemy.exc import SQLAlchemyError
+from domains.appraisal.models.staff import Staff
 from domains.appraisal.respository.department import department_actions
 from domains.appraisal.respository.role import role_actions
 from domains.auth.respository.user_account import users_form_actions
-
+import re
 
 class StaffService:
 
 
-    async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffSchema]:
+    async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
         # Query to get staff and their department names
         staff_query = db.query(Staff, Department.name).join(Department, Staff.department_id == Department.id).offset(skip).limit(limit)
         
         # Fetch results
         staff_with_department = staff_query.all()
         
-        # Create StaffSchema instances
-        staff_list = [StaffSchema(
-            id=staff.id, title=staff.title, first_name=staff.first_name, last_name=staff.last_name,
-            other_name=staff.other_name, gender=staff.gender,
-            email=staff.email, position=staff.position,
-            grade=staff.grade, appointment_date=staff. appointment_date,
+        # Create StaffWithFullNameInDBBase instances
+        staff_list = [
+        StaffWithFullNameInDBBase(
+            id=staff.id,
+            title=staff.title,
+            full_name=f"{staff.first_name} {staff.last_name}" + (f" {staff.other_name}" if staff.other_name else ""),
+            gender=staff.gender,
+            email=staff.email,
+            position=staff.position,
+            grade=staff.grade,
+            appointment_date=staff.appointment_date,
             department_id=department_name
-            ) for staff, department_name in staff_with_department]
-        
+        )
+        for staff, department_name in staff_with_department
+    ]
+    
         return staff_list
     
 
@@ -80,16 +87,6 @@ class StaffService:
         db.commit()
         db.refresh(user_in)
 
-        ## if staff is created successfully 
-        ## send an email to reset the password 
-        ## confirm user email 
-    # user = db.query(User).filter(User.email == reset_password_request.email).first()
-
-    # if not user:
-    #     raise HTTPException(status_code=404, detail="User not found")
-    
-    # Generate reset token
-
         token = password_reset_service.generate_reset_token()
         user_in.reset_password_token  = token
         # user.reset_password_token = token
@@ -97,15 +94,8 @@ class StaffService:
 
         # Send email with the reset link
         reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
-        
-        # For demo purposes, print the reset link (use an email sender in production)
-        # print(f"Reset link: {reset_link}")
-        # print(f"User Emaail: {user.email}")
-        
-        # In production, send email with aiosmtplib or any other email library
-        email_data = await send_reset_email(staff.email, reset_link)
 
-        # print(f"email_data: {email_data}")
+        email_data = await send_reset_email(staff.email, reset_link)
 
         await Email.sendMailService(email_data, template_name='password_reset.html')
         
@@ -158,9 +148,7 @@ class StaffService:
         data = {
             'id': get_staff.id,
             'title': get_staff.title,
-            'first_name': get_staff.first_name,
-            'last_name': get_staff.last_name,
-            'other_name': get_staff.other_name,
+            'full_name': f"{get_staff.first_name} {get_staff.last_name}" + (f" {get_staff.other_name}" if get_staff.other_name else ""),
             'department_id': {
                 "id": get_staff_department.id,
                 "name": get_staff_department.name
@@ -200,8 +188,38 @@ class StaffService:
     def get_staff_by_keywords(self, *, db: Session, tag: str) -> List[StaffSchema]:
         pass
 
-    def search_staff(self, *, db: Session, search: str, value: str) -> List[StaffSchema]:
-        pass
+
+
+
+    def search_staff(self, db: Session, name: str):
+        search_fields = ['first_name', 'last_name', 'other_name']
+        response = None
+
+        search_value = re.sub(r'[^\w\s]', '', name.strip())  # Remove special characters
+        if not search_value:
+            return response
+
+        try:
+            for field in search_fields:
+                if hasattr(Staff, field):
+                    response = db.query(Staff).filter(
+                        getattr(Staff, field).ilike(f"%{search_value}%")
+                    ).first()
+                    if response:
+                        response = response.to_dict()  # Convert the model instance to a dictionary
+                        break
+
+        except SQLAlchemyError as e:
+            print(f"Database error occurred: {e}")
+            return {"error": "An error occurred while processing your request."}
+        except KeyError as ke:
+            print(f"Key error: {ke}")
+            return {"error": "Invalid search parameter."}
+        
+        return response
+
+
+
 
     def read_by_kwargs(self, *, db: Session, **kwargs) -> Any:
         return Staff_form_repo.get_by_kwargs(self, db, kwargs)

@@ -99,6 +99,21 @@ class StaffInDBBase(BaseModel):
 
 
 
+class StaffWithFullNameInDBBase(BaseModel):
+    id: UUID4
+    title: Title
+    full_name : str
+    gender : Gender
+    email: EmailStr
+    position : str
+    department_id : str
+    grade : str
+    appointment_date : Optional[date]
+
+    class Config:
+        orm_mode= True
+
+
 class StaffSchema(StaffInDBBase):
     pass
 

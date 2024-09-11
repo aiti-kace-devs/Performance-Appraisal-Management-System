@@ -21,7 +21,7 @@ staff_router = APIRouter(
 
 @staff_router.get(
     "/",
-    response_model=List[schemas.StaffSchema]
+    response_model=List[schemas.StaffWithFullNameInDBBase]
 )
 async def list_staff(
         db: Session = Depends(get_db),
@@ -100,3 +100,26 @@ def delete_staff(
         )
     staff_router = actions.delete_staff(db=db, id=id)
     return staff_router
+
+
+
+
+
+
+
+
+
+
+
+@staff_router.get("/search_staff/{name}",)
+def search_staff(
+        *, db: Session = Depends(get_db),
+        name: str
+) -> Any:
+    search_staff = actions.search_staff(db=db, name=name)
+    if not search_staff:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail="staff not found"
+        )
+    return search_staff
