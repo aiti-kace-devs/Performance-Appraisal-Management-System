@@ -111,7 +111,7 @@ def delete_staff(
 
 
 
-@staff_router.get("/search_staff/{name}",)
+@staff_router.get("/search/{name}",)
 def search_staff(
         *, db: Session = Depends(get_db),
         name: str
