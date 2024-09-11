@@ -23,13 +23,13 @@ staff_router = APIRouter(
     "/",
     response_model=List[schemas.StaffSchema]
 )
-def list_staff(
+async def list_staff(
         db: Session = Depends(get_db),
         
         skip: int = 0,
         limit: int = 100
 ) -> Any:
-    staff_router = actions.list_staff(db=db, skip=skip, limit=limit)
+    staff_router = await actions.list_staff(db=db, skip=skip, limit=limit)
     return staff_router
 
 
@@ -63,7 +63,7 @@ def update_staff(
             status_code=HTTP_404_NOT_FOUND,
             detail="staff_router not found"
         )
-    staff_router = actions.update_staff(db=db, id=staff_router.id, staff_in=staff_in)
+    staff_router =  actions.update_staff(db=db, id=staff_router.id, staff_in=staff_in)
     return staff_router
 
 
