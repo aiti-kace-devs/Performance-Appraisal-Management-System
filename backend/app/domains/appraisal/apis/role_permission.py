@@ -60,8 +60,8 @@ async def update_roles_perm(role_id: UUID, request: UpdateRolePermissionsRequest
         )
 
 
-## endpoint to delete role and permission
-@role_perm_router.delete("/{role_id}/remove_permission", response_model=RoleWithPermissions)
-def remove_permission_from_role(*, role_id: UUID, permission_name: str, db: Session = Depends(get_db)):
-    remove_perm_role = actions.remove_permission_from_role(db=db, role_id=role_id, permission_name=permission_name)
-    return remove_perm_role
+# ## endpoint to delete role and permission
+# @role_perm_router.delete("/{role_id}/remove_permission", response_model=RoleWithPermissions)
+# def remove_permission_from_role(*, role_id: UUID, permission_name: str, db: Session = Depends(get_db)):
+#     remove_perm_role = actions.remove_permission_from_role(db=db, role_id=role_id, permission_name=permission_name)
+#     return remove_perm_role
