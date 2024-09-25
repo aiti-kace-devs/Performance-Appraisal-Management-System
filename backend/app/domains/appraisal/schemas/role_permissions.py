@@ -74,4 +74,16 @@ class RoleWithPermissions(RoleBase):
     permissions: List[Permission]
 
     class Config:
-        orm_mode = True
+        orm_mode = True 
+
+class UpdateRolePermissionsRequest(BaseModel):
+    add_permissions: List[str]
+    remove_permissions: List[str]
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "add_permissions": ["createDepartment", "updateStaff"],
+                    "remove_permissions": ["deleteStaff", "getStaffByID"]
+                        }
+        }
