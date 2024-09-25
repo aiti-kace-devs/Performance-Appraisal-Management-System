@@ -52,17 +52,45 @@ class PermissionService:
         # return role_repo.get_all(db=db, skip=skip, limit=limit)
         return db.query(Permission).offset(skip).limit(limit).all()
     
-    def update_permission(self, db: Session, permission_id: UUID, permission_update: PermissionUpdate):
-        permission = db.query(Permission).filter(Permission.id == permission_id).first()
-        if not permission:
-            raise HTTPException(
-                status_code = status.HTTP_404_NOT_FOUND, 
-                detail="Permission not found"
-            )
+    # def update_permission(self, db: Session, permission_id: UUID, permission_update: PermissionUpdate):
+    #     permission = db.query(Permission).filter(Permission.id == permission_id).first()
+    #     if not permission:
+    #         raise HTTPException(
+    #             status_code = status.HTTP_404_NOT_FOUND, 
+    #             detail="Permission not found"
+    #         )
 
-        permission.name = permission_update.name 
+    #     permission.name = permission_update.name 
+    #     db.commit()
+    #     db.refresh(permission)
+    #     return permission
+
+    def update_permission(db: Session, permissions: List[PermissionUpdate]):
+        """
+        Update multiple permissions in the database 
+
+        : param db: Database session
+        : param permissions: A list of permissions to update
+        """
+        for perm_update in permissions:
+            ## Query for the permission by its ID
+            permission = db.query(Permission).filter(Permission.id == perm_update.id).first()
+
+            ## if the permission doesn't exist, raise an exception 
+            if not permission:
+                raise HTTPException(status_code=404, detail=f"Permission with ID{perm_update.id} not found")
+
+            if perm_update.name: 
+                ## Check if a permission with the new name already exists to avoid duplicate 
+                existing_perm = db.query(Permission).filter(Permission.name == perm_update.name).first()
+
+                if existing_perm and existing_perm.id != perm_update.id:
+                    raise HTTPException(status_code400, details=f"Permission name '{perm_update.name} already exits")
+
+                #Update the permission name
+                permission.name = perm_update.name 
+
         db.commit()
-        db.refresh(permission)
-        return permission
+        return {"details": "Permission updated successfully"}
     
 perm_service = PermissionService()
