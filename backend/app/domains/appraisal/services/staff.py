@@ -68,6 +68,10 @@ class StaffService:
         if check_if_user_email_exists:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User with email %s already exists" % staff.email)
         
+        ## Check for permissions associated with the role 
+        role_permissions = db.query(Role).filter(Role.id == staff.role_id).first()
+        if not role_permissions:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Permissions for this role not found")
 
         staff_obj = await Staff_form_repo.create(db=db, obj_in=staff)
 
@@ -79,6 +83,9 @@ class StaffService:
         db.add(user_in)
         db.commit()
         db.refresh(user_in)
+
+        ## Assign permissions based on the role 
+        permissions = role_permissions.permissions
 
         ## if staff is created successfully 
         ## send an email to reset the password 
@@ -130,6 +137,7 @@ class StaffService:
             'role_id': {
                 "id": check_if_role_id_exists.id,
                 "name": check_if_role_id_exists.name
+                "permissions": permissoins
             },
             'created_at': staff_obj.created_date,
         }
