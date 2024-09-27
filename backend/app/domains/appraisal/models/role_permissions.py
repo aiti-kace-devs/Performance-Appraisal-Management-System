@@ -22,6 +22,7 @@ class Role(APIBase):
         secondary=role_permissions,
         back_populates="roles"
     )
+    staff_members = relationship("Staff", back_populates="role")
 
 class Permission(APIBase):
     __tablename__ = 'permissions'

@@ -49,7 +49,7 @@ def get_all_roles_perms(skip: int = 0, limit: int = 10, db: Session = Depends(ge
 async def update_roles_perm(role_id: UUID, request: UpdateRolePermissionsRequest, db: Session = Depends(get_db)):
     try:
         update_role_perm = actions.update_role_perms(role_id=role_id, db=db, 
-        add_permissions=request.add_permissions,remove_permissions=request.remove_permissions)
+        new_permissions=request.new_permissions)
         return update_role_perm
     except HTTPException as e: 
         raise e

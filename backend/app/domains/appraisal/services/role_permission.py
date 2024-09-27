@@ -92,48 +92,47 @@ class RolePermssionService:
         
         return role
         
-    def update_role_perms(self, db: Session, role_id: UUID, add_permissions: List[str], remove_permissions: List[str]) -> RolePermissionRead:
+    def update_role_perms(self, db: Session, role_id: UUID, new_permissions: List[str]) -> RolePermissionRead:
         # Fetch the role from the database 
         role = db.query(Role).filter(Role.id == role_id).first()
         if not role:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                details="Role not found"
+                details=f"Role with id {role_id} found"
             )
 
-        if add_permissions:
-            # Add permissions 
-            for perm_name in add_permissions:
-                permission = db.query(Permission).filter(Permission.name == perm_name).first()
-                if not permission:
-                    ## if the permission does not exist, create it
-                    permission = Permission(id=uuid4(), name=perm_name)
-                    db.add(permission)
-                    db.commit()
-                ## if the permission is not already assigned, add it
-                if permission not in role.permissions:
-                    role.permissions.append(permission)
-        
-        if remove_permissions:
-            ## Remove permissions 
-            for perm_name in remove_permissions:
-                permission = db.query(Permission).filter(Permission.name == perm_name).first()
-                if permission and permission in role.permissions:
-                    role.permissions.remove(permission)
+        # Clear existing permissions for the role 
+        role.permissions.clear() 
 
+        # Retrieve the new permissions by their IDs 
+        permissions = db.query(Permission).filter(Permission.name.in_(new_permissions)).all()
+
+        if not permissions: 
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Some permissions not found"
+            )
+
+        ## Assign new permissions to the role 
+        role.permissions.extend(permissions)
+        
 
         ## Commit the changes to the database 
         db.commit()
         db.refresh(role)
 
-        return self._convert_role_to_read(role)
-        # return role
+        return {
+            "role_id": role_id,
+            "updated_permissions": [perm.name for perm in role.permissions]
+        }
+    #     return self._convert_role_to_read(role)
+    #     # return role
     
-    def _convert_role_to_read(self, role: Role) -> RolePermissionRead:
-        permissions = [
-            PermissionRead(id=perm.id, name=perm.name)
-            for perm in role.permissions
-        ]
-        return RolePermissionRead(id=role.id, name=role.name, permissions=permissions)
+    # def _convert_role_to_read(self, role: Role) -> RolePermissionRead:
+    #     permissions = [
+    #         PermissionRead(id=perm.id, name=perm.name)
+    #         for perm in role.permissions
+    #     ]
+    #     return RolePermissionRead(id=role.id, name=role.name, permissions=permissions)
 
 role_perm_service = RolePermssionService()

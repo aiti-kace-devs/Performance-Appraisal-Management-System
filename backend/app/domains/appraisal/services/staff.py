@@ -69,12 +69,20 @@ class StaffService:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User with email %s already exists" % staff.email)
         
         ## Check for permissions associated with the role 
-        role_permissions = db.query(Role).filter(Role.id == staff.role_id).first()
-        if not role_permissions:
+        role = db.query(Role).filter(Role.id == staff.role_id).first()
+        if not role:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Permissions for this role not found")
 
-        staff_obj = await Staff_form_repo.create(db=db, obj_in=staff)
-
+            # Create the staff object with the role_id
+        staff_data = staff.dict()  # Convert the staff Pydantic model to a dictionary
+        staff_data['role_id'] = staff.role_id  # Ensure role_id is included
+        
+        staff_obj = await Staff_form_repo.create(db=db, obj_in=StaffCreate(**staff_data))
+        
+        # staff_obj = await Staff_form_repo.create(db=db, obj_in=staff)
+         # Create the staff object with the role_id
+        # staff_obj = await Staff_form_repo.create(db=db, obj_in=StaffCreate(**staff.dict(), role_id=staff.role_id))
+        
         user_in = User()
         user_in.email = staff.email
         user_in.reset_password_token = None
@@ -85,7 +93,7 @@ class StaffService:
         db.refresh(user_in)
 
         ## Assign permissions based on the role 
-        permissions = role_permissions.permissions
+        permissions = role.permissions
 
         ## if staff is created successfully 
         ## send an email to reset the password 
@@ -136,8 +144,8 @@ class StaffService:
             'appointment_date': staff_obj.appointment_date,           
             'role_id': {
                 "id": check_if_role_id_exists.id,
-                "name": check_if_role_id_exists.name
-                "permissions": permissoins
+                "name": check_if_role_id_exists.name,
+                "permissions": permissions
             },
             'created_at': staff_obj.created_date,
         }
