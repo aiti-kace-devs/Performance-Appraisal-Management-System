@@ -90,16 +90,17 @@ def init_db(db: Session):
                         permission = Permission(id=uuid4(), name=perm_name)
                         db.add(permission)
                         db.flush()  # Flushes the changes to the DB before committing
-                        return f"Created permission: {perm_name}"  # Debug log
+                        # return f"Created permission: {perm_name}"  # Debug log
                     else:
-                        return f"Permission {perm_name} already exists"  # Debug log
+                        pass
+                        # return f"Permission {perm_name} already exists"  # Debug log
 
                     # Assign permission to the role if not already assigned
                     if permission not in role.permissions:
                         role.permissions.append(permission)
                 except IntegrityError:
                     db.rollback()  # Roll back the transaction in case of duplicate
-                    return f"IntegrityError: Permission {perm_name} already exists. Skipping."
+                    # return f"IntegrityError: Permission {perm_name} already exists. Skipping."
             
         # Commit the role-permission association to the database once
         db.commit()
