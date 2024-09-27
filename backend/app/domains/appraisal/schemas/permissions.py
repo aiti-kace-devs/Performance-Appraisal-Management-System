@@ -33,3 +33,4 @@ class PermissionRead(PermissionBase):
         
 class PermissionUpdate(PermissionBase):
     pass
+ 

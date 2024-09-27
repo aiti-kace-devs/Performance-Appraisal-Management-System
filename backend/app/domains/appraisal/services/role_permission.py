@@ -1,7 +1,7 @@
 from typing import List, Any
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-
+from uuid import uuid4
 from sqlalchemy import func 
 
 from db.base_class import UUID
@@ -92,7 +92,38 @@ class RolePermssionService:
         
         return role
         
+    def update_role_perms(self, db: Session, role_id: UUID, new_permissions: List[str]):
+            # Fetch the role from the database 
+            role = db.query(Role).filter(Role.id == role_id).first()
+            if not role:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    details="Role not found"
+                )
 
+                # Step 2: Clear existing permissions for the role
+            role.permissions.clear()
+
+            # Step 3: Retrieve the new permissions by their names
+            permissions = db.query(Permission).filter(Permission.name.in_(new_permissions)).all()
+            
+            if not permissions:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, 
+                    detail="Some permissions not found"
+                )
+
+            # Step 4: Assign new permissions to the role
+            role.permissions.extend(permissions)
+
+            # Step 5: Commit changes
+            db.commit()
+            db.refresh(role)
+
+            return {
+                "role_id": role_id,
+                "updated_permissions": [perm.name for perm in role.permissions]  # Return permission names
+            }
     
     def _convert_role_to_read(self, role: Role) -> RolePermissionRead:
         permissions = [
