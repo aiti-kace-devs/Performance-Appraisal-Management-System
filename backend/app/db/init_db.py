@@ -16,7 +16,7 @@ SUPER_ADMIN_NAME: str = "Super Admin"
 SUPER_ADMIN_PHONE_NUMBER: str = "9876543210"
 SUPER_ADMIN_EMAIL: str = "superadmin@admin.com"
 SUPER_ADMIN_PASSWORD: str = "openforme"
-SUPER_ADMIN_ROLE: str = "super_admin"
+SUPER_ADMIN_ROLE: str = "Super Admin"
 SUPER_ADMIN_STATUS: bool = True
 
 
@@ -25,7 +25,7 @@ def init_db(db: Session):
     Initialize the database with predefined roles and permissions.
     """
     roles_permissions = {
-        "super_admin": [
+        "Super Admin": [
             "createDepartment", "readDepartment", "updateDepartment", "deleteDepartment", 
             "getDepartmentByID", "readAllStaffUnderDepartment", "createStaff", "readStaff",
             "updateStaff", "deleteStaff", "getStaffByID", "uploadStaff", "readAppraisalCycle",
@@ -36,7 +36,7 @@ def init_db(db: Session):
             "readRoles", "getRoleByID", "updateRole", "addPermissionToRole", "readPermissions", 
             "updatePermission", "getPermissionByID"
         ],
-        "hr": [
+        "HR": [
         "createDepartment","readDepartment","updateDepartment", "deleteDepartment","getDepartmentByID",
         "readAllStaffUnderDepartment","createStaff","readStaff","updateStaff","deleteStaff","getStaffByID",
         "uploadStaff","createAppraisalCycle","readAppraisalCycle", "updateAppraisalCycle",
@@ -50,14 +50,14 @@ def init_db(db: Session):
         "readRoles","getRoleByID","updateRole","addPermissionToRole","readPermissions",
         "updatePermission","getPermissionByID", "approveAppraisal","commentAppraisal"
         ],
-        "supervisor": [
+        "Staff": [
            "readDepartment","getDepartmentByID", "readAppraisalCycle","getAppraisalCycleByID", "readAppraisalConfiguration",
            "getAppraisalConfigurationByID","eadAppraisalSection","getAppraisalSectionByID","readCompetencyBank",
            "getCompetencyBankByID","createAppraisalForm","readAppraisalForm","updateAppraisalForm",
            "getAppraisalFormByID","submitAppraisalForm","readAppraisalSubmission","updateAppraisalSubmission",
            "getAppraisalSubmissionByID","createStaffDeadline","getStaffDeadlineByID"
         ],
-        "staff": [
+        "Supervisor": [
         "readDepartment","getDepartmentByID", "readAllStaffUnderDepartment", "readStaff",
         "getStaffByID","readAppraisalCycle","getAppraisalCycleByID","createAppraisalConfiguration","readAppraisalConfiguration",
         "updateAppraisalConfiguration","searchAppraisalConfigurationByKeyword","deleteAppraisalConfiguration","getAppraisalConfigurationByID",
@@ -121,7 +121,7 @@ def create_super_admin(db: Session):
         admin = db.query(User).filter(User.email == SUPER_ADMIN_EMAIL).first()
         
         # Check if super admin role exists
-        role = db.query(Role).filter(Role.name == 'super_admin').first()
+        role = db.query(Role).filter(Role.name == 'Super Admin').first()
         
         if not role:
             raise HTTPException(status_code=400, detail="Super Admin role not found")
