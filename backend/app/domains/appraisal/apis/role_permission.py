@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID, uuid4
 
 
-from domains.appraisal.schemas.role_permissions import RoleWithPermissions, RolePermissionRead, RolePermissionCreate, RolePermissionUpdate, UpdateRolePermissionsRequest
+from domains.appraisal.schemas.role_permissions import RoleWithPermissions, RolePermissionRead, RolePermissionCreate, RolePermissionUpdate, UpdateRolePermissionsRequest, RolePermissionResponse
 from domains.appraisal.services.role_permission import role_perm_service  as actions 
 
 
@@ -45,11 +45,11 @@ def get_all_roles_perms(skip: int = 0, limit: int = 10, db: Session = Depends(ge
     return all_roles_perms
 
 ## endpoint to update the 
-@role_perm_router.put("/{role_id}", response_model=RolePermissionRead, status_code=status.HTTP_200_OK)
+@role_perm_router.put("/{role_id}", response_model=RolePermissionResponse, status_code=status.HTTP_200_OK)
 async def update_roles_perm(role_id: UUID, request: UpdateRolePermissionsRequest, db: Session = Depends(get_db)):
     try:
         update_role_perm = actions.update_role_perms(role_id=role_id, db=db, 
-        add_permissions=request.add_permissions,remove_permissions=request.remove_permissions)
+        new_permissions=request.new_permissions)
         return update_role_perm
     except HTTPException as e: 
         raise e
