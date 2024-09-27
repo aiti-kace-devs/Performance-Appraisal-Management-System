@@ -60,6 +60,13 @@ class RolePermissionRead(BaseModel):
     class Config:
         orm_mode = True
 
+class RolePermissionResponse(BaseModel):
+    role_id: UUID4
+    updated_permissions: List[str]
+
+    class Config:
+        orm_mode = True
+
 class RoleBase(BaseModel):
     name: str
 
@@ -77,11 +84,11 @@ class RoleWithPermissions(RoleBase):
         orm_mode = True 
 
 class UpdateRolePermissionsRequest(BaseModel):
-    add_permissions: List[str] = Field(default_factory=list)
-    remove_permissions: List[str] = Field(default_factory=list)
+    new_permissions: List[str] = Field(default_factory=list)
+    # remove_permissions: List[str] = Field(default_factory=list)
 
     # Validator to ensure each permission is a valid string identifier
-    @field_validator('add_permissions', 'remove_permissions')
+    @field_validator('new_permissions')
     def check_permission_strings(cls, permissions):
         for perm in permissions:
             if not isinstance(perm, str) or perm.lower() == 'string':
@@ -89,7 +96,7 @@ class UpdateRolePermissionsRequest(BaseModel):
         return permissions
 
     # Validator to ensure no duplicates within each list
-    @field_validator('add_permissions', 'remove_permissions')
+    @field_validator('new_permissions')
     def check_duplicate_permissions(cls, v):
         if len(v) != len(set(v)):
             raise ValueError(f"Duplicate permissions found in {v}.")
