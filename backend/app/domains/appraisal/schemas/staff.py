@@ -18,6 +18,11 @@ class Title(str, Enum):
     Prof = 'Prof.'
     Dr = 'Dr.'
     Ms = 'Ms.'
+    Miss = 'Miss'
+    Ing = 'Ing.'
+    Rev = 'Rev.'
+    #Rev.Dr = 'Rev.Dr.'
+    Bishop = 'Bishop.'
     Other = 'Other'
 
 
