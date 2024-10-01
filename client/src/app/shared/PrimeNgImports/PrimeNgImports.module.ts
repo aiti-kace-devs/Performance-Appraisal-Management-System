@@ -11,6 +11,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TabViewModule } from 'primeng/tabview';
 import { DropdownModule } from 'primeng/dropdown';
 import { PickListModule } from 'primeng/picklist';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { TooltipModule } from 'primeng/tooltip';
 
 const sharedImports = [
   ButtonModule,
@@ -24,6 +26,8 @@ const sharedImports = [
   TabViewModule,
   DropdownModule,
   PickListModule,
+  AutoCompleteModule,
+  TooltipModule,
 ];
 
 @NgModule({

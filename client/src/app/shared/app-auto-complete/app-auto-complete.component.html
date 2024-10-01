@@ -1,0 +1,18 @@
+<span class="flex w-full">
+  <p-autoComplete
+    [formControl]="control"
+    [suggestions]="suggestions"
+    (completeMethod)="search($event)"
+    [multiple]="multiple"
+    [minLength]="1"
+    [forceSelection]="forceSelection"
+    [field]="field"
+    [dataKey]="dataKey"
+    [dropdown]="dropdown"
+    (onKeyUp)="onKeyUp($event)"
+    [placeholder]="placeholder"
+    appendTo="body"
+    styleClass="w-full"
+  ></p-autoComplete>
+</span>
+

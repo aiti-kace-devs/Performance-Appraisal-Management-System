@@ -1,60 +1,137 @@
-<div class="surface-card p-4 p-fluid">
+<div class="surface-card p-4 p-fluid" [formGroup]="staffForm">
   <div class="grid formgrid p-fluid">
     <div class="field mb-4 col-12 md:col-4">
       <label for="title" class="font-medium text-900">Title</label>
-      <input type="text" pInputText />
+      <p-dropdown
+        styleClass="w-full"
+        [options]="titles"
+        placeholder="Select title"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="title"
+        [readonly]="readOnly"
+      ></p-dropdown>
     </div>
     <div class="field mb-4 col-12 md:col-8">
       <label for="first_name" class="font-medium text-900">First Name</label>
-      <input type="text" pInputText />
+      <input
+        type="text"
+        pInputText
+        formControlName="first_name"
+        [readonly]="readOnly"
+      />
     </div>
     <div class="field mb-4 col-12 md:col-6">
       <label for="last_name" class="font-medium text-900">Last Name</label>
-      <input type="text" pInputText />
+      <input
+        type="text"
+        pInputText
+        formControlName="last_name"
+        [readonly]="readOnly"
+      />
     </div>
     <div class="field mb-4 col-12 md:col-6">
       <label for="other_name" class="font-medium text-900">Other Name</label>
-      <input type="text" pInputText />
+      <input
+        type="text"
+        pInputText
+        formControlName="other_name"
+        [readonly]="readOnly"
+      />
     </div>
     <div class="field mb-4 col-12 md:col-8">
       <label for="email" class="font-medium text-900">Email</label>
-      <input type="text" pInputText />
+      <input
+        type="text"
+        pInputText
+        formControlName="email"
+        [readonly]="readOnly"
+      />
     </div>
     <div class="field mb-4 col-12 md:col-4">
       <label for="gender" class="font-medium text-900">Gender</label>
-      <input type="text" pInputText />
+      <p-dropdown
+        styleClass="w-full"
+        [options]="gender"
+        placeholder="Select Gender"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="gender"
+        [readonly]="readOnly"
+      ></p-dropdown>
     </div>
     <div class="field mb-4 col-12 md:col-5">
       <label for="departmnet" class="font-medium text-900">Department</label>
-      <input type="text" pInputText />
+      <p-autoComplete
+        formControlName="department_id"
+        placeholder="Select department"
+        [suggestions]="filteredDepartments"
+        dataKey="name"
+        (completeMethod)="filterDepartment($event)"
+        field="name"
+        [dropdown]="!readOnly"
+        appendTo="body"
+        [readonly]="readOnly"
+      >
+        <ng-template let-department pTemplate="item">
+          <div>
+            <div>{{ department.name }}</div>
+          </div>
+        </ng-template>
+      </p-autoComplete>
     </div>
     <div class="field mb-4 col-12 md:col-4">
       <label for="position" class="font-medium text-900">Position</label>
-      <input type="text" pInputText />
+      <input
+        type="text"
+        pInputText
+        formControlName="position"
+        [readonly]="readOnly"
+      />
     </div>
     <div class="field mb-4 col-12 md:col-3">
       <label for="grade" class="font-medium text-900">Grade</label>
-      <input type="text" pInputText />
+      <input
+        type="text"
+        pInputText
+        formControlName="grade"
+        [readonly]="readOnly"
+      />
     </div>
     <div class="field mb-4 col-12 md:col-6">
       <label for="appointment_date" class="font-medium text-900"
         >Appointment Date</label
       >
-      <p-calendar [showIcon]="true"></p-calendar>
+      <p-calendar
+        [showIcon]="true"
+        formControlName="appointment_date"
+        [disabled]="readOnly"
+      ></p-calendar>
     </div>
 
     <div class="field mb-4 col-12 md:col-6">
       <label for="role" class="font-medium text-900">Role</label>
-      <input type="text" pInputText />
+      <p-dropdown
+        styleClass="w-full"
+        [options]="roles"
+        placeholder="Select role"
+        optionLabel="name"
+        optionValue="id"
+        formControlName="role_id"
+        [readonly]="readOnly"
+      ></p-dropdown>
     </div>
 
     <div class="surface-border border-top-1 opacity-50 mb-4 col-12"></div>
   </div>
   <button
+    *ngIf="!readOnly"
+    [disabled]="staffForm.invalid"
     pButton
     pRipple
-    label="Create Invoice"
+    label="Submit"
     icon="pi pi-file"
     class="w-auto"
+    (click)="submitForm()"
   ></button>
 </div>

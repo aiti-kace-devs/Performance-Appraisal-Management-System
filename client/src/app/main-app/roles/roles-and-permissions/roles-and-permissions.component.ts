@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { IRole } from './../../../shared/interfaces';
+import { Component, Input, OnInit } from '@angular/core';
 import { RolesService } from '../service/roles.service';
 
 @Component({
@@ -8,11 +7,13 @@ import { RolesService } from '../service/roles.service';
   styleUrl: './roles-and-permissions.component.scss',
 })
 export class RolesAndPermissionsComponent implements OnInit {
+  @Input() isRoleSelect = true;
   roles = [];
   selectedRole: any;
   permissions = [];
   unassignedPermission: any[] = [];
   assignedPermission: any[] = [];
+  originalAssignedPermissions: any[] = [];
 
   constructor(private roleService: RolesService) {}
 
@@ -37,12 +38,34 @@ export class RolesAndPermissionsComponent implements OnInit {
 
   onRoleChange(event: any) {
     this.roleService.getRolePermissions(event.value.id).subscribe((rp: any) => {
-      this.assignedPermission = rp.permissions;
+      const permissions = rp.permissions;
+      this.assignedPermission = permissions;
+      this.originalAssignedPermissions = [...permissions];
       this.filterAssigned();
     });
   }
 
   savePermissions() {
-    console.log('data saved');
+    const data = {
+      permissions: this.assignedPermission.map((p) => p.id),
+    };
+
+    console.log(data);
+  }
+
+  get noChange() {
+    return (
+      this.assignedPermission?.length === 0 ||
+      (this.assignedPermission?.length > 0 &&
+        this.originalAssignedPermissions.length > 0 &&
+        this.assignedPermission?.length ===
+          this.originalAssignedPermissions?.length &&
+        this.originalAssignedPermissions?.every((perm) =>
+          this.assignedPermission.includes(perm)
+        ) &&
+        this.assignedPermission?.every((perm) =>
+          this.originalAssignedPermissions.includes(perm)
+        ))
+    );
   }
 }

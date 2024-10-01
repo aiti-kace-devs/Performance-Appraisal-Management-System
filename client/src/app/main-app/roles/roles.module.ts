@@ -2,22 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PrimeNgImportsModule } from '../../shared/PrimeNgImports/PrimeNgImports.module';
-import { AppTableModule } from '../../shared/app-table/app-table.module';
+import { StaffModule } from '../staff/staff.module';
 import { errorTailorImports } from '@ngneat/error-tailor';
 import { RolesLayoutComponent } from './roles-layout/roles-layout.component';
 import { RolesAndPermissionsComponent } from './roles-and-permissions/roles-and-permissions.component';
-import { StaffPermissionsComponent } from './staff-permissions/staff-permissions.component';
 
 @NgModule({
-  declarations: [
-    RolesLayoutComponent,
-    RolesAndPermissionsComponent,
-    StaffPermissionsComponent,
-  ],
+  declarations: [RolesLayoutComponent, RolesAndPermissionsComponent],
   imports: [
     CommonModule,
     PrimeNgImportsModule,
-    AppTableModule,
+    StaffModule,
     FormsModule,
     ReactiveFormsModule,
     errorTailorImports,

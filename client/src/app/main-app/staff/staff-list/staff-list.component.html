@@ -22,8 +22,39 @@
     [showCaption]="true"
     [showDownload]="true"
     [filename]="filename"
-    [showAction]="false"
-    [actionPositionLeft]="true"
+    [showAction]="true"
+    [actionTemplate]="action"
+    [searchFunction]="searchFunction"
   >
   </app-table>
+
+  <ng-template #action let-data>
+    <div class="flex">
+      <button
+        pButton
+        pRipple
+        pTooltip="View Staff"
+        icon="pi pi-eye"
+        class="p-button-warning"
+        (click)="viewStaff(data)"
+      ></button>
+      &nbsp;
+      <button
+        pButton
+        pRipple
+        pTooltip="Edit Staff"
+        icon="pi pi-pencil"
+        (click)="editStaff(data)"
+      ></button>
+      &nbsp;
+      <button
+        pButton
+        pRipple
+        pTooltip="Remove Staff"
+        icon="pi pi-trash"
+        class="p-button-danger"
+        (click)="removeStaff(data)"
+      ></button>
+    </div>
+  </ng-template>
 </div>

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { IStaff, IColumnDef } from '../../../shared/interfaces';
 import { StaffState } from '../../../store/staff/staff.state';
-import { GetStaff } from '../../../store/staff/staff.action';
+import { DeleteStaff, GetStaff } from '../../../store/staff/staff.action';
 import { AppAlertService } from '../../../shared/alerts/service/app-alert.service';
 import { StaffFormComponent } from '../staff-form/staff-form.component';
 
@@ -17,18 +17,22 @@ export class StaffListComponent implements OnInit {
   staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
 
   columns: IColumnDef[] = [
-    { header: 'First Name', field: 'first_name' },
-    { header: 'Last Name', field: 'last_name' },
+    { header: 'Full Name', field: 'full_name', sortable: true },
     { header: 'Position', field: 'position' },
-    { header: 'Department', field: 'department_id' },
+    { header: 'Department', field: 'department_id', subField: 'name' },
   ];
   title = 'Staff List';
   filename: string = 'staff-list';
+  staffs: IStaff[] = [];
 
   constructor(public alert: AppAlertService, private store: Store) {}
 
   ngOnInit() {
     this.getStaff();
+
+    this.staff$.subscribe((staff) => {
+      this.staffs = staff;
+    });
   }
 
   getStaff() {
@@ -41,4 +45,38 @@ export class StaffListComponent implements OnInit {
       closable: true,
     });
   }
+
+  viewStaff(data: any) {
+    this.alert.openDialog(StaffFormComponent, {
+      header: 'Staff Details',
+      data: { ...data, type: 'view' },
+      closable: true,
+    });
+  }
+
+  editStaff(data: any) {
+    this.alert.openDialog(StaffFormComponent, {
+      header: 'Update Staff Details',
+      data: { ...data, type: 'edit' },
+      closable: true,
+    });
+  }
+
+  removeStaff(data: any) {
+    this.alert.showConfirmation({
+      popupTarget: event?.target,
+      message: 'Are you sure you want to proceed?',
+      acceptFunction: () => {
+        this.store.dispatch(new DeleteStaff(data.id));
+      },
+    });
+  }
+
+  searchFunction = (toSearch: string) => {
+    const filtered = this.staffs?.filter((d) => {
+      return d.full_name?.toLowerCase().includes(toSearch);
+    });
+
+    return of(filtered || []);
+  };
 }

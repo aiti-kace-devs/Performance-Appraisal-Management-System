@@ -3,6 +3,7 @@ export interface IStaff {
   first_name: string;
   last_name: string;
   other_name: string;
+  full_name?: string;
   gender: string;
   email: string;
   position: string;
@@ -24,6 +25,8 @@ export interface IColumnDef {
   field: string;
   label?: string;
   value?: string;
+  sortable?: boolean;
+  subField?: string;
 }
 
 export interface IRole {
