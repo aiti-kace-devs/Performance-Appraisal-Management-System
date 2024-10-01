@@ -27,47 +27,47 @@ def init_db(db: Session):
     roles_permissions = {
         "Super Admin": [
             "createDepartment", "readDepartment", "updateDepartment", "deleteDepartment", 
-            "getDepartmentByID", "readAllStaffUnderDepartment", "createStaff", "readStaff",
-            "updateStaff", "deleteStaff", "getStaffByID", "uploadStaff", "readAppraisalCycle",
-            "getAppraisalCycleByID", "readAppraisalConfiguration", "searchAppraisalConfigurationByKeyword", 
-            "getAppraisalConfigurationByID", "readAppraisalSection", "getAppraisalSectionByID", 
-            "readCompetencyBank", "getCompetencyBankByID", "readStaffDeadline", "getStaffDeadlineByID", 
-            "readKRABank", "getKRABankByID", "readRolePermission", "getRolePermissionByRoleID", 
-            "readRoles", "getRoleByID", "updateRole", "addPermissionToRole", "readPermissions", 
-            "updatePermission", "getPermissionByID"
+             "readAllStaffUnderDepartment", "createStaff", "readStaff",
+            "updateStaff", "deleteStaff",  "uploadStaff", "readAppraisalCycle",
+             "readAppraisalConfiguration", "searchAppraisalConfigurationByKeyword", 
+             "readAppraisalSection",  
+            "readCompetencyBank",  "readStaffDeadline",  
+            "readKRABank",  "readRolePermission",  
+            "readRoles",  "updateRole", "addPermissionToRole", "readPermissions", 
+            "updatePermission"
         ],
         "HR": [
-        "createDepartment","readDepartment","updateDepartment", "deleteDepartment","getDepartmentByID",
-        "readAllStaffUnderDepartment","createStaff","readStaff","updateStaff","deleteStaff","getStaffByID",
+        "createDepartment","readDepartment","updateDepartment", "deleteDepartment",
+        "readAllStaffUnderDepartment","createStaff","readStaff","updateStaff","deleteStaff",
         "uploadStaff","createAppraisalCycle","readAppraisalCycle", "updateAppraisalCycle",
-        "deleteAppraisalCycle","getAppraisalCycleByID","readAppraisalConfiguration","updateAppraisalConfiguration",
-        "searchAppraisalConfigurationByKeyword","deleteAppraisalConfiguration","getAppraisalConfigurationByID",
-        "readAppraisalSection","getAppraisalSectionByID","readCompetencyBank","getCompetencyBankByID",
-        "readAppraisalForm","getAppraisalFormByID","createAppraisalSubmission","readAppraisalSubmission",
-        "updateAppraisalSubmission","getAppraisalSubmissionByID","readStaffPermission","updateStaffPermission",
-        "deleteStaffPermission","getStaffPermissionByID","readStaffDeadline","getStaffDeadlineByID",
-        "readKRABank","getKRABankByID", "readRolePermission","getRolePermissionByRoleID","removeRolePermission",
-        "readRoles","getRoleByID","updateRole","addPermissionToRole","readPermissions",
-        "updatePermission","getPermissionByID", "approveAppraisal","commentAppraisal"
+        "deleteAppraisalCycle","readAppraisalConfiguration","updateAppraisalConfiguration",
+        "searchAppraisalConfigurationByKeyword","deleteAppraisalConfiguration",
+        "readAppraisalSection","readCompetencyBank","submitAppraisalForm",
+        "readAppraisalForm","createAppraisalSubmission","readAppraisalSubmission",
+        "updateAppraisalSubmission","readStaffPermission","updateStaffPermission",
+        "deleteStaffPermission","readStaffDeadline",
+        "readKRABank", "readRolePermission","removeRolePermission",
+        "readRoles","updateRole","addPermissionToRole","readPermissions",
+        "updatePermission", "approveAppraisal","commentAppraisal"
         ],
         "Staff": [
-           "readDepartment","getDepartmentByID", "readAppraisalCycle","getAppraisalCycleByID", "readAppraisalConfiguration",
-           "getAppraisalConfigurationByID","eadAppraisalSection","getAppraisalSectionByID","readCompetencyBank",
-           "getCompetencyBankByID","createAppraisalForm","readAppraisalForm","updateAppraisalForm",
-           "getAppraisalFormByID","submitAppraisalForm","readAppraisalSubmission","updateAppraisalSubmission",
-           "getAppraisalSubmissionByID","createStaffDeadline","getStaffDeadlineByID"
+           "readDepartment", "readAppraisalCycle", "readAppraisalConfiguration",
+           "eadAppraisalSection","readCompetencyBank",
+           "readAppraisalForm","updateAppraisalForm",
+           "submitAppraisalForm","readAppraisalSubmission","updateAppraisalSubmission",
+           "createStaffDeadline"
         ],
         "Supervisor": [
-        "readDepartment","getDepartmentByID", "readAllStaffUnderDepartment", "readStaff",
-        "getStaffByID","readAppraisalCycle","getAppraisalCycleByID","createAppraisalConfiguration","readAppraisalConfiguration",
-        "updateAppraisalConfiguration","searchAppraisalConfigurationByKeyword","deleteAppraisalConfiguration","getAppraisalConfigurationByID",
-        "createAppraisalSection","readAppraisalSection","upateAppraisalSection","deleteAppraisalSection","getAppraisalSectionByID",
-        "createCompetencyBank","readCompetencyBank","updateCompetencyBank","deletCompetencyBank","getCompetencyBankByID",
-        "createAppraisalForm","readAppraisalForm","updateAppraisalForm","getAppraisalFormByID",
+        "readDepartment", "readAllStaffUnderDepartment", "readStaff",
+        "readAppraisalCycle","createAppraisalConfiguration","readAppraisalConfiguration",
+        "updateAppraisalConfiguration","searchAppraisalConfigurationByKeyword","deleteAppraisalConfiguration",
+        "createAppraisalSection","readAppraisalSection","upateAppraisalSection","deleteAppraisalSection",
+        "createCompetencyBank","readCompetencyBank","updateCompetencyBank","deletCompetencyBank",
+        "createAppraisalForm","readAppraisalForm","updateAppraisalForm",
         "createAppraisalSubmission","readAppraisalSubmission","updateAppraisalSubmission",
-        "getAppraisalSubmissionByID","createStaffDeadline","readStaffDeadline","updateStaffDeadline",
-        "getStaffDeadlineByID","createKRABank","readKRABank","updateKRABank",
-        "deleteKRABank","getKRABankByID","approveAppraisal","commentAppraisal"
+        "createStaffDeadline","readStaffDeadline","updateStaffDeadline",
+        "createKRABank","readKRABank","updateKRABank","submitAppraisalForm",
+        "deleteKRABank","approveAppraisal","commentAppraisal"
         ]
     }
 
