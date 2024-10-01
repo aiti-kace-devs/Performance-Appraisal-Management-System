@@ -1,5 +1,5 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
-from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase
+from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase,DepartmentInfo,RoleInfo
 from domains.appraisal.models.role_permissions import Role
 from domains.appraisal.models.department import Department
 from domains.appraisal.models.staff import Staff
@@ -25,32 +25,47 @@ class StaffService:
 
 
     async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
-        # Query to get staff and their department names
-        staff_query = db.query(Staff, Department.name).join(Department, Staff.department_id == Department.id).offset(skip).limit(limit)
-        
-        # Fetch results
-        staff_with_department = staff_query.all()
-        
-        # Create StaffWithFullNameInDBBase instances
-        staff_list = [
-        StaffWithFullNameInDBBase(
-            id=staff.id,
-            title=staff.title,
-            first_name=staff.first_name,
-            last_name=staff.last_name,
-            other_name=staff.other_name,
-            full_name=f"{staff.first_name} {staff.last_name}" + (f" {staff.other_name}" if staff.other_name else ""),
-            gender=staff.gender,
-            email=staff.email,
-            position=staff.position,
-            grade=staff.grade,
-            appointment_date=staff.appointment_date,
-            department_id=department_name
+
+        staff_query = (
+            db.query(Staff, Department.id.label('department_id'), Department.name.label('department_name'), Role.id.label('role_id'), Role.name.label('role_name'))
+            .join(Department, Staff.department_id == Department.id)
+            .join(User, User.staff_id == Staff.id)
+            .join(Role, User.role_id == Role.id)
+            .offset(skip)
+            .limit(limit)
         )
-        for staff, department_name in staff_with_department
-    ]
-    
+        
+        staff_with_details = staff_query.all()
+        
+        staff_list = [
+            StaffWithFullNameInDBBase(
+                id=staff.id,
+                title=staff.title,
+                first_name=staff.first_name,
+                last_name=staff.last_name,
+                other_name=staff.other_name,
+                full_name=f"{staff.first_name} {staff.last_name}" + (f" {staff.other_name}" if staff.other_name else ""),
+                gender=staff.gender,
+                email=staff.email,
+                position=staff.position,
+                grade=staff.grade,
+                appointment_date=staff.appointment_date,
+                department_id=DepartmentInfo(
+                    id=department_id,
+                    name=department_name
+                ),
+                role_id=RoleInfo(
+                    id=role_id,
+                    name=role_name
+                )
+            )
+            for staff, department_id, department_name, role_id, role_name in staff_with_details
+        ]
+
+        
         return staff_list
+
+
     
 
 
@@ -104,7 +119,6 @@ class StaffService:
         
         JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
 
-
         data = {
             'id': staff_obj.id,
             'title': staff_obj.title,
@@ -112,12 +126,19 @@ class StaffService:
             'last_name': staff_obj.last_name,
             'other_name': staff_obj.other_name,
             'full_name': f"{staff_obj.first_name} {staff_obj.last_name}" + (f" {staff_obj.other_name}" if staff_obj.other_name else ""),
-            'department_id': check_department_id.name,
+            'department_id': {
+                'id': check_department_id.id,
+                'name': check_department_id.name,
+            },
             'gender': staff_obj.gender,
             'email': staff_obj.email,
             'position': staff_obj.position,
             'grade': staff_obj.grade,
-            'appointment_date': staff_obj.appointment_date,           
+            'appointment_date': staff_obj.appointment_date, 
+            'role_id': {
+                'id': check_if_role_id_exists.id,
+                'name': check_if_role_id_exists.name,
+            },          
             'created_at': staff_obj.created_date,
         }
 
@@ -133,39 +154,8 @@ class StaffService:
         return update_staff
  
 
-    def get_staff(self, *, db: Session, id: UUID):
-        get_staff = Staff_form_repo.get(db=db, id=id)
-        if not get_staff:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
-        
-        get_staff_department = department_actions.get(db, get_staff.department_id)
-        get_user = db.query(User).filter(User.staff_id == get_staff.id).first()
-        get_staff_role = role_actions.get(db, get_user.role_id)
-        
-        data = {
-            'id': get_staff.id,
-            'title': get_staff.title,
-            'first_name': get_staff.first_name,
-            'last_name': get_staff.last_name,
-            'other_name': get_staff.other_name,
-            'full_name': f"{get_staff.first_name} {get_staff.last_name}" + (f" {get_staff.other_name}" if get_staff.other_name else ""),
-            'department_id': {
-                "id": get_staff_department.id,
-                "name": get_staff_department.name
-            }, 
-            'gender': get_staff.gender,
-            'email': get_staff.email,
-            'position': get_staff.position,
-            'grade': get_staff.grade,
-            'appointment_date': get_staff.appointment_date,           
-            'role_id': {
-                "id": get_staff_role.id,
-                "name": get_staff_role.name
-            },
-            'created_at': get_staff.created_date,
-        }
 
-        return data
+
 
 
 

@@ -103,6 +103,14 @@ class StaffInDBBase(BaseModel):
         
 
 
+class DepartmentInfo(BaseModel):
+    id: UUID4
+    name: str
+
+class RoleInfo(BaseModel):
+    id: UUID4
+    name: str
+
 
 class StaffWithFullNameInDBBase(BaseModel):
     id: UUID4
@@ -114,9 +122,10 @@ class StaffWithFullNameInDBBase(BaseModel):
     gender : Gender
     email: EmailStr
     position : str
-    department_id : str
+    department_id : DepartmentInfo
     grade : str
     appointment_date : Optional[date]
+    role_id: RoleInfo
 
     class Config:
         orm_mode= True
