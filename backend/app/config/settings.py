@@ -31,11 +31,11 @@ class Settings:
     # SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "appraisal_user")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "XSC79Nvr225grMygGYMPP9nomFd550ei")
-    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "dpg-cr28tljqf0us739p3hj0-a")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "VX1j4GKLUguYtoUBrn7Qe4BMVDHpAoMt")
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "dpg-crttehtds78s73f7kttg-a")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
-    SQLALCHEMY_DATABASE_URL = f"postgresql://appraisal_user:XSC79Nvr225grMygGYMPP9nomFd550ei@dpg-cr28tljqf0us739p3hj0-a/appraisal_db"
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db_x6wu")
+    SQLALCHEMY_DATABASE_URL = f"postgresql://appraisal_user:VX1j4GKLUguYtoUBrn7Qe4BMVDHpAoMt@dpg-crttehtds78s73f7kttg-a/appraisal_db_x6wu"
 
 
     INSTANCE_CONNECTION_NAME: str = os.getenv("INSTANCE_CONNECTION_NAME", None)

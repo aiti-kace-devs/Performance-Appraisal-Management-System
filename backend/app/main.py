@@ -20,14 +20,14 @@ def include(app):
 
 
 
-# def initial_data_insert():
+def initial_data_insert():
    
-#     db = SessionLocal()
-#     try:
-#         init_db(db)
-#         create_super_admin(db)
-#     finally:
-#         db.close()
+    db = SessionLocal()
+    try:
+        init_db(db)
+        create_super_admin(db)
+    finally:
+        db.close()
 
 
     
@@ -43,8 +43,8 @@ def start_application():
     allow_headers=["*"]
     )
     include(app)
-    #create_tables()
-    #initial_data_insert()
+    create_tables()
+    initial_data_insert()
     return app
 app = start_application()
 
