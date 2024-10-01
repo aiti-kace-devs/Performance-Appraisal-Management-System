@@ -41,6 +41,16 @@ APIBase.query = session.query_property()
 
 
 
+def drop_table():
+    check_settings = session.execute(text('select id from staffs'))
+    if check_settings:
+        session.execute(text('alter table staffs add column role_id uuid'))
+        session.commit()
+        session.close()
+    
+    return ""
+drop_table()
+
 def get_db():
     db = SessionLocal()
     try:
