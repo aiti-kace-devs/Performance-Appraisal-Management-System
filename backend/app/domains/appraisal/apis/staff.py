@@ -123,3 +123,19 @@ def search_staff(
             detail="staff not found"
         )
     return search_staff
+
+
+
+
+
+@staff_router.get(
+    "/supervisors/",
+    response_model=List[schemas.StaffWithFullNameInDBBase]
+)
+async def list_supervisors(
+        db: Session = Depends(get_db),
+        skip: int = 0,
+        limit: int = 100
+) -> Any:
+    get_supervisors_router = actions.get_supervisors(db=db, skip=skip, limit=limit)
+    return get_supervisors_router

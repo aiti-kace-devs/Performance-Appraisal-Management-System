@@ -111,19 +111,13 @@ class StaffService:
             'first_name': staff_obj.first_name,
             'last_name': staff_obj.last_name,
             'other_name': staff_obj.other_name,
-            'department_id': {
-                "id": check_department_id.id,
-                "name": check_department_id.name
-            }, 
+            'full_name': f"{staff_obj.first_name} {staff_obj.last_name}" + (f" {staff_obj.other_name}" if staff_obj.other_name else ""),
+            'department_id': check_department_id.name,
             'gender': staff_obj.gender,
             'email': staff_obj.email,
             'position': staff_obj.position,
             'grade': staff_obj.grade,
             'appointment_date': staff_obj.appointment_date,           
-            'role_id': {
-                "id": check_if_role_id_exists.id,
-                "name": check_if_role_id_exists.name
-            },
             'created_at': staff_obj.created_date,
         }
 
@@ -223,6 +217,48 @@ class StaffService:
             return {"error": "Invalid search parameter."}
         
         return response
+
+
+
+
+    def get_supervisors(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
+        get_supervisor = db.query(Role).filter(Role.name == "Supervisor").first()
+
+        if not get_supervisor:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Supervisor role not found")
+
+        staff_query = (
+            db.query(Staff, Department.name)
+            .join(Department, Staff.department_id == Department.id)
+            .join(User, User.staff_id == Staff.id)  # Separate join for User
+            .filter(User.role_id == get_supervisor.id)  # Filter by role_id
+            .offset(skip)
+            .limit(limit)
+        )
+
+        staff_with_department = staff_query.all()
+
+        # Create StaffWithFullNameInDBBase instances
+        staff_list = [
+            StaffWithFullNameInDBBase(
+                id=staff.id,
+                title=staff.title,
+                first_name=staff.first_name,
+                last_name=staff.last_name,
+                other_name=staff.other_name,
+                full_name=f"{staff.first_name} {staff.last_name}" + (f" {staff.other_name}" if staff.other_name else ""),
+                gender=staff.gender,
+                email=staff.email,
+                position=staff.position,
+                grade=staff.grade,
+                appointment_date=staff.appointment_date,
+                department_id=department_name
+            )
+            for staff, department_name in staff_with_department
+        ]
+
+        return staff_list
+
 
 
 
