@@ -169,12 +169,39 @@ class StaffService:
 
 
 
-    def delete_staff(self, *, db: Session, id: UUID) -> StaffSchema:
+    def delete_staff(self, *, db: Session, id: UUID):
         get_staff2 = Staff_form_repo.get(db=db, id=id)
         if not get_staff2:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
-        delete_staff = Staff_form_repo.remove(db=db, id=id)
-        return delete_staff
+        Staff_form_repo.remove(db=db, id=id)
+        
+
+        get_staff_department = department_actions.get(db, get_staff2.department_id)
+        
+        data = {
+            'id': get_staff2.id,
+            'title': get_staff2.title,
+            'first_name': get_staff2.first_name,
+            'last_name': get_staff2.last_name,
+            'other_name': get_staff2.other_name,
+            'full_name': f"{get_staff2.first_name} {get_staff2.last_name}" + (f" {get_staff2.other_name}" if get_staff2.other_name else ""),
+            'department_id': get_staff_department.name,
+            'gender': get_staff2.gender,
+            'email': get_staff2.email,
+            'position': get_staff2.position,
+            'grade': get_staff2.grade,
+            'appointment_date': get_staff2.appointment_date,           
+            'created_at': get_staff2.created_date,
+        }
+
+        return data
+    
+
+
+
+
+
+
 
     def get_staff_by_id(self, *, id: UUID) -> StaffSchema:
         get_staff_by_id = Staff_form_repo.get(id)

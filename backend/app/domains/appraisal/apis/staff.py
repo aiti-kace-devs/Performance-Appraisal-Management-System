@@ -84,8 +84,7 @@ def get_staff(
 
 
 @staff_router.delete(
-    "/{id}",
-    response_model=schemas.StaffSchema
+    "/{id}"
 )
 def delete_staff(
         *, db: Session = Depends(get_db),
