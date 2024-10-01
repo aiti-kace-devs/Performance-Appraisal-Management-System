@@ -7,7 +7,7 @@ from db.base_class import UUID
 from domains.appraisal.respository.appraisal import appraisal_form_actions as appraisal_repo
 from domains.appraisal.schemas.appraisal import AppraisalSchema, AppraisalUpdate, AppraisalCreate
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
-from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.staff_role_permissions import Staff
 
 
 class AppraisalService:

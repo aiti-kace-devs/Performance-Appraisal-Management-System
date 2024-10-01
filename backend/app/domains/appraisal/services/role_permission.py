@@ -7,7 +7,7 @@ from sqlalchemy import func
 from db.base_class import UUID
 from domains.appraisal.respository.role_permission import role_perm_actions as role_perm_repo
 from domains.appraisal.schemas.role_permissions import RolePermissionCreate, RolePermissionUpdate, RolePermissionRead, PermissionRead
-from domains.appraisal.models.role_permissions import Role, Permission, role_permissions
+from domains.appraisal.models.staff_role_permissions import Role, Permission, role_permissions
 # from domains.appraisal.models.roles import Role 
 # from domains.appraisal.models.permissions import Permission
 

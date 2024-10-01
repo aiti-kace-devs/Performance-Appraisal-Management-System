@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship, backref
 
 from domains.appraisal.models.department import Department
 from domains.appraisal.models.appraisal_section import AppraisalSection
-from domains.appraisal.models.staff import Staff 
+from domains.appraisal.models.staff_role_permissions import Staff 
 
 
 class KraBank(APIBase):

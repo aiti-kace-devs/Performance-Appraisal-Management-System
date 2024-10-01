@@ -1,5 +1,5 @@
 from crud.base import CRUDBase
-from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.staff_role_permissions import Staff
 from domains.appraisal.schemas.staff import (
     StaffCreate, StaffUpdate
 )

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.appraisal.respository.competency_bank import competency_bank_form_actions as competency_bank_form_repo
 from domains.appraisal.schemas.competency_bank import CompetencyBankSchema, CompetencyBankUpdate, CompetencyBankCreate
-from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.staff_role_permissions import Staff
 from domains.appraisal.models.competency_bank import CompetencyBank
 from domains.appraisal.models.appraisal_section import AppraisalSection
 

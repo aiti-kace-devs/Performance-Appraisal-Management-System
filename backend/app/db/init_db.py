@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 # Assuming the correct import for Role and Permission models
 # from domains.appraisal.models.roles import Role
 # from domains.appraisal.models.permissions import Permission
-from domains.appraisal.models.role_permissions import Role, Permission
+from domains.appraisal.models.staff_role_permissions import Role, Permission
 from domains.auth.models.users import User
 from domains.auth.schemas.user_account import UserCreate
 from utils.security import pwd_context

@@ -1,8 +1,8 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
-from domains.appraisal.models.role_permissions import Role
+from domains.appraisal.models.staff_role_permissions import Role, Staff
 from domains.appraisal.models.department import Department
-from domains.appraisal.models.staff import Staff
+# from domains.appraisal.models.staff import Staff
 from domains.auth.models.users import User
 from fastapi import HTTPException,status
 from sqlalchemy.orm import Session

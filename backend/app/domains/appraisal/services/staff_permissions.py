@@ -6,10 +6,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.staff_permissions import staff_permission_action as staff_permission_repo
 from domains.appraisal.schemas.staff_permissions import StaffPermissionSchema, StaffPermissionUpdate, StaffPermissionCreate
-from domains.appraisal.models.staff import Staff
-from domains.appraisal.models.staff_permissions import StaffPermission
-from domains.appraisal.models.role_permissions import Role
-from domains.appraisal.models.role_permissions import Permission
+from domains.appraisal.models.staff_role_permissions import Staff, staff_permissions, Role, Permission
+# from domains.appraisal.models.staff_permissions import StaffPermission
+# from domains.appraisal.models.staff_role_permissions import Role, Permission
+# from domains.appraisal.models.role_permissions import Permission
 
 class StaffPermissionService:
 
@@ -20,7 +20,7 @@ class StaffPermissionService:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s not found in staff table" % staff_permission.staffs_id)
         
         # Check for duplicate staff IDs in the staff permission table.
-        check_staff_id = db.query(StaffPermission).filter(StaffPermission.staffs_id == staff_permission.staffs_id).first()
+        check_staff_id = db.query(staff_permissions).filter(staff_permissions.staffs_id == staff_permission.staffs_id).first()
         if check_staff_id:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="staff with id %s already exist in staff_permission table" % staff_permission.staffs_id)
         
