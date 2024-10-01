@@ -29,7 +29,22 @@ class RoleSchema(BaseModel):
     name: str
     permissions: List[PermissionSchema]
 
+class PermissionResponse(BaseModel):
+    id: int
+    name: str
+    codename: str
 
+class StaffResponse(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    role: str
+    permissions: List[PermissionResponse]
+
+    class Config:
+        orm_mode = True
+        
 class StaffBase(BaseModel):
     title: Title
     first_name : str
@@ -41,7 +56,8 @@ class StaffBase(BaseModel):
     department_id : UUID4
     grade : str
     appointment_date : Optional[date]
-    role_id : Optional[UUID4] = Field(None, exclude=True)
+    # role_id : Optional[UUID4] = Field(None, exclude=True)
+    role_id: UUID4
     
 
 

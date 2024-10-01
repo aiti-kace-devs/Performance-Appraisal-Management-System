@@ -1,6 +1,6 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
-from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate
-from domains.appraisal.models.staff_role_permissions import Role, Staff
+from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate, StaffResponse
+from domains.appraisal.models.staff_role_permissions import Role, Staff, staff_permissions
 from domains.appraisal.models.department import Department
 # from domains.appraisal.models.staff import Staff
 from domains.auth.models.users import User
@@ -92,8 +92,23 @@ class StaffService:
         db.commit()
         db.refresh(user_in)
 
-        ## Assign permissions based on the role 
-        permissions = role.permissions
+        # # Assign permissions based on the role 
+        # for permission in role.permissions:
+        #     staff_permission = staff_permissions(staff_id=staff_obj.id, permission_id=permission.id)
+        #     db.add(staff_permission)
+
+        # db.commit()
+        permissions_ids = [] # List to hold permission IDs
+        # Assign permissions based on the role
+        for permission in role.permissions:  
+            staff_permission = {
+                "staff_id": staff_obj.id,
+                "permission_id": permission.id
+            }
+            db.execute(staff_permissions.insert().values(staff_permission))  # Insert into the staff_permissions table
+            permissions_ids.append(permission.id)
+
+        db.commit()  # Commit the staff permission
 
         ## if staff is created successfully 
         ## send an email to reset the password 
@@ -145,8 +160,9 @@ class StaffService:
             'role_id': {
                 "id": check_if_role_id_exists.id,
                 "name": check_if_role_id_exists.name,
-                "permissions": permissions
+                # "permissions": permissions
             },
+            'permissions_ids': permissions_ids,
             'created_at': staff_obj.created_date,
         }
 
