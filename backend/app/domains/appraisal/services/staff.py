@@ -148,6 +148,8 @@ class StaffService:
 
     def update_staff(self, *, db: Session, id: UUID, staff: StaffUpdate):
         get_staff1 = Staff_form_repo.get(db=db, id=id)
+
+        get_staff_user = db.query(User).filter(User.staff_id == get_staff1.id).first()
         if not get_staff1:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
         Staff_form_repo.update(db=db, db_obj=get_staff1, obj_in=staff)
@@ -156,9 +158,9 @@ class StaffService:
         get_staff_department = department_actions.get(db, get_staff1.department_id)
 
         get_staff_user.role_id = staff.role_id
-        get_staff_user = db.query(User).filter(User.staff_id == get_staff1.id).first()
-        get_staff_role = role_actions.get(db, staff.role_id)
         db.commit()
+        get_staff_role = role_actions.get(db, staff.role_id)
+        
         db.refresh(get_staff_role)
         
         data = {
