@@ -1,5 +1,5 @@
 from datetime import date,time
-from typing import Optional, Any, Dict
+from typing import Optional, Any, Dict, List
 from pydantic import BaseModel,UUID4, field_validator, model_validator
 import uuid
 
@@ -38,3 +38,18 @@ class StaffPermissionInDBBase(StaffPermissionBase):
 
 class StaffPermissionSchema(StaffPermissionInDBBase):
     pass
+
+class PermissionOut(BaseModel):
+    id: UUID4
+    name: str
+
+class StaffPermissionsOut(BaseModel):
+    staff_id: UUID4
+    staff_name: str
+    permissions: List[PermissionOut]
+
+class StaffUpdatePermissions(BaseModel):
+    permissions_ids: List[UUID4]  # List of permission IDs to assign to the staff
+
+    class Config:
+        orm_mode = True
