@@ -11,7 +11,7 @@ from domains.appraisal.models.staff import Staff
 from sqlalchemy import func
 from domains.appraisal.models.role_permissions import Role
 from domains.auth.models.users import User
-
+from fastapi.encoders import jsonable_encoder
 
 class AppraisalService:
 
@@ -45,12 +45,33 @@ class AppraisalService:
         return department_list
 
 
-    def create_department(self, *, db: Session, department: DepartmentCreate) -> DepartmentSchema:
+    def create_department(self, *, db: Session, department: DepartmentCreate) -> DepartmentWithTotalStaff:
+        # Check if the department name already exists
         check_department_name = db.query(Department).filter(Department.name == department.name).first()
         if check_department_name:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Department name already exist")
-        department = department_repo.create(db=db, obj_in=department)
-        return department
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Department name already exists")
+
+        # Create a new department
+        new_department = jsonable_encoder(department)
+        db_obj = Department(**new_department)
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+
+
+        department_list = {
+                'id':db_obj.id,
+                'name':db_obj.name,
+                'description':db_obj.description,
+                'total_staff': 0
+        }
+
+        return department_list
+
+
+
+    
+
 
     def update_department(self, *, db: Session, id: UUID, department: DepartmentUpdate) -> DepartmentSchema:
         department_ = department_repo.get(db=db, id=id)

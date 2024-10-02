@@ -35,7 +35,7 @@ def list_department(
 
 @department_router.post(
     "/",
-    response_model=schemas.DepartmentSchema,
+    response_model=schemas.DepartmentWithTotalStaff,
     status_code=HTTP_201_CREATED
 )
 async def create_department(
@@ -43,7 +43,7 @@ async def create_department(
         # 
         department_in: schemas.DepartmentCreate
 ) -> Any:
-    department_router = await actions.create_department(db=db, department=department_in)
+    department_router = actions.create_department(db=db, department=department_in)
     return department_router
 
 
