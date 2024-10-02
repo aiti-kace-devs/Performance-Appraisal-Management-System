@@ -1,6 +1,6 @@
 from datetime import date,time
 from typing import Optional, Any, Dict, List
-from pydantic import BaseModel,UUID4, field_validator, model_validator
+from pydantic import BaseModel,UUID4, field_validator, model_validator, Field
 import uuid
 
 class StaffPermissionBase(BaseModel):
@@ -49,7 +49,7 @@ class StaffPermissionsOut(BaseModel):
     permissions: List[PermissionOut]
 
 class StaffUpdatePermissions(BaseModel):
-    permissions_ids: List[UUID4]  # List of permission IDs to assign to the staff
+    permissions_ids: List[UUID4]  = Field(..., description="List of permission IDs to assign to the staff")# List of permission IDs to assign to the staff
 
     # Checking if fields are not empty and also not allowing the word string as value
     @field_validator('permissions_ids', mode='before')
@@ -58,13 +58,6 @@ class StaffUpdatePermissions(BaseModel):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
         return v
 
-    # Checking if UUID4 fields accept only UUID4 as value
-    @field_validator('permissions_ids', mode='before')
-    def validate_fields_with_uuid4(cls, v, info):
-        try:
-            uuid.UUID(str(v), version=4)
-        except ValueError:
-            raise ValueError(f'\n{info.field_name} must have a valid UUID4')
-        return v
+    
     class Config:
         orm_mode = True
