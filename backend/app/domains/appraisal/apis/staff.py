@@ -49,7 +49,6 @@ async def create_staff(
 
 @staff_router.put(
     "/{id}",
-    response_model=schemas.StaffSchema
 )
 def update_staff(
         *, db: Session = Depends(get_db),
@@ -57,28 +56,28 @@ def update_staff(
         id: UUID4,
         staff_in: schemas.StaffUpdate,
 ) -> Any:
-    staff_router = actions.get_staff(db=db, id=id)
+    staff_router = actions.get_staff_by_id(db=db, id=id)
     if not staff_router:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,
             detail="staff_router not found"
         )
-    staff_router =  actions.update_staff(db=db, id=staff_router.id, staff_in=staff_in)
+    staff_router =  actions.update_staff(db=db, id=staff_router.get('id'), staff=staff_in)
     return staff_router
 
 
 @staff_router.get(
-    "/{id}",
-)
+    "/{id}"
+    )
 def get_staff(
         *, db: Session = Depends(get_db),
         id: UUID4
 ) -> Any:
-    staff_router = actions.get_staff(db=db, id=id)
+    staff_router = actions.get_staff_by_id(db=db, id=id)
     if not staff_router:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,
-            detail="staff_router not found"
+            detail="staff not found"
         )
     return staff_router
 
@@ -91,7 +90,7 @@ def delete_staff(
         
         id: UUID4
 ) -> Any:
-    staff_router = actions.get_staff(db=db, id=id)
+    staff_router = actions.get_staff_by_id(db=db, id=id)
     if not staff_router:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,

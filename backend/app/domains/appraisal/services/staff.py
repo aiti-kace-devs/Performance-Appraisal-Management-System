@@ -146,13 +146,44 @@ class StaffService:
     
     
 
-    def update_staff(self, *, db: Session, id: UUID, staff: StaffUpdate) -> StaffSchema:
+    def update_staff(self, *, db: Session, id: UUID, staff: StaffUpdate):
         get_staff1 = Staff_form_repo.get(db=db, id=id)
         if not get_staff1:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
-        update_staff = Staff_form_repo.update(db=db, db_obj=get_staff1, obj_in=staff)
-        return update_staff
- 
+        Staff_form_repo.update(db=db, db_obj=get_staff1, obj_in=staff)
+
+
+        get_staff_department = department_actions.get(db, get_staff1.department_id)
+        get_staff_user = db.query(User).filter(User.staff_id == get_staff1.id).first()
+        get_staff_role = role_actions.get(db, get_staff_user.role_id)
+        
+        data = {
+            'id': get_staff1.id,
+            'title': get_staff1.title,
+            'first_name': get_staff1.first_name,
+            'last_name': get_staff1.last_name,
+            'other_name': get_staff1.other_name,
+            'full_name': f"{get_staff1.first_name} {get_staff1.last_name}" + (f" {get_staff1.other_name}" if get_staff1.other_name else ""),
+            'department_id': {
+                'id': get_staff_department.id,
+                'name': get_staff_department.name,
+            },
+            'gender': get_staff1.gender,
+            'email': get_staff1.email,
+            'position': get_staff1.position,
+            'grade': get_staff1.grade,
+            'appointment_date': get_staff1.appointment_date, 
+            'role_id': {
+                'id': get_staff_role.id,
+                'name': get_staff_role.name,
+            },          
+            'created_at': get_staff1.created_date,
+        }
+
+        return data
+        
+
+    
 
 
 
@@ -193,14 +224,42 @@ class StaffService:
 
 
 
-    def get_staff_by_id(self, *, id: UUID) -> StaffSchema:
-        get_staff_by_id = Staff_form_repo.get(id)
+    def get_staff_by_id(self, *, db: Session, id: UUID):
+        get_staff_by_id = Staff_form_repo.get(db, id)
         if not get_staff_by_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="staff not found"
             )
-        return get_staff_by_id
+        
+        get_staff_department = department_actions.get(db, get_staff_by_id.department_id)
+        get_staff_user = db.query(User).filter(User.staff_id == get_staff_by_id.id).first()
+        get_staff_role = role_actions.get(db, get_staff_user.role_id)
+        
+        data = {
+            'id': get_staff_by_id.id,
+            'title': get_staff_by_id.title,
+            'first_name': get_staff_by_id.first_name,
+            'last_name': get_staff_by_id.last_name,
+            'other_name': get_staff_by_id.other_name,
+            'full_name': f"{get_staff_by_id.first_name} {get_staff_by_id.last_name}" + (f" {get_staff_by_id.other_name}" if get_staff_by_id.other_name else ""),
+            'department_id': {
+                'id': get_staff_department.id,
+                'name': get_staff_department.name,
+            },
+            'gender': get_staff_by_id.gender,
+            'email': get_staff_by_id.email,
+            'position': get_staff_by_id.position,
+            'grade': get_staff_by_id.grade,
+            'appointment_date': get_staff_by_id.appointment_date, 
+            'role_id': {
+                'id': get_staff_role.id,
+                'name': get_staff_role.name,
+            },          
+            'created_at': get_staff_by_id.created_date,
+        }
+
+        return data
 
     def get_staff_by_keywords(self, *, db: Session, tag: str) -> List[StaffSchema]:
         pass
