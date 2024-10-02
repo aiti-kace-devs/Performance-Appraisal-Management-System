@@ -105,7 +105,7 @@ class RolePermssionService:
             role.permissions.clear()
 
             # Step 3: Retrieve the new permissions by their names
-            permissions = db.query(Permission).filter(Permission.name.in_(new_permissions)).all()
+            permissions = db.query(Permission).filter(Permission.id.in_(new_permissions)).all()
             
             if not permissions:
                 raise HTTPException(
