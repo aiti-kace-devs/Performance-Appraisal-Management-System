@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Select, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { StaffState } from '../../../store/staff/staff.state';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IStaff } from '../../../shared/interfaces';
 import { GetStaff } from '../../../store/staff/staff.action';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-staff-search',
@@ -15,39 +16,24 @@ export class StaffSearchComponent implements OnInit {
   @Input()
   formCtrl = new FormControl('');
 
-  // @Select(StaffState.selectStateData) staff$!: Observable<IStaff[]>;
   staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
+  staffs: IStaff[] = [];
+  filteredStaffs: IStaff[] = [];
 
   constructor(private store: Store) {}
 
   ngOnInit(): void {
     this.store.dispatch(new GetStaff());
+
+    this.staff$.subscribe((staffs) => {
+      this.staffs = staffs;
+    });
   }
 
-  staffSearchFunction(searchTerm: string) {
-    this.staff$
-      ?.pipe(
-        map((staffMembers: IStaff[]) => {
-          return staffMembers
-            .filter((staff) =>
-              staff.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((staff) => ({
-              ...staff,
-              label: staff.full_name,
-            }));
-        })
-      )
-      .subscribe();
+  staffSearchFunction(event: AutoCompleteCompleteEvent) {
+    const query = event.query.toLowerCase();
+    this.filteredStaffs = this.staffs.filter((staff) =>
+      staff.full_name?.toLowerCase().includes(query)
+    );
   }
 }
-
-// map((staff: any[]) => {
-//   const categoriesArray = [...categories];
-//   return categoriesArray.map((cat) => {
-//     return {
-//       ...cat,
-//       label: cat.name,
-//     };
-//   });
-// })

@@ -25,17 +25,18 @@
 <p-autoComplete
   formControlName="assigned_event"
   placeholder="Start typing staff name to see list"
-  [suggestions]="(staff$ | async) || []"
-  dataKey="name"
-  [multiple]="false"
-  (completeMethod)="staffSearchFunction($event.query)"
-  field="name"
-  [dropdown]="true"
+  [suggestions]="filteredStaffs"
+  dataKey="full_name"
+  (completeMethod)="staffSearchFunction($event)"
+  field="full_name"
+  [dropdown]="false"
   appendTo="body"
+  styleClass="w-full"
+  inputStyleClass="w-full"
 >
-  <ng-template let-events pTemplate="item">
+  <ng-template let-staff pTemplate="item">
     <div>
-      <div>{{ events.full_name }}</div>
+      <div>{{ staff.full_name }}</div>
     </div>
   </ng-template>
 </p-autoComplete>

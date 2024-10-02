@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RolesService } from '../service/roles.service';
+import { AppAlertService } from '../../../shared/alerts/service/app-alert.service';
+import { PrimeNgAlerts } from '../../../config/app-config';
 
 @Component({
   selector: 'app-roles-and-permissions',
@@ -15,7 +17,10 @@ export class RolesAndPermissionsComponent implements OnInit {
   assignedPermission: any[] = [];
   originalAssignedPermissions: any[] = [];
 
-  constructor(private roleService: RolesService) {}
+  constructor(
+    private roleService: RolesService,
+    private alert: AppAlertService
+  ) {}
 
   ngOnInit() {
     this.roleService.getAllRoles().subscribe((d: any) => {
@@ -46,11 +51,21 @@ export class RolesAndPermissionsComponent implements OnInit {
   }
 
   savePermissions() {
-    const data = {
-      permissions: this.assignedPermission.map((p) => p.id),
-    };
+    if (!this.noChange) {
+      const data = {
+        new_permissions: this.assignedPermission.map((p) => p.id),
+      };
 
-    console.log(data);
+      if (this.isRoleSelect) {
+        this.roleService
+          .updateRolePermissions(data, this.selectedRole.id)
+          .subscribe((d) => {
+            this.alert.showToast('Permissions Updated', PrimeNgAlerts.SUCCESS);
+          });
+      } else {
+        console.log('hey you');
+      }
+    }
   }
 
   get noChange() {

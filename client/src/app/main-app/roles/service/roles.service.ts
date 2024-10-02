@@ -28,4 +28,8 @@ export class RolesService {
   getRolePermissions(id: string) {
     return this.http.get(`${this.rolePermissionURL}/${id}`);
   }
+
+  updateRolePermissions(data: any, id: string) {
+    return this.http.put(`${this.rolePermissionURL}/${id}`, data);
+  }
 }
