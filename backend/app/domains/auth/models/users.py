@@ -9,11 +9,11 @@ from db.base_class import APIBase
 
 
 class User(APIBase):
-    staff_id = Column(UUID(as_uuid=True),nullable=False)
+    staff_id = Column(UUID(as_uuid=True),ForeignKey('staffs.id'), nullable=False)
     email = Column(String(255), nullable=False)
     password = Column(String(255), nullable=True)
     reset_password_token = Column(String(255),nullable=True)
-    role_id = Column(UUID(as_uuid=True))
+    role_id = Column(UUID(as_uuid=True), ForeignKey('roles.id'))
     is_active = Column(Boolean, default=True)
     failed_login_attempts = Column(Integer, default=0)
     account_locked_until = Column(DateTime, nullable=True)

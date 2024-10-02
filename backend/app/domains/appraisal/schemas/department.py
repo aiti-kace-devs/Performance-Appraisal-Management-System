@@ -28,5 +28,12 @@ class DepartmentInDBBase(DepartmentBase):
     class Config:
         orm_mode= True
 
+
+class DepartmentWithTotalStaff(BaseModel):
+    id: UUID4
+    name:str
+    description: str
+    total_staff: int
+
 class DepartmentSchema(DepartmentInDBBase):
     pass

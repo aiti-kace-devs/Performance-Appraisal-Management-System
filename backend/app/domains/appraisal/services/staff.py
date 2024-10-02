@@ -113,9 +113,9 @@ class StaffService:
         # Send email with the reset link
         reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
 
-        email_data = await send_reset_email(staff.email, reset_link)
+        # email_data = await send_reset_email(staff.email, reset_link)
 
-        await Email.sendMailService(email_data, template_name='password_reset.html')
+        # await Email.sendMailService(email_data, template_name='password_reset.html')
         
         JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
 
@@ -154,8 +154,12 @@ class StaffService:
 
 
         get_staff_department = department_actions.get(db, get_staff1.department_id)
+
+        get_staff_user.role_id = staff.role_id
         get_staff_user = db.query(User).filter(User.staff_id == get_staff1.id).first()
-        get_staff_role = role_actions.get(db, get_staff_user.role_id)
+        get_staff_role = role_actions.get(db, staff.role_id)
+        db.commit()
+        db.refresh(get_staff_role)
         
         data = {
             'id': get_staff1.id,
