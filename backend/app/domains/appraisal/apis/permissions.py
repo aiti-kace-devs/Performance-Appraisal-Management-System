@@ -64,7 +64,7 @@ def get_perm(*, db: Session = Depends(get_db), id: UUID4) -> Any:
 
 ## endpoint to 
 @perm_router.get("/", response_model=List[PermissionRead])
-def get_all_perms(*, db: Session = Depends(get_db), skip: int=0, limit: int=0):
+def get_all_perms(*, db: Session = Depends(get_db)):
     all_perms = actions.get_all_perms(db=db)
     return all_perms
 

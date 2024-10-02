@@ -47,10 +47,10 @@ class PermissionService:
             )
         return perm
     
-    def get_all_perms(self, db: Session, skip: int=0, limit: int=10):
+    def get_all_perms(self, db: Session):
         
         # return role_repo.get_all(db=db, skip=skip, limit=limit)
-        return db.query(Permission).offset(skip).limit(limit).all()
+        return db.query(Permission).all()
     
     # def update_permission(self, db: Session, permission_id: UUID, permission_update: PermissionUpdate):
     #     permission = db.query(Permission).filter(Permission.id == permission_id).first()
