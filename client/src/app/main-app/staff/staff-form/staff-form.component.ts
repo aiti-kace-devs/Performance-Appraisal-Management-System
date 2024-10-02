@@ -81,7 +81,9 @@ export class StaffFormComponent implements OnInit {
     });
 
     this.roleService.getAllRoles().subscribe((d: any) => {
-      this.roles = d;
+      this.roles = d.filter(
+        (role: any) => role.name.toLowerCase() !== 'super admin'
+      );
     });
 
     this.initializeForm();

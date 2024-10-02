@@ -18,6 +18,7 @@ export interface IDepartment {
   name: string;
   description: string;
   id?: string;
+  total_staff: number;
 }
 
 export interface IColumnDef {

@@ -22,3 +22,12 @@ export class DeleteDepartment {
   static readonly type = '[Department] Delete';
   constructor(public id: string) {}
 }
+
+export class GetDepartmentMembers {
+  static readonly type = '[Department] Fetch Members';
+  constructor(public id: string) {}
+}
+
+export class ClearDepartmentMembers {
+  static readonly type = '[Department] Clear Department Members';
+}

@@ -30,4 +30,8 @@ export class DepartmentService {
   deleteDepartment(id: string) {
     return this.http.delete(`${this.departmentURL}/${id}`);
   }
+
+  getDepartmentMembers(id: string) {
+    return this.http.get(`${this.departmentURL}/staff/${id}`);
+  }
 }

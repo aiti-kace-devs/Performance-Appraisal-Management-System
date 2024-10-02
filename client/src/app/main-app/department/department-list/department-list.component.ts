@@ -9,6 +9,7 @@ import {
 } from '../../../store/department/department.action';
 import { AppAlertService } from '../../../shared/alerts/service/app-alert.service';
 import { DepartmentFormComponent } from '../department-form/department-form.component';
+import { DepartmentMembersComponent } from '../department-members/department-members.component';
 
 @Component({
   selector: 'app-department-list',
@@ -23,6 +24,7 @@ export class DepartmentListComponent implements OnInit {
   columns: IColumnDef[] = [
     { header: 'Department Name', field: 'name' },
     { header: 'Description', field: 'description' },
+    { header: 'No. of Staff', field: 'total_staff' },
   ];
   title = 'Department List';
   filename: string = 'department-list';
@@ -40,6 +42,14 @@ export class DepartmentListComponent implements OnInit {
   addNewDepartment() {
     this.alert.openDialog(DepartmentFormComponent, {
       header: 'Add New Department',
+      closable: true,
+    });
+  }
+
+  viewMembers(data: any) {
+    this.alert.openDialog(DepartmentMembersComponent, {
+      header: `Staff Under ${data.name} Department`,
+      data: data,
       closable: true,
     });
   }

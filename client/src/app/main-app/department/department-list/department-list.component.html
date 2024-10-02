@@ -6,6 +6,9 @@
       <div class="text-3xl font-medium text-900 mb-3">
         Department Information
       </div>
+      <div class="font-medium text-500 mb-3">
+        (You can only delete a department if there are no registered members)
+      </div>
     </div>
     <button
       pButton
@@ -33,6 +36,16 @@
       <button
         pButton
         pRipple
+        pTooltip="View Department Members"
+        icon="pi pi-eye"
+        class="p-button-info"
+        [disabled]="!data.total_staff"
+        (click)="viewMembers(data)"
+      ></button>
+      &nbsp;
+      <button
+        pButton
+        pRipple
         pTooltip="Edit Department"
         icon="pi pi-pencil"
         (click)="editDepartment(data)"
@@ -44,6 +57,7 @@
         pTooltip="Remove Department"
         icon="pi pi-trash"
         class="p-button-danger"
+        [disabled]="data.total_staff"
         (click)="removeDepartment(data)"
       ></button>
     </div>

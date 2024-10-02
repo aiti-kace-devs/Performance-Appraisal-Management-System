@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { PrimeNgAlerts } from '../../config/app-config';
 import { AppAlertService } from '../../shared/alerts/service/app-alert.service';
 import { DepartmentService } from '../../main-app/department/service/department.service';
@@ -9,14 +9,19 @@ import {
   DeleteDepartment,
   GetDepartment,
   UpdateDepartment,
+  GetDepartmentMembers,
+  ClearDepartmentMembers,
 } from './department.action';
 import { IDepartment } from '../../shared/interfaces';
+import { EMPTY } from 'rxjs';
 
 export class DepartmentStateModel {
   department: IDepartment[];
+  departmentList: any;
 
   constructor() {
     this.department = [];
+    this.departmentList = [];
   }
 }
 
@@ -24,6 +29,7 @@ export class DepartmentStateModel {
   name: 'departmentState',
   defaults: {
     department: [],
+    departmentList: [],
   },
 })
 @Injectable()
@@ -36,6 +42,11 @@ export class DepartmentState {
   @Selector()
   static selectStateData(state: DepartmentStateModel) {
     return state.department || [];
+  }
+
+  @Selector()
+  static selectDepartmentMembers(state: DepartmentStateModel) {
+    return state.departmentList || [];
   }
 
   @Action(GetDepartment)
@@ -101,7 +112,14 @@ export class DepartmentState {
     { id }: DeleteDepartment
   ) {
     return this.departmentService.deleteDepartment(id).pipe(
-      tap((returnData) => {
+      catchError((err) => {
+        this.alert.showToast(
+          err.error.detail ?? 'Unable to delete department',
+          PrimeNgAlerts.ERROR
+        );
+        return EMPTY;
+      }),
+      map((returnData) => {
         this.alert.showToast(
           'Department removed successfully',
           PrimeNgAlerts.SUCCESS
@@ -117,5 +135,27 @@ export class DepartmentState {
         });
       })
     );
+  }
+
+  @Action(GetDepartmentMembers)
+  getDepartmentMembers(
+    ctx: StateContext<DepartmentStateModel>,
+    { id }: GetDepartmentMembers
+  ) {
+    return this.departmentService.getDepartmentMembers(id).pipe(
+      tap((returnData) => {
+        const state = ctx.getState();
+
+        ctx.setState({
+          ...state,
+          departmentList: returnData,
+        });
+      })
+    );
+  }
+
+  @Action(ClearDepartmentMembers)
+  clearDepartmentMembers(ctx: StateContext<DepartmentStateModel>) {
+    ctx.patchState({ departmentList: [] });
   }
 }
