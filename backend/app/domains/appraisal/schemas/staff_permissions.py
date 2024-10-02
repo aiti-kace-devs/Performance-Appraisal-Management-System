@@ -51,5 +51,20 @@ class StaffPermissionsOut(BaseModel):
 class StaffUpdatePermissions(BaseModel):
     permissions_ids: List[UUID4]  # List of permission IDs to assign to the staff
 
+    # Checking if fields are not empty and also not allowing the word string as value
+    @field_validator('permissions_ids', mode='before')
+    def check_non_empty_and_not_string(cls, v, info):
+        if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
+            raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
+        return v
+
+    # Checking if UUID4 fields accept only UUID4 as value
+    @field_validator('permissions_ids', mode='before')
+    def validate_fields_with_uuid4(cls, v, info):
+        try:
+            uuid.UUID(str(v), version=4)
+        except ValueError:
+            raise ValueError(f'\n{info.field_name} must have a valid UUID4')
+        return v
     class Config:
         orm_mode = True
