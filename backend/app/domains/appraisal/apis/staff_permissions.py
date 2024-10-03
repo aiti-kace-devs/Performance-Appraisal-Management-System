@@ -11,7 +11,7 @@ from db.session import get_db
 
 
 staff_permission_router = APIRouter(
-       prefix="/staff_permissions",
+       prefix="/staff-permissions",
     tags=["Staff Permission"],
     responses={404: {"description": "Not found"}},
 )
@@ -70,7 +70,7 @@ def get_permissions_by_staff(staff_id: UUID4, db: Session = Depends(get_db)) -> 
     
 def update_permissions(staff_id: UUID4, request: schemas.StaffUpdatePermissions, db: Session = Depends(get_db)):
     # Convert permission_ids from string to UUID
-    updated_permissions = actions.update_staff_permissions(db, staff_id, new_permissions_ids=request.permissions_ids)
+    updated_permissions = actions.update_staff_permissions(db, staff_id, new_permissions_ids=request.new_permissions)
     return updated_permissions
 
 

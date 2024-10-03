@@ -25,7 +25,7 @@ def create_new_role_permission(*, payload: RolePermissionCreate, db:Session=Depe
     return new_role_perm
 
 ## returns a role and it associate permissions
-@role_perm_router.get("/{role_id}", response_model=RolePermissionRead)
+@role_perm_router.get("/{role_id}")
 def get_permissions_by_role_id(role_id: UUID, db: Session = Depends(get_db)):
     try:
         role_permissions = actions.get_permissions_by_role_id(db=db, role_id=role_id)

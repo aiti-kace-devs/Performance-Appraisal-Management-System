@@ -14,7 +14,7 @@ from domains.appraisal.models.staff_role_permissions import Role, Permission, ro
 
 class RolePermssionService:
 
-    def get_permissions_by_role_id(self, db: Session, role_id: UUID) -> RolePermissionRead:
+    def get_permissions_by_role_id(self, db: Session, role_id: UUID):
         role = db.query(Role).filter(Role.id == role_id).first()
         if not role:
             raise HTTPException(
@@ -22,10 +22,10 @@ class RolePermssionService:
                 detail="Role does not exist"
             )
         permissions = [
-            PermissionRead(id=perm.id, name=perm.name)
+            PermissionRead(name=perm.name, id=perm.id)
             for perm in role.permissions
         ]
-        return RolePermissionRead(id=role.id, name=role.name, permissions=permissions)
+        return permissions
 
 
     def get_all_roles_perms(self, db: Session, skip: int=0, limit: int=10):

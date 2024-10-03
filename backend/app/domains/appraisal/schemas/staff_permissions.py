@@ -56,10 +56,10 @@ class StaffPermissionsOut(BaseModel):
     permissions: List[PermissionOut]
 
 class StaffUpdatePermissions(BaseModel):
-    permissions_ids: List[UUID4]  = Field(..., description="List of permission IDs to assign to the staff")# List of permission IDs to assign to the staff
+    new_permissions: List[UUID4]  = Field(..., description="List of permission IDs to assign to the staff")# List of permission IDs to assign to the staff
 
     # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('permissions_ids', mode='before')
+    @field_validator('new_permissions', mode='before')
     def check_non_empty_and_not_string(cls, v, info):
         if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')

@@ -18,7 +18,7 @@ from db.session import get_db
 
 # APIRouter creates path operations for admin and users module
 perm_router = APIRouter(
-    prefix="/perms",
+    prefix="/permissions",
     tags=["Permission"],
     responses={404: {"description": "Not found"}},
 )
