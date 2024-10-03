@@ -11,6 +11,7 @@ export interface IStaff {
   grade: string;
   appointment_date: string | number | Date;
   role_id?: string;
+  supervisor_id?: string;
   id?: string;
 }
 

@@ -16,6 +16,7 @@ import { ISODate, PrimeNgAlerts } from '../../../config/app-config';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AppAlertService } from '../../../shared/alerts/service/app-alert.service';
 import { AddStaff, UpdateStaff } from '../../../store/staff/staff.action';
+import { CustomValidators } from '../../../config/validators';
 
 interface IDropdown {
   label: string;
@@ -55,13 +56,16 @@ export class StaffFormComponent implements OnInit {
   gender: IDropdown[] = [];
   roles = [];
 
+  // staffControl = new FormControl('');
+
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
     private roleService: RolesService,
     private alert: AppAlertService,
     private dialogRef: DynamicDialogRef,
-    private config: DynamicDialogConfig
+    private config: DynamicDialogConfig,
+    private customValidators: CustomValidators
   ) {}
 
   ngOnInit() {
@@ -90,6 +94,23 @@ export class StaffFormComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
+    // this.staffForm
+    //   .get('email')
+    //   ?.setAsyncValidators(
+    //     this.customValidators.emailExists(this.staff?.email || '')
+    //   );
+    const emailControl = this.staffForm.get('email');
+
+    if (emailControl) {
+      emailControl.valueChanges.subscribe((emailValue: string) => {
+        if (emailValue && emailValue !== this.staff?.email) {
+          emailControl.setAsyncValidators(
+            this.customValidators.emailExists(emailValue)
+          );
+        }
+      });
+    }
+
     if (this.config.data?.id) {
       this.readOnly = this.config.data?.type === 'view';
       this.staff = this.config.data;
@@ -116,6 +137,7 @@ export class StaffFormComponent implements OnInit {
       position: ['', [Validators.required]],
       grade: ['', [Validators.required]],
       appointment_date: ['', [Validators.required]],
+      supervisor_id: [],
       role_id: [],
     });
   }
@@ -128,35 +150,34 @@ export class StaffFormComponent implements OnInit {
   }
 
   submitForm() {
-    // if (this.staffForm.valid) {
-    let data = this.staffForm.value;
-    data['department_id'] = data.department_id.id;
-    data['appointment_date'] = ISODate(data.appointment_date);
-    // console.log(data);
+    if (this.staffForm.valid) {
+      let data = this.staffForm.value;
+      data['department_id'] = data.department_id.id;
+      data['supervisor_id'] = data.supervisor_id.id;
+      data['appointment_date'] = ISODate(data.appointment_date);
 
-    if (this.staff?.id) {
-      this.store.dispatch(new UpdateStaff(data, this.staff.id));
-      this.dialogRef.close();
-    } else {
-      this.store
-        .dispatch(new AddStaff(data))
-        .pipe(
-          take(1),
-          finalize(() => {
-            this.dialogRef.close();
-          }),
-          catchError((error) => {
-            this.alert.showToast(
-              error.error.detail ||
-                'An error occurred while creating department.',
-              PrimeNgAlerts.ERROR
-            );
-            return of(null);
-          })
-        )
-        .subscribe();
+      if (this.staff?.id) {
+        this.store.dispatch(new UpdateStaff(data, this.staff.id));
+        this.dialogRef.close();
+      } else {
+        this.store
+          .dispatch(new AddStaff(data))
+          .pipe(
+            take(1),
+            finalize(() => {
+              this.dialogRef.close();
+            }),
+            catchError((error) => {
+              this.alert.showToast(
+                error.error.detail ||
+                  'An error occurred while creating department.',
+                PrimeNgAlerts.ERROR
+              );
+              return of(null);
+            })
+          )
+          .subscribe();
+      }
     }
-
-    // }
   }
 }

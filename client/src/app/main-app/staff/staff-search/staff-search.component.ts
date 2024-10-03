@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { StaffState } from '../../../store/staff/staff.state';
 import { Observable } from 'rxjs';
@@ -14,7 +14,7 @@ import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 })
 export class StaffSearchComponent implements OnInit {
   @Input()
-  control!: FormControl;
+  control: FormControl | AbstractControl | any;
 
   staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
   staffs: IStaff[] = [];
