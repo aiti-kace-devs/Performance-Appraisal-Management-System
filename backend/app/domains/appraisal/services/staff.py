@@ -188,7 +188,7 @@ class StaffService:
                 "id": check_if_role_id_exists.id,
                 "name": check_if_role_id_exists.name,
             },
-            'supervisor': {
+            'supervisor_id': {
                 'id': staff.supervisor_id,
                 'name': supervisor_name,
             },
