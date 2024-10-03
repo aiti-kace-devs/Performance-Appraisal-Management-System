@@ -41,6 +41,17 @@ APIBase.query = session.query_property()
 
 
 
+# def drop_table():
+#     check_settings = session.execute(text('select id from staffs'))
+#     if check_settings:
+#         session.execute(text('drop table staff_permissions'))
+#         session.commit()
+#         session.close()
+    
+#     return ""
+# drop_table()
+
+
 def get_db():
     db = SessionLocal()
     try:

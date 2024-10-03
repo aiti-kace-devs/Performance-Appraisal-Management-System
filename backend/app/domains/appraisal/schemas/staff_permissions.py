@@ -43,9 +43,16 @@ class PermissionOut(BaseModel):
     id: UUID4
     name: str
 
+
+class StaffRole(BaseModel):
+    id: UUID4
+    name: str
+
+
 class StaffPermissionsOut(BaseModel):
     staff_id: UUID4
     staff_name: str
+    role : StaffRole
     permissions: List[PermissionOut]
 
 class StaffUpdatePermissions(BaseModel):

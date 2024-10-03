@@ -8,6 +8,7 @@ from pydantic import UUID4
 from domains.appraisal.respository.staff_permissions import staff_permission_action as staff_permission_repo
 from domains.appraisal.schemas.staff_permissions import StaffPermissionSchema, StaffPermissionUpdate, StaffPermissionCreate
 from domains.appraisal.models.staff_role_permissions import Staff, staff_permissions, Role, Permission
+from domains.auth.models.users import User
 # from domains.appraisal.models.staff_permissions import StaffPermission
 # from domains.appraisal.models.staff_role_permissions import Role, Permission
 # from domains.appraisal.models.role_permissions import Permission
@@ -80,9 +81,16 @@ class StaffPermissionService:
         # Query to get permissions for a specific staff
         permissions_data = db.query(Permission).join(staff_permissions, Permission.id == staff_permissions.c.permission_id).filter(staff_permissions.c.staff_id == staff_id).all()
 
+        get_user_from_staff = db.query(User).filter(User.staff_id == staff_id).first()
+        get_staff_role = db.query(Role).filter(Role.id == get_user_from_staff.role_id).first()
+
         result = {
             "staff_id": staff.id,
-            "staff_name": f"{staff.first_name} {staff.last_name}",
+            "staff_name": f"{staff.first_name} {staff.last_name} {staff.other_name}",
+            "role": {
+                "id": get_staff_role.id,
+                "name": get_staff_role.name,
+            },
             "permissions": [{"id": permission.id, "name": permission.name} for permission in permissions_data]
         }
 
