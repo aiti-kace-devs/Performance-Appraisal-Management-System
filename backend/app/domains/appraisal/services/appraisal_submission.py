@@ -6,7 +6,7 @@ from db.base_class import UUID
 from domains.appraisal.respository.appraisal_submission import appraisal_submission_actions as appraisal_submission_repo
 from domains.appraisal.schemas.appraisal_submission import AppraisalSubmissionSchema, AppraisalSubmissionUpdate, AppraisalSubmissionCreate
 from domains.appraisal.models.appraisal import Appraisal
-from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.staff_role_permissions import Staff
 from domains.appraisal.models.appraisal_form import AppraisalForm
 
 

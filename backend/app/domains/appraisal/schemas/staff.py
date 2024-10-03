@@ -1,7 +1,7 @@
 from pydantic import UUID4,BaseModel,field_validator, EmailStr,Field
 from datetime import datetime,date
 from dateutil.parser import parse
-from typing import Optional, Any, Dict 
+from typing import Optional, Any, Dict , List
 import uuid
 from enum import Enum
 from domains.appraisal.schemas.department import DepartmentInDBBase
@@ -25,9 +25,31 @@ class Title(str, Enum):
     Bishop = 'Bishop.'
     Other = 'Other'
 
+class PermissionSchema(BaseModel):
+    id: UUID4
+    name: str
 
+class RoleSchema(BaseModel):
+    id: UUID4
+    name: str
+    permissions: List[PermissionSchema]
 
+class PermissionResponse(BaseModel):
+    id: int
+    name: str
+    codename: str
 
+class StaffResponse(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    role: str
+    permissions: List[PermissionResponse]
+
+    class Config:
+        orm_mode = True
+        
 class StaffBase(BaseModel):
     title: Title
     first_name : str
@@ -39,7 +61,9 @@ class StaffBase(BaseModel):
     department_id : UUID4
     grade : str
     appointment_date : Optional[date]
-    role_id : Optional[UUID4] = Field(None, exclude=True)
+    # role_id : Optional[UUID4] = Field(None, exclude=True)
+    role_id: UUID4
+    
 
 
     # Checking if fields are not empty and also not allowing the word string as value

@@ -1,8 +1,9 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
 from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase,DepartmentInfo,RoleInfo
-from domains.appraisal.models.role_permissions import Role
+from domains.appraisal.models.staff_role_permissions import Role, Staff, staff_permissions
+from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate, StaffResponse
 from domains.appraisal.models.department import Department
-from domains.appraisal.models.staff import Staff
+# from domains.appraisal.models.staff import Staff
 from domains.auth.models.users import User
 from fastapi import HTTPException,status
 from sqlalchemy.orm import Session
@@ -15,7 +16,7 @@ from fastapi.responses import JSONResponse
 from services.email_service import EmailSchema, Email
 from domains.auth.apis.login import send_reset_email
 from sqlalchemy.exc import SQLAlchemyError
-from domains.appraisal.models.staff import Staff
+from domains.appraisal.models.staff_role_permissions import Staff
 from domains.appraisal.respository.department import department_actions
 from domains.appraisal.respository.role import role_actions
 from domains.auth.respository.user_account import users_form_actions
@@ -93,9 +94,16 @@ class StaffService:
         if check_if_user_email_exists:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User with email %s already exists" % staff.email)
         
+        ## Check for permissions associated with the role 
+        role = db.query(Role).filter(Role.id == staff.role_id).first()
+        if not role:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Permissions for this role not found")
 
-        staff_obj = await Staff_form_repo.create(db=db, obj_in=staff)
-
+        staff_data = staff.dict()
+        staff_data['role_id'] = staff.role_id
+        
+        staff_obj = await Staff_form_repo.create(db=db, obj_in=StaffCreate(**staff_data))
+        
         user_in = User()
         user_in.email = staff.email
         user_in.reset_password_token = None
@@ -104,6 +112,21 @@ class StaffService:
         db.add(user_in)
         db.commit()
         db.refresh(user_in)
+
+
+        # db.commit()
+        permissions_ids = [] # List to hold permission IDs
+        # Assign permissions based on the role
+        for permission in role.permissions:  
+            staff_permission = {
+                "staff_id": staff_obj.id,
+                "permission_id": permission.id
+            }
+            db.execute(staff_permissions.insert().values(staff_permission))
+            permissions_ids.append(permission.id)
+
+        db.commit()
+
 
         token = password_reset_service.generate_reset_token()
         user_in.reset_password_token  = token
@@ -136,9 +159,10 @@ class StaffService:
             'grade': staff_obj.grade,
             'appointment_date': staff_obj.appointment_date, 
             'role_id': {
-                'id': check_if_role_id_exists.id,
-                'name': check_if_role_id_exists.name,
-            },          
+                "id": check_if_role_id_exists.id,
+                "name": check_if_role_id_exists.name,
+            },
+            'permissions_ids': permissions_ids,
             'created_at': staff_obj.created_date,
         }
 

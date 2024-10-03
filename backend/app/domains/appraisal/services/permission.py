@@ -7,7 +7,7 @@ from domains.appraisal.respository.role import role_actions as role_repo
 from domains.appraisal.schemas.roles import RoleCreate, RoleUpdate, RoleRead
 from domains.appraisal.schemas.permissions import PermissionUpdate
 
-from domains.appraisal.models.role_permissions import Permission, Role
+from domains.appraisal.models.staff_role_permissions import Permission, Role
 
 
 class PermissionService:

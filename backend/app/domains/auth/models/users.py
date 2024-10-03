@@ -9,7 +9,7 @@ from db.base_class import APIBase
 
 
 class User(APIBase):
-    staff_id = Column(UUID(as_uuid=True),ForeignKey('staffs.id'), nullable=False)
+    staff_id = Column(UUID(as_uuid=True),ForeignKey('staffs.id'), nullable=True)
     email = Column(String(255), nullable=False)
     password = Column(String(255), nullable=True)
     reset_password_token = Column(String(255),nullable=True)

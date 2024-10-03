@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 # Assuming the correct import for Role and Permission models
 # from domains.appraisal.models.roles import Role
 # from domains.appraisal.models.permissions import Permission
-from domains.appraisal.models.role_permissions import Role, Permission
+from domains.appraisal.models.staff_role_permissions import Role, Permission
 from domains.auth.models.users import User
 from domains.auth.schemas.user_account import UserCreate
 from utils.security import pwd_context
@@ -94,6 +94,7 @@ def init_db(db: Session):
                     else:
                         pass
                         # return f"Permission {perm_name} already exists"  # Debug log
+                        # return f"Permission {perm_name} already exists"  # Debug log
 
                     # Assign permission to the role if not already assigned
                     if permission not in role.permissions:
@@ -132,7 +133,7 @@ def create_super_admin(db: Session):
                 email=SUPER_ADMIN_EMAIL,
                 password=pwd_context.hash(SUPER_ADMIN_PASSWORD),
                 reset_password_token=None,
-                staff_id=uuid4(),
+                staff_id=None,
                 role_id=role.id
             )
             db.add(admin_in)

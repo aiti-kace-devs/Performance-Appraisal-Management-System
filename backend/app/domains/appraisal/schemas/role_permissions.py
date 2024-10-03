@@ -53,9 +53,8 @@ class RolePermission(RolePermissionBase):
         orm_mode = True
 
 class RolePermissionRead(BaseModel):
-    id: UUID4
-    name: str
-    permissions: List[PermissionRead]
+    role_id: UUID4
+    updated_permissions: List[str]
 
     class Config:
         orm_mode = True
@@ -105,7 +104,7 @@ class UpdateRolePermissionsRequest(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "add_permissions": ["createDepartment", "updateStaff"],
-                    "remove_permissions": ["deleteStaff", "getStaffByID"]
+                "new_permissions": ["createDepartment", "updateStaff"],
+                   
                         }
         }

@@ -7,11 +7,11 @@ from db.base_class import UUID
 from domains.appraisal.respository.department import department_actions as department_repo
 from domains.appraisal.models.department import Department
 from domains.appraisal.schemas.department import DepartmentSchema, DepartmentUpdate, DepartmentCreate, DepartmentWithTotalStaff
-from domains.appraisal.models.staff import Staff
 from sqlalchemy import func
-from domains.appraisal.models.role_permissions import Role
 from domains.auth.models.users import User
 from fastapi.encoders import jsonable_encoder
+from domains.appraisal.schemas.department import DepartmentSchema, DepartmentUpdate, DepartmentCreate
+from domains.appraisal.models.staff_role_permissions import Staff, Role
 
 class AppraisalService:
 

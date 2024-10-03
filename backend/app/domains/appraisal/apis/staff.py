@@ -35,6 +35,7 @@ async def list_staff(
 
 @staff_router.post(
     "/",
+    # response_model=schemas.StaffResponse,
     status_code=HTTP_201_CREATED
 )
 async def create_staff(
