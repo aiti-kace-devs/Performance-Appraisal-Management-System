@@ -21,6 +21,11 @@ from domains.appraisal.respository.department import department_actions
 from domains.appraisal.respository.role import role_actions
 from domains.auth.respository.user_account import users_form_actions
 import re
+from domains.appraisal.models.staff_supervisor import StaffSupervisor
+from datetime import datetime
+
+
+
 
 class StaffService:
 
@@ -114,7 +119,27 @@ class StaffService:
         db.refresh(user_in)
 
 
-        # db.commit()
+        date = datetime.now()
+        current_year = date.year
+
+
+        get_staff_supervisor = db.query(Staff).filter(Staff.id == staff.supervisor_id).first() if staff.supervisor_id else None
+
+
+        if get_staff_supervisor:
+            supervisor_name = f"{get_staff_supervisor.first_name} {get_staff_supervisor.last_name}" + (f" {get_staff_supervisor.other_name}" if get_staff_supervisor.other_name else "")
+            staff_supervisor_in = StaffSupervisor()
+            staff_supervisor_in.appraisal_year = current_year
+            staff_supervisor_in.staff_id = staff_obj.id
+            staff_supervisor_in.supervisor_id = staff.supervisor_id
+            db.add(staff_supervisor_in)
+            db.commit()
+            db.refresh(staff_supervisor_in)
+
+        else:
+            supervisor_name = None
+
+
         permissions_ids = [] # List to hold permission IDs
         # Assign permissions based on the role
         for permission in role.permissions:  
@@ -139,8 +164,9 @@ class StaffService:
         # email_data = await send_reset_email(staff.email, reset_link)
 
         # await Email.sendMailService(email_data, template_name='password_reset.html')
-        
+
         JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
+
 
         data = {
             'id': staff_obj.id,
@@ -148,7 +174,7 @@ class StaffService:
             'first_name': staff_obj.first_name,
             'last_name': staff_obj.last_name,
             'other_name': staff_obj.other_name,
-            'full_name': f"{staff_obj.first_name} {staff_obj.last_name}" + (f" {staff_obj.other_name}" if staff_obj.other_name else ""),
+            'full_name': f"{staff_obj.first_name} {staff_obj.last_name}" + (f" {staff_obj.other_name}" if staff_obj.other_name or staff_obj.first_name or staff_obj.last_name else None),
             'department_id': {
                 'id': check_department_id.id,
                 'name': check_department_id.name,
@@ -162,11 +188,16 @@ class StaffService:
                 "id": check_if_role_id_exists.id,
                 "name": check_if_role_id_exists.name,
             },
+            'supervisor': {
+                'id': staff.supervisor_id,
+                'name': supervisor_name,
+            },
             'permissions_ids': permissions_ids,
             'created_at': staff_obj.created_date,
         }
 
         return data
+
     
     
 
@@ -365,6 +396,11 @@ class StaffService:
 
         return staff_list
 
+
+
+
+    def check_staff_email_if_exist(self, db: Session, email: str):
+        return db.query(Staff).filter(Staff.email == email.strip()).first()
 
 
 

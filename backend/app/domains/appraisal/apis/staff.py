@@ -138,3 +138,20 @@ async def list_supervisors(
 ) -> Any:
     get_supervisors_router = actions.get_supervisors(db=db, skip=skip, limit=limit)
     return get_supervisors_router
+
+
+
+
+
+
+
+
+@staff_router.get("/email/{email}",)
+def check_staff_email_if_exist(
+        *, db: Session = Depends(get_db),
+        email: str
+) -> Any:
+    data = actions.check_staff_email_if_exist(db=db, email=email)
+    if data:
+        return  True
+    return False

@@ -61,7 +61,7 @@ class StaffBase(BaseModel):
     department_id : UUID4
     grade : str
     appointment_date : Optional[date]
-    # role_id : Optional[UUID4] = Field(None, exclude=True)
+    supervisor_id : Optional[Any] = Field(None, exclude=True)
     role_id: UUID4
     
 
@@ -136,6 +136,10 @@ class RoleInfo(BaseModel):
     name: str
 
 
+class SupervisorInfo(BaseModel):
+    id: UUID4
+    name: str
+
 class StaffWithFullNameInDBBase(BaseModel):
     id: UUID4
     title: Title
@@ -150,6 +154,7 @@ class StaffWithFullNameInDBBase(BaseModel):
     grade : str
     appointment_date : Optional[date]
     role_id: RoleInfo
+    #supervisor: SupervisorInfo
 
     class Config:
         orm_mode= True

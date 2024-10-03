@@ -73,6 +73,7 @@ class Staff(APIBase):
     # Foreign key for Role (Many Staffs can have one Role)
     role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)
     role = relationship("Role", back_populates="staff_members")
+    staff_supervisors = relationship("StaffSupervisor", back_populates="staffs")
 
     # Many-to-many relationship with Permission through StaffPermission
     permissions = relationship(
