@@ -14,7 +14,7 @@ import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 })
 export class StaffSearchComponent implements OnInit {
   @Input()
-  formCtrl = new FormControl('');
+  control!: FormControl;
 
   staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
   staffs: IStaff[] = [];

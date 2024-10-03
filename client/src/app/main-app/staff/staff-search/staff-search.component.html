@@ -1,29 +1,5 @@
-<!-- <ng-container>
-  <app-auto-complete
-    [required]="false"
-    field="fullname"
-    dataKey="id"
-    [placeholder]="'Start typing staff name to see list'"
-    [control]="formCtrl"
-    [results]="staffList"
-    [completeSearchFn]="staffSearchFunction"
-  ></app-auto-complete>
-</ng-container> -->
-
-<!-- <app-auto-complete
-  [control]="formCtrl"
-  [suggestions]="(staff$ | async) || []"
-  (searchEvent)="staffSearchFunction($event.query)"
-  [multiple]="false"
-  [forceSelection]="true"
-  [dropdown]="true"
-  field="full_name"
-  [dataKey]="'full_name'"
-  placeholder="Start typing staff name to see list"
-></app-auto-complete> -->
-
 <p-autoComplete
-  formControlName="assigned_event"
+  [formControl]="control"
   placeholder="Start typing staff name to see list"
   [suggestions]="filteredStaffs"
   dataKey="full_name"

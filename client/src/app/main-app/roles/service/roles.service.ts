@@ -8,8 +8,9 @@ import { IRole } from '../../../shared/interfaces';
 })
 export class RolesService {
   private rolesURL = `${environment.API_URL_BASE}/roles`;
-  private permissionURL = `${environment.API_URL_BASE}/perms`;
+  private permissionURL = `${environment.API_URL_BASE}/permissions`;
   private rolePermissionURL = `${environment.API_URL_BASE}/roles-permission`;
+  private staffPermissionURL = `${environment.API_URL_BASE}/staff-permissions`;
 
   constructor(private http: HttpClient) {}
 
@@ -31,5 +32,13 @@ export class RolesService {
 
   updateRolePermissions(data: any, id: string) {
     return this.http.put(`${this.rolePermissionURL}/${id}`, data);
+  }
+
+  getStaffPermissions(id: string) {
+    return this.http.get(`${this.staffPermissionURL}/${id}`);
+  }
+
+  updateStaffPermissions(data: any, id: string) {
+    return this.http.put(`${this.staffPermissionURL}/${id}`, data);
   }
 }

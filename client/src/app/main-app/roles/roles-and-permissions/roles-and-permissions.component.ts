@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RolesService } from '../service/roles.service';
 import { AppAlertService } from '../../../shared/alerts/service/app-alert.service';
 import { PrimeNgAlerts } from '../../../config/app-config';
+import { FormControl } from '@angular/forms';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-roles-and-permissions',
@@ -17,6 +19,9 @@ export class RolesAndPermissionsComponent implements OnInit {
   assignedPermission: any[] = [];
   originalAssignedPermissions: any[] = [];
 
+  staffControl = new FormControl('');
+  staffId!: string;
+
   constructor(
     private roleService: RolesService,
     private alert: AppAlertService
@@ -30,6 +35,20 @@ export class RolesAndPermissionsComponent implements OnInit {
     this.roleService.getAllPermissions().subscribe((d: any) => {
       this.permissions = d;
     });
+
+    this.staffControl.valueChanges.subscribe((staff: any) => {
+      this.staffId = staff?.id;
+      if (this.staffId) {
+        this.roleService
+          .getStaffPermissions(this.staffId)
+          .subscribe((rp: any) => {
+            const permissions = rp.permissions;
+            this.assignedPermission = permissions;
+            this.originalAssignedPermissions = [...permissions];
+            this.filterAssigned();
+          });
+      }
+    });
   }
 
   filterAssigned() {
@@ -42,12 +61,13 @@ export class RolesAndPermissionsComponent implements OnInit {
   }
 
   onRoleChange(event: any) {
-    this.roleService.getRolePermissions(event.value.id).subscribe((rp: any) => {
-      const permissions = rp.permissions;
-      this.assignedPermission = permissions;
-      this.originalAssignedPermissions = [...permissions];
-      this.filterAssigned();
-    });
+    this.roleService
+      .getRolePermissions(event.value.id)
+      .subscribe((permissions: any) => {
+        this.assignedPermission = permissions;
+        this.originalAssignedPermissions = [...permissions];
+        this.filterAssigned();
+      });
   }
 
   savePermissions() {
@@ -63,7 +83,11 @@ export class RolesAndPermissionsComponent implements OnInit {
             this.alert.showToast('Permissions Updated', PrimeNgAlerts.SUCCESS);
           });
       } else {
-        console.log('hey you');
+        this.roleService
+          .updateStaffPermissions(data, this.staffId)
+          .subscribe((d) => {
+            this.alert.showToast('Permissions Updated', PrimeNgAlerts.SUCCESS);
+          });
       }
     }
   }
