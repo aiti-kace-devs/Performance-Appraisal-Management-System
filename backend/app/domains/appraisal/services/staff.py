@@ -1,5 +1,5 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
-from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase,DepartmentInfo,RoleInfo
+from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase,DepartmentInfo,RoleInfo,SupervisorInfo
 from domains.appraisal.models.staff_role_permissions import Role, Staff, staff_permissions
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate, StaffResponse
 from domains.appraisal.models.department import Department
@@ -23,26 +23,38 @@ from domains.auth.respository.user_account import users_form_actions
 import re
 from domains.appraisal.models.staff_supervisor import StaffSupervisor
 from datetime import datetime
-
-
+from domains.appraisal.models.staff_supervisor import StaffSupervisor
+from sqlalchemy.orm import aliased
 
 
 class StaffService:
 
 
     async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
+        
+        Supervisor = aliased(Staff)
 
         staff_query = (
-            db.query(Staff, Department.id.label('department_id'), Department.name.label('department_name'), Role.id.label('role_id'), Role.name.label('role_name'))
+            db.query(
+                Staff,
+                Department.id.label('department_id'),
+                Department.name.label('department_name'),
+                Role.id.label('role_id'),
+                Role.name.label('role_name'),
+                StaffSupervisor.supervisor_id.label('staff_supervisor_id'), 
+                (Supervisor.first_name + ' ' + Supervisor.last_name + ' ' + Supervisor.other_name).label('supervisor_full_name')
+            )
             .join(Department, Staff.department_id == Department.id)
             .join(User, User.staff_id == Staff.id)
             .join(Role, User.role_id == Role.id)
+            .outerjoin(StaffSupervisor, StaffSupervisor.staff_id == Staff.id)
+            .outerjoin(Supervisor, Supervisor.id == StaffSupervisor.supervisor_id)
             .offset(skip)
             .limit(limit)
         )
-        
+
         staff_with_details = staff_query.all()
-        
+
         staff_list = [
             StaffWithFullNameInDBBase(
                 id=staff.id,
@@ -63,13 +75,19 @@ class StaffService:
                 role_id=RoleInfo(
                     id=role_id,
                     name=role_name
+                ),
+                supervisor_id=SupervisorInfo(
+                    id=staff_supervisor_id or None,
+                    full_name=supervisor_full_name or None
                 )
             )
-            for staff, department_id, department_name, role_id, role_name in staff_with_details
+            for staff, department_id, department_name, role_id, role_name, staff_supervisor_id, supervisor_full_name in staff_with_details
         ]
 
-        
         return staff_list
+
+
+
 
 
     
@@ -190,7 +208,7 @@ class StaffService:
             },
             'supervisor_id': {
                 'id': staff.supervisor_id,
-                'name': supervisor_name,
+                'full_name': supervisor_name,
             },
             'permissions_ids': permissions_ids,
             'created_at': staff_obj.created_date,

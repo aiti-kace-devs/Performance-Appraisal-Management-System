@@ -137,8 +137,8 @@ class RoleInfo(BaseModel):
 
 
 class SupervisorInfo(BaseModel):
-    id: UUID4
-    name: str
+    id: Optional[UUID4] = Field(None)  # Make it optional
+    full_name: Optional[str] = Field(None)
 
 class StaffWithFullNameInDBBase(BaseModel):
     id: UUID4
@@ -154,7 +154,7 @@ class StaffWithFullNameInDBBase(BaseModel):
     grade : str
     appointment_date : Optional[date]
     role_id: RoleInfo
-    #supervisor: SupervisorInfo
+    supervisor_id: SupervisorInfo
 
     class Config:
         orm_mode= True
