@@ -1,8 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-side-bar',
   templateUrl: './side-bar.component.html',
-  styleUrl: './side-bar.component.scss',
+  styleUrls: ['./side-bar.component.scss'],
 })
-export class SideBarComponent {}
+export class SideBarComponent {
+  // @Input()
+  visible = false;
+
+  closeCallback(): void {
+    this.visible = !this.visible;
+  }
+}

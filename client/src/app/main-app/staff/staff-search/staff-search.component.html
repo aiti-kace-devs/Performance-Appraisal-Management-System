@@ -1,11 +1,12 @@
 <p-autoComplete
   [formControl]="control"
-  placeholder="Start typing staff name to see list"
+  [placeholder]="placeholder"
   [suggestions]="filteredStaffs"
   dataKey="full_name"
   (completeMethod)="staffSearchFunction($event)"
   field="full_name"
   [dropdown]="false"
+  [readonly]="readOnly"
   appendTo="body"
   styleClass="w-full"
   inputStyleClass="w-full"

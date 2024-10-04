@@ -114,6 +114,9 @@ export class StaffFormComponent implements OnInit {
     if (this.config.data?.id) {
       this.readOnly = this.config.data?.type === 'view';
       this.staff = this.config.data;
+      this.staff.supervisor_id = this.staff.supervisor_id.id
+        ? this.staff.supervisor_id
+        : null;
       const role = this.staff.role_id.id;
       const appointment = new Date(Date.parse(this.staff.appointment_date));
 
@@ -153,7 +156,7 @@ export class StaffFormComponent implements OnInit {
     if (this.staffForm.valid) {
       let data = this.staffForm.value;
       data['department_id'] = data.department_id.id;
-      data['supervisor_id'] = data.supervisor_id.id;
+      data['supervisor_id'] = data.supervisor_id?.id ?? null;
       data['appointment_date'] = ISODate(data.appointment_date);
 
       if (this.staff?.id) {

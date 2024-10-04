@@ -19,7 +19,7 @@ export class StaffListComponent implements OnInit {
   columns: IColumnDef[] = [
     { header: 'Full Name', field: 'full_name', sortable: true },
     { header: 'Position', field: 'position' },
-    { header: 'Supervisor', field: 'department_id', subField: 'name' },
+    { header: 'Supervisor', field: 'supervisor_id', subField: 'full_name' },
     { header: 'Department', field: 'department_id', subField: 'name' },
   ];
   title = 'Staff List';

@@ -1,0 +1,21 @@
+<div class="surface-card p-4 shadow-2 border-round">
+  <div
+    class="mb-3 flex flex-column align-items-start md:flex-row md:align-items-center md:justify-content-between"
+  >
+    <div class="mb-3 md:mb-0">
+      <div class="text-3xl font-medium text-900 mb-3">
+        Key Results Area Bank
+      </div>
+      <div class="font-medium text-500 mb-3">Vivamus id nisl interdum.</div>
+    </div>
+    <button pButton pRipple label="New" icon="pi pi-plus"></button>
+  </div>
+
+  <app-table
+    [data]="[]"
+    [columnsDefinition]="columns"
+    [title]="'title'"
+    [showCaption]="true"
+  >
+  </app-table>
+</div>

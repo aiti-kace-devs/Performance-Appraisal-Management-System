@@ -16,6 +16,10 @@ export class StaffSearchComponent implements OnInit {
   @Input()
   control: FormControl | AbstractControl | any;
 
+  @Input() readOnly: boolean = false;
+
+  @Input() placeholder = '';
+
   staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
   staffs: IStaff[] = [];
   filteredStaffs: IStaff[] = [];
