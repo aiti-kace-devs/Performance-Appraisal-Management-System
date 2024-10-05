@@ -21,7 +21,7 @@ staff_router = APIRouter(
 
 @staff_router.get(
     "/",
-    response_model=List[schemas.StaffWithFullNameInDBBase]
+    #response_model=List[schemas.StaffWithFullNameInDBBase]
 )
 async def list_staff(
         db: Session = Depends(get_db),

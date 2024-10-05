@@ -22,69 +22,160 @@ from domains.appraisal.respository.role import role_actions
 from domains.auth.respository.user_account import users_form_actions
 import re
 from domains.appraisal.models.staff_supervisor import StaffSupervisor
+from sqlalchemy import func
+from sqlalchemy.orm import aliased, Session
 from datetime import datetime
-from domains.appraisal.models.staff_supervisor import StaffSupervisor
-from sqlalchemy.orm import aliased
+from typing import List
+
+
+
+
 
 
 class StaffService:
 
 
+
+
     async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
-        
+        current_year = datetime.now().strftime("%Y") 
+
         Supervisor = aliased(Staff)
 
+        # Subquery to get distinct staff by email
+        distinct_staff_query = (
+            db.query(
+                Staff.id.label('staff_id'),
+                Staff.title,
+                Staff.first_name,
+                Staff.last_name,
+                Staff.other_name,
+                Staff.gender,
+                Staff.email,
+                Staff.position,
+                Staff.grade,
+                Staff.appointment_date,
+                func.max(StaffSupervisor.appraisal_year).label('appraisal_year'),
+                Staff.department_id
+            )
+            .outerjoin(StaffSupervisor, StaffSupervisor.staff_id == Staff.id)
+            .group_by(Staff.id, Staff.title, Staff.first_name, Staff.last_name, Staff.other_name,
+                    Staff.gender, Staff.email, Staff.position, Staff.grade, Staff.appointment_date, Staff.department_id)
+            .subquery()
+        )
+
+        # Main query to fetch staff details along with department and role
         staff_query = (
             db.query(
-                Staff,
+                distinct_staff_query.c.staff_id,
+                distinct_staff_query.c.title,
+                distinct_staff_query.c.first_name,
+                distinct_staff_query.c.last_name,
+                distinct_staff_query.c.other_name,
+                distinct_staff_query.c.gender,
+                distinct_staff_query.c.email,
+                distinct_staff_query.c.position,
+                distinct_staff_query.c.grade,
+                distinct_staff_query.c.appointment_date,
                 Department.id.label('department_id'),
                 Department.name.label('department_name'),
                 Role.id.label('role_id'),
                 Role.name.label('role_name'),
-                StaffSupervisor.supervisor_id.label('staff_supervisor_id'), 
-                (Supervisor.first_name + ' ' + Supervisor.last_name + ' ' + Supervisor.other_name).label('supervisor_full_name')
+                StaffSupervisor.supervisor_id.label('staff_supervisor_id'),
+                (Supervisor.first_name + ' ' + Supervisor.last_name + ' ' + Supervisor.other_name).label('supervisor_full_name'),
+                StaffSupervisor.appraisal_year.label('appraisal_year')
             )
-            .join(Department, Staff.department_id == Department.id)
-            .join(User, User.staff_id == Staff.id)
+            .join(Department, distinct_staff_query.c.department_id == Department.id)
+            .join(User, User.staff_id == distinct_staff_query.c.staff_id)
             .join(Role, User.role_id == Role.id)
-            .outerjoin(StaffSupervisor, StaffSupervisor.staff_id == Staff.id)
+            .outerjoin(StaffSupervisor, StaffSupervisor.staff_id == distinct_staff_query.c.staff_id)
             .outerjoin(Supervisor, Supervisor.id == StaffSupervisor.supervisor_id)
+            .filter(
+                (StaffSupervisor.appraisal_year == current_year) | (StaffSupervisor.appraisal_year.is_(None))  # Filter by current year or None
+            )
             .offset(skip)
             .limit(limit)
         )
 
         staff_with_details = staff_query.all()
 
-        staff_list = [
-            StaffWithFullNameInDBBase(
-                id=staff.id,
-                title=staff.title,
-                first_name=staff.first_name,
-                last_name=staff.last_name,
-                other_name=staff.other_name,
-                full_name=f"{staff.first_name} {staff.last_name}" + (f" {staff.other_name}" if staff.other_name else ""),
-                gender=staff.gender,
-                email=staff.email,
-                position=staff.position,
-                grade=staff.grade,
-                appointment_date=staff.appointment_date,
-                department_id=DepartmentInfo(
-                    id=department_id,
-                    name=department_name
-                ),
-                role_id=RoleInfo(
-                    id=role_id,
-                    name=role_name
-                ),
-                supervisor_id=SupervisorInfo(
-                    id=staff_supervisor_id or None,
-                    full_name=supervisor_full_name or None
+        staff_list = []
+        seen_emails = set()  # Set to keep track of unique emails
+
+        for row in staff_with_details:
+            # Extract data from row tuple
+            staff_id = row[0]
+            title = row[1]
+            first_name = row[2]
+            last_name = row[3]
+            other_name = row[4]
+            gender = row[5]
+            email = row[6]
+            position = row[7]
+            grade = row[8]
+            appointment_date = row[9]
+            department_id = row[10]
+            department_name = row[11]
+            role_id = row[12]
+            role_name = row[13]
+            staff_supervisor_id = row[14]
+            supervisor_full_name = row[15]
+            appraisal_year = row[16]
+
+            # Only add staff if the email has not been seen before
+            if email not in seen_emails:
+                seen_emails.add(email)  # Mark this email as seen
+
+                # Set supervisor fields to None if staff doesn't have a supervisor_id, full_name, or appraisal_year
+                if staff_supervisor_id is None or supervisor_full_name is None or appraisal_year is None:
+                    staff_supervisor_id = None
+                    supervisor_full_name = None
+                    appraisal_year = None
+
+                # Build staff details
+                staff_list.append(
+                    StaffWithFullNameInDBBase(
+                        id=staff_id,
+                        title=title,
+                        first_name=first_name,
+                        last_name=last_name,
+                        other_name=other_name,
+                        full_name=f"{first_name} {last_name}" + (f" {other_name}" if other_name else ""),
+                        gender=gender,
+                        email=email,
+                        position=position,
+                        grade=grade,
+                        appointment_date=appointment_date,
+                        department_id=DepartmentInfo(
+                            id=department_id,
+                            name=department_name
+                        ),
+                        role_id=RoleInfo(
+                            id=role_id,
+                            name=role_name
+                        ),
+                        supervisor_id=SupervisorInfo(
+                            id=staff_supervisor_id if staff_supervisor_id else None,
+                            full_name=supervisor_full_name if supervisor_full_name else None,
+                            appraisal_year=appraisal_year if appraisal_year else None
+                        )
+                    )
                 )
-            )
-            for staff, department_id, department_name, role_id, role_name, staff_supervisor_id, supervisor_full_name in staff_with_details
-        ]
 
         return staff_list
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -221,13 +312,37 @@ class StaffService:
 
     def update_staff(self, *, db: Session, id: UUID, staff: StaffUpdate):
         get_staff1 = Staff_form_repo.get(db=db, id=id)
-
-        get_staff_user = db.query(User).filter(User.staff_id == get_staff1.id).first()
+        
         if not get_staff1:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="staff not found")
+
+        get_staff_user = db.query(User).filter(User.staff_id == get_staff1.id).first()
+        
         Staff_form_repo.update(db=db, db_obj=get_staff1, obj_in=staff)
 
+        get_staff_from_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == id).first()
+        date = datetime.now()
+        current_year = date.strftime("%Y")
 
+        if get_staff_from_supervisor:
+            if get_staff_from_supervisor.appraisal_year == current_year:
+                db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == id).update({
+                    StaffSupervisor.supervisor_id: staff.supervisor_id
+                }, synchronize_session=False)
+                db.flush()
+                db.commit()
+        else:
+            # If no supervisor record exists, create a new one
+            get_staff_from_supervisor = StaffSupervisor()
+            get_staff_from_supervisor.appraisal_year = current_year
+            get_staff_from_supervisor.staff_id = id
+            get_staff_from_supervisor.supervisor_id = staff.supervisor_id
+            db.add(get_staff_from_supervisor)
+            db.commit()
+            db.refresh(get_staff_from_supervisor)
+
+        # Get the staff and department data
+        get_staff = db.query(Staff).filter(Staff.id == staff.supervisor_id).first()
         get_staff_department = department_actions.get(db, get_staff1.department_id)
 
         get_staff_user.role_id = staff.role_id
@@ -255,11 +370,17 @@ class StaffService:
             'role_id': {
                 'id': get_staff_role.id,
                 'name': get_staff_role.name,
+            },
+            'supervisor_id': {
+                'id': get_staff_from_supervisor.supervisor_id,
+                'full_name': f"{get_staff.first_name} {get_staff.last_name}" + (f" {get_staff.other_name}" if get_staff.other_name else ""),
+                'appraisal_year': get_staff_from_supervisor.appraisal_year
             },          
             'created_at': get_staff1.created_date,
         }
 
         return data
+
         
 
     
@@ -301,18 +422,37 @@ class StaffService:
 
 
 
-
-
     def get_staff_by_id(self, *, db: Session, id: UUID):
         get_staff_by_id = Staff_form_repo.get(db, id)
         if not get_staff_by_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="staff not found"
+                detail="Staff not found"
             )
         
         get_staff_department = department_actions.get(db, get_staff_by_id.department_id)
         get_staff_user = db.query(User).filter(User.staff_id == get_staff_by_id.id).first()
+        get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == id).first()
+        
+        # Check if supervisor exists before accessing its properties
+        if get_supervisor is None:
+            supervisor_data = {
+                    'id': None,
+                    'full_name': None,
+                }
+        else:
+            get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id).first()
+            if get_staff is None:
+                supervisor_data = {
+                    'id': None,
+                    'full_name': None,
+                }  # or handle this case as necessary
+            else:
+                supervisor_data = {
+                    'id': get_staff.id,
+                    'full_name': f"{get_staff.first_name} {get_staff.last_name}" + (f" {get_staff.other_name}" if get_staff.other_name else ""),
+                }
+        
         get_staff_role = role_actions.get(db, get_staff_user.role_id)
         
         data = {
@@ -334,11 +474,22 @@ class StaffService:
             'role_id': {
                 'id': get_staff_role.id,
                 'name': get_staff_role.name,
-            },          
+            },
+            'supervisor_id': supervisor_data,  # Update this to use the new variable
             'created_at': get_staff_by_id.created_date,
         }
 
         return data
+
+
+
+
+
+
+
+
+
+
 
     def get_staff_by_keywords(self, *, db: Session, tag: str) -> List[StaffSchema]:
         pass

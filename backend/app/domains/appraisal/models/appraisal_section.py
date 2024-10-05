@@ -10,12 +10,12 @@ from db.base_class import APIBase
 
 class AppraisalSection(APIBase):
 
-    appraisal_cycles_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_cycles.id'), unique=True, nullable=False)
     name = Column(String, unique=True, nullable=False) 
     description = Column(Text, nullable=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), unique=True, nullable=False)
     
 
-    appraisal_sections = relationship("AppraisalCycle", backref="appraisal_cycles")
+    appraisal_sections_staff = relationship("Staff", back_populates="staff_appraisal_sections")
     
     
 

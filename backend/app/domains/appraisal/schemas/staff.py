@@ -139,9 +139,10 @@ class RoleInfo(BaseModel):
 class SupervisorInfo(BaseModel):
     id: Optional[UUID4] = Field(None)  # Make it optional
     full_name: Optional[str] = Field(None)
+    appraisal_year: Optional[str] = Field(None)
 
 class StaffWithFullNameInDBBase(BaseModel):
-    id: UUID4
+    id: Optional[UUID4] = Field(None)
     title: Title
     first_name : str
     last_name : str

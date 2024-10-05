@@ -66,14 +66,17 @@ class Staff(APIBase):
     gender = Column(String)
     position = Column(String, nullable=False)
     email = Column(String, unique=True)
-    department_id = Column(UUID(as_uuid=True))
+    department_id = Column(UUID(as_uuid=True), ForeignKey("departments.id"), nullable=False)
     grade = Column(String(255), nullable=False)
     appointment_date = Column(Date, nullable=True)
     
     # Foreign key for Role (Many Staffs can have one Role)
     role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)
     role = relationship("Role", back_populates="staff_members")
+    department = relationship("Department", back_populates="staff_departments")
     staff_supervisors = relationship("StaffSupervisor", back_populates="staffs")
+    staff_appraisal_sections = relationship("AppraisalSection", back_populates="appraisal_sections_staff")
+    staff_appraisal_cycles = relationship("AppraisalCycle", back_populates="appraisal_cycles_staff")
 
     # Many-to-many relationship with Permission through StaffPermission
     permissions = relationship(
