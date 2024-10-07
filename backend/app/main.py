@@ -9,7 +9,6 @@ from db.init_db import init_db,create_super_admin
 from fastapi import FastAPI,Request,status, HTTPException
 import uvicorn
 from db.init_models import create_tables
-from domains.appraisal.schemas.appraisal_section import validate_appraisal_cycles_id
 from crud.base import validate_name_uniqueness
 
 
@@ -99,7 +98,7 @@ async def validate_configuration_middleware(request: Request, call_next):
                 if "appraisal_sections" in path:
                     if "appraisal_cycles_id" in data:
                         db = SessionLocal()
-                        response = validate_appraisal_cycles_id(data["appraisal_cycles_id"], db)
+                        response = None
                     else:
                         raise HTTPException(status_code=422, detail="appraisal_cycles_id field is missing in the request body")
                 
