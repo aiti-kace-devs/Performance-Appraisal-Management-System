@@ -7,7 +7,7 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import competency_bank as schemas
 from domains.appraisal.services.competency_bank import competency_bank_form_service as actions
 from db.session import get_db
-
+from typing import Union,List
 
 competency_bank_forms_router = APIRouter(
        prefix="/competency_banks",
@@ -33,18 +33,33 @@ def list_competency_bank_forms(
     return competency_bank_forms_router
 
 
+# @competency_bank_forms_router.post(
+#     "/",
+#     #response_model=schemas.CompetencyBankSchema,
+#     status_code=HTTP_201_CREATED
+# )
+# def create_competency_bank_forms(
+#         *, db: Session = Depends(get_db),
+#         # 
+#         competency_bank_forms_in: schemas.CompetencyBankCreate
+# ) -> Any:
+#     competency_bank_forms_router = actions.create_competency_bank_form(db=db, payload=competency_bank_forms_in)
+#     return competency_bank_forms_router
+
+
 @competency_bank_forms_router.post(
     "/",
-    response_model=schemas.CompetencyBankSchema,
+    #response_model=schemas.CompetencyBankSchema,
+    response_model=Union[schemas.CompetencyBankSchema, List[schemas.CompetencyBankSchema]],
     status_code=HTTP_201_CREATED
 )
-def create_competency_bank_forms(
-        *, db: Session = Depends(get_db),
-        # 
-        competency_bank_forms_in: schemas.CompetencyBankCreate
-) -> Any:
-    competency_bank_forms_router = actions.create_competency_bank_form(db=db, competency_bank_form=competency_bank_forms_in)
-    return competency_bank_forms_router
+async def create_competency_bank(*, db: Session = Depends(get_db), payload:Union[schemas.CompetencyBankCreate, List[schemas.CompetencyBankCreate]]):
+
+    create_competency_bank = actions.create_competency_bank_form(db, payload)
+
+    return create_competency_bank
+
+
 
 
 @competency_bank_forms_router.put(
@@ -71,18 +86,18 @@ def update_competency_bank_forms(
     "/{id}",
     response_model=schemas.CompetencyBankSchema
 )
-def get_competency_bank_forms(
+def get_competency_bank_by_id(
         *, db: Session = Depends(get_db),
         
         id: UUID4
 ) -> Any:
-    competency_bank_forms_router = actions.get_competency_bank_form(db=db, id=id)
-    if not competency_bank_forms_router:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="competency_bank_forms_router not found"
-        )
-    return competency_bank_forms_router
+    get_competency_bank_by_id = actions.get_competency_bank_by_id(db=db, id=id)
+    if not get_competency_bank_by_id:
+        data = []
+        return {
+            "data": data
+        }
+    return get_competency_bank_by_id
 
 
 @competency_bank_forms_router.delete(

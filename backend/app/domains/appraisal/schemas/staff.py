@@ -155,7 +155,7 @@ class StaffWithFullNameInDBBase(BaseModel):
     grade : str
     appointment_date : Optional[date]
     role_id: RoleInfo
-    supervisor_id: SupervisorInfo
+    supervisor_id: Optional[SupervisorInfo] = None
 
     class Config:
         orm_mode= True

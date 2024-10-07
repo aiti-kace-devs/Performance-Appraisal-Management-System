@@ -51,6 +51,16 @@ class Settings:
 
 
 
+    # MAIL_USERNAME: str = os.getenv("MAIL_USERNAME", 'no-reply@gi-kace.gov.gh')
+    # MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", 'GIKACEapps1!') #uefuovgtfwyfgskv previous password
+    # MAIL_FROM: str = os.getenv("MAIL_FROM", "no-reply@gi-kace.gov.gh")
+    # MAIL_PORT: int = os.getenv("MAIL_PORT", 465)
+    # MAIL_SERVER: str = os.getenv("MAIL_SERVER", 'mail.gi-kace.gov.gh')
+    # MAIL_STARTTLS: bool = True
+    # MAIL_SSL_TLS: bool = os.getenv("MAIL_SSL_TLS", False)
+    # USE_CREDENTIALS: bool = True
+    # VALIDATE_CERTS: bool = True
+
 
     MAIL_USERNAME: str = os.getenv("MAIL_USERNAME", 'dev.aiti.com.gh@gmail.com')
     MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", 'palvpbokbnisspps') #uefuovgtfwyfgskv previous password

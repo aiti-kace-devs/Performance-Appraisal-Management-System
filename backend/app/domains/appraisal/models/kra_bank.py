@@ -10,7 +10,6 @@ class KraBank(APIBase):
     department_id = Column(UUID(as_uuid=True), ForeignKey('departments.id'), nullable=False)
     created_by = Column(UUID(as_uuid=True), ForeignKey("staffs.id"), nullable=True)
     focus_area = Column(JSON, nullable=False)
-    created_date = Column(DateTime, default=datetime.now(timezone.utc))
 
     department = relationship('Department', backref=backref('krabanks', uselist=True))
     krabank_for_staff = relationship('Staff', backref=backref('staff_krabanks', uselist=True))

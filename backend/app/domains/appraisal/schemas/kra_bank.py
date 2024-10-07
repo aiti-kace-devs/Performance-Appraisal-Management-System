@@ -6,16 +6,11 @@ from pydantic import UUID4, BaseModel, Field, field_validator, root_validator
 
 class KraBankBase(BaseModel):
     department_id: Optional[UUID4] = Field(..., description="Department ID")
-    appraisal_section_id: Optional[UUID4] = Field(..., description="Appraisal ID")
-    supervisor_id: Optional[UUID4] = Field(..., description="Supervisor ID")
     focus_area: List[Dict[str, Any]] = Field(..., description="Focus Area")
-    created_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class KraBankCreate(KraBankBase):
     department_id: Optional[UUID4] = Field(..., description="Department ID")
-    appraisal_section_id: Optional[UUID4] = Field(..., description="Appraisal ID")
-    supervisor_id: Optional[UUID4] = Field(..., description="Supervisor ID")
     focus_area: List[Dict[str, Any]] = Field(..., description="Focus Area")
     created_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -37,11 +32,6 @@ class KraBankCreate(KraBankBase):
                 raise ValueError("Each item in focus_area must be a dictionary")
         return v
 
-    @field_validator("created_date")
-    def validate_created_date(cls, v):
-        if v > datetime.now(timezone.utc):
-            raise ValueError("created_date cannot be in the future")
-        return v
 
 
 class KraBankUpdate(KraBankBase):
