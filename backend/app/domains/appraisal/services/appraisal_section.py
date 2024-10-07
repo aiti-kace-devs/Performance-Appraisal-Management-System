@@ -7,6 +7,9 @@ from db.base_class import UUID
 from domains.appraisal.respository.appraisal_section import appraisal_section_actions as appraisal_section_repo
 from domains.appraisal.schemas.appraisal_section import AppraisalSectionSchema, AppraisalSectionUpdate, AppraisalSectionCreate
 from domains.appraisal.models.appraisal_section import AppraisalSection
+from datetime import datetime
+
+
 
 class AppraisalSectionService:
 
@@ -14,10 +17,29 @@ class AppraisalSectionService:
     def list_appraisal_section(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalSectionSchema]:
         appraisal_section = appraisal_section_repo.get_all(db=db, skip=skip, limit=limit)
         return appraisal_section
+    
 
-    def create_appraisal_section(self, *, db: Session, appraisal_section: AppraisalSectionCreate) -> AppraisalSectionSchema:
-        appraisal_section = appraisal_section_repo.create(db=db, obj_in=appraisal_section)
-        return appraisal_section
+    def create_appraisal_section(self, *, db: Session, payload: AppraisalSectionCreate) -> AppraisalSectionSchema:
+
+        check_for_duplicate = db.query(AppraisalSection).filter(AppraisalSection.name == payload.name).first()
+
+        if check_for_duplicate:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Section %s already exists" % payload.name)
+        
+        date = datetime.now()
+        current_year = date.year
+        
+        create_secttion = AppraisalSection()
+        create_secttion.name = payload.name
+        create_secttion.description = payload.description
+        create_secttion.appraisal_year = current_year
+        db.add(create_secttion)
+        db.commit()
+        db.refresh(create_secttion)
+        return create_secttion
+
+    
+
 
     def update_appraisal_section(self, *, db: Session, id: UUID, appraisal_section: AppraisalSectionUpdate) -> AppraisalSectionSchema:
         appraisal_section_obj = appraisal_section_repo.get(db=db, id=id)

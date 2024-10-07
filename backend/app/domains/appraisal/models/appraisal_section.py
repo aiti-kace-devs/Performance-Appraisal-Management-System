@@ -10,9 +10,10 @@ from db.base_class import APIBase
 
 class AppraisalSection(APIBase):
 
-    name = Column(String, unique=True, nullable=False) 
+    name = Column(String, nullable=False) 
     description = Column(Text, nullable=True)
-    created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), unique=True, nullable=False)
+    created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
+    appraisal_year = Column(String(255), nullable=True)
     
 
     appraisal_sections_staff = relationship("Staff", back_populates="staff_appraisal_sections")

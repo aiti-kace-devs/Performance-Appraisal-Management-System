@@ -42,7 +42,7 @@ def start_application():
     allow_headers=["*"]
     )
     include(app)
-    create_tables()
+    #create_tables()
     initial_data_insert()
     return app
 app = start_application()
@@ -69,61 +69,61 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 
 
-@app.middleware("http")
-async def validate_configuration_middleware(request: Request, call_next):
-    if request.method == "POST":
-        path = request.url.path
+
+# async def validate_configuration_middleware(request: Request, call_next):
+#     if request.method == "POST":
+#         path = request.url.path
         
-        # Apply validation only if the path contains 'appraisal_configurations' or 'appraisal_sections'
-        if "appraisal_configurations" in path or "appraisal_sections" in path:
-            body = await request.body()
-            body_str = body.decode('utf-8')
-            try:
-                data = json.loads(body_str)
+#         # Apply validation only if the path contains 'appraisal_configurations' or 'appraisal_sections'
+#         if "appraisal_configurations" in path or "appraisal_sections" in path:
+#             body = await request.body()
+#             body_str = body.decode('utf-8')
+#             try:
+#                 data = json.loads(body_str)
                 
-                if "appraisal_configurations" in path:
-                    if "configuration" in data:
-                        config_value = data["configuration"]
-                        if isinstance(config_value, dict):
-                            try:
-                                json_str = json.dumps(config_value)
-                                json.loads(json_str)  # Validate if it is valid JSON
-                            except (TypeError, json.JSONDecodeError):
-                                raise HTTPException(status_code=400, detail="Configuration must be a valid JSON object")
-                        else:
-                            raise HTTPException(status_code=400, detail="Configuration must be a dictionary containing valid JSON data")
-                    else:
-                        raise HTTPException(status_code=422, detail="Configuration field is missing in the request body")
+#                 if "appraisal_configurations" in path:
+#                     if "configuration" in data:
+#                         config_value = data["configuration"]
+#                         if isinstance(config_value, dict):
+#                             try:
+#                                 json_str = json.dumps(config_value)
+#                                 json.loads(json_str)  # Validate if it is valid JSON
+#                             except (TypeError, json.JSONDecodeError):
+#                                 raise HTTPException(status_code=400, detail="Configuration must be a valid JSON object")
+#                         else:
+#                             raise HTTPException(status_code=400, detail="Configuration must be a dictionary containing valid JSON data")
+#                     else:
+#                         raise HTTPException(status_code=422, detail="Configuration field is missing in the request body")
                 
-                if "appraisal_sections" in path:
-                    if "appraisal_cycles_id" in data:
-                        db = SessionLocal()
-                        response = None
-                    else:
-                        raise HTTPException(status_code=422, detail="appraisal_cycles_id field is missing in the request body")
+#                 if "appraisal_sections" in path:
+#                     if "appraisal_cycles_id" in data:
+#                         db = SessionLocal()
+#                         response = None
+#                     else:
+#                         raise HTTPException(status_code=422, detail="appraisal_cycles_id field is missing in the request body")
                 
-                # Validate name uniqueness for AppraisalCycle and AppraisalSection
-                model_name = None
-                if "appraisal_cycles" in path:
-                    model_name = 'AppraisalCycle'
-                elif "appraisal_sections" in path:
-                    model_name = 'AppraisalSection'
+#                 # Validate name uniqueness for AppraisalCycle and AppraisalSection
+#                 model_name = None
+#                 if "appraisal_cycles" in path:
+#                     model_name = 'AppraisalCycle'
+#                 elif "appraisal_sections" in path:
+#                     model_name = 'AppraisalSection'
                 
-                if model_name and "name" in data:
-                    db = SessionLocal()
-                    if not validate_name_uniqueness(model_name, data["name"], db):
-                        raise HTTPException(status_code=400, detail=f"{model_name} column 'name' already exists")
-                    db.close()
+#                 if model_name and "name" in data:
+#                     db = SessionLocal()
+#                     if not validate_name_uniqueness(model_name, data["name"], db):
+#                         raise HTTPException(status_code=400, detail=f"{model_name} column 'name' already exists")
+#                     db.close()
             
-            except Exception as e:
-                raise HTTPException(status_code=400, detail=str(e))
+#             except Exception as e:
+#                 raise HTTPException(status_code=400, detail=str(e))
         
-        else:
-            # Print a message if the path does not match the intended models
-            print(f"Unintended path: {path}\n NOT intended for this model")
+#         else:
+#             # Print a message if the path does not match the intended models
+#             print(f"Unintended path: {path}\n NOT intended for this model")
     
-    response = await call_next(request)
-    return response
+#     response = await call_next(request)
+#     return response
 
 
 

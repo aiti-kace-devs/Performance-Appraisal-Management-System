@@ -48,14 +48,13 @@ def list_appraisal_sections(
 @appraisal_sections_router.post(
     "/new",
     response_model=schemas.AppraisalSectionSchema,
-    status_code=HTTP_201_CREATED
 )
 def create_appraisal_sections(
         *, db: Session = Depends(get_db),
         # 
         appraisal_sections_in: schemas.AppraisalSectionCreate
 ) -> Any:
-    appraisal_sections_router = actions.create_appraisal_section(db=db, appraisal_section=appraisal_sections_in)
+    appraisal_sections_router = actions.create_appraisal_section(db=db, payload=appraisal_sections_in)
     return appraisal_sections_router
 
 

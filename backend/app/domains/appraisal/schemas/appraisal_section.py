@@ -1,4 +1,4 @@
-from typing import Any, Dict, Annotated
+from typing import Any, Dict, Annotated, Optional
 import uuid
 from pydantic import BaseModel, Field, UUID4, ValidationError, field_validator
 from sqlalchemy.orm import Session
@@ -6,6 +6,13 @@ from domains.appraisal.models.appraisal_cycle import AppraisalCycle  # Import th
 from domains.appraisal.models.appraisal_section import AppraisalSection 
 
 # Custom Validator Function
+
+class ReadAppraisalSectionBase(BaseModel):
+    name: Annotated[str, Field(min_length=1)] = Field(...)
+    description: Annotated[str, Field(min_length=1)] = Field(...)
+    appraisal_year: Optional[str]
+    created_by: Optional[UUID4] 
+
 
 
 class AppraisalSectionBase(BaseModel):
@@ -28,7 +35,7 @@ class AppraisalSectionCreate(AppraisalSectionBase):
 class AppraisalSectionUpdate(AppraisalSectionBase):
     pass
 
-class AppraisalSectionInDBBase(AppraisalSectionBase):
+class AppraisalSectionInDBBase(ReadAppraisalSectionBase):
     id: UUID4
 
     class Config:
