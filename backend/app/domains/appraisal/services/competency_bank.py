@@ -35,7 +35,14 @@ class CompetencyBankService:
         db.add(new_competency)
         db.commit()
         db.refresh(new_competency)
-        return new_competency
+
+        competency_type = json.loads(new_competency.competency_type)
+
+        return {
+                "id": new_competency.id,
+                "created_by": new_competency.created_by,
+                "competency_type": [competency_type]
+            }
 
 
 
