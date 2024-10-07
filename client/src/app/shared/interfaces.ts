@@ -35,3 +35,15 @@ export interface IRole {
   name: string;
   id?: string;
 }
+
+export interface IKraBank {
+  id?: string;
+  department_id: string;
+  created_by: string;
+  focus_areas: {};
+}
+
+export interface ICompetencyBank {
+  id?: string;
+  competency_type: {};
+}

@@ -1,0 +1,31 @@
+<div class="surface-card p-4 shadow-2 border-round">
+  <div
+    class="mb-3 flex flex-column align-items-start md:flex-row md:align-items-center md:justify-content-between"
+  >
+    <div class="mb-3 md:mb-0">
+      <div class="text-3xl font-medium text-900 mb-3">Staff Appraisals</div>
+    </div>
+  </div>
+
+  <app-table
+    [data]="staffData"
+    [columnsDefinition]="columns"
+    [title]="title"
+    [showCaption]="true"
+    [bodyTemplate]="body"
+  >
+  </app-table>
+
+  <ng-template #body let-data>
+    <tr
+      [routerLink]="['details/', data.id]"
+      class="cursor-pointer hover:bg-primary"
+      pTooltip="click to view details"
+      tooltipPosition="top"
+    >
+      <td>{{ data.full_name }}</td>
+      <td>{{ data.type }}</td>
+      <td>{{ data.status }}</td>
+    </tr>
+  </ng-template>
+</div>

@@ -1,7 +1,6 @@
 <div
   id="app-sidebar-9"
-  class="h-screen surface-section hidden lg:block flex-shrink-0 fixed lg:sticky left-0 top-0 z-1 border-right-1 surface-border w-18rem lg:w-7rem select-none"
-  [hidden]="visible"
+  class="h-screen surface-section hidden lg:block flex-shrink-0 absolute lg:sticky left-0 top-0 z-3 border-right-1 surface-border w-18rem lg:w-7rem"
 >
   <div class="flex flex-column h-full">
     <div
@@ -10,12 +9,15 @@
     >
       <img src="assets/images/logo.png" alt="Image" height="40" />
       <span class="lg:hidden block">
-        <p-button
-          (click)="closeCallback()"
+        <button
+          pButton
+          pRipple
           icon="pi pi-times"
-          text="true"
-          styleClass="h-1rem w-2rem"
-        ></p-button>
+          class="p-button-rounded p-button-text p-button-plain"
+          pStyleClass="#app-sidebar-9"
+          leaveToClass="hidden"
+          leaveActiveClass="fadeoutleft"
+        ></button>
       </span>
     </div>
     <div class="mt-3">
@@ -68,7 +70,7 @@
         <li class="relative">
           <a
             pRipple
-            routerLink="admin/appraisal"
+            routerLink="admin/appraisal-management"
             routerLinkActive="bg-cyan-50 border-cyan-600 text-cyan-600"
             [routerLinkActiveOptions]="{ exact: false }"
             class="flex flex-row lg:flex-column align-items-center cursor-pointer no-underline p-3 lg:justify-content-center text-600 border-left-2 border-transparent hover:border-300 transition-duration-150 transition-colors"
@@ -91,7 +93,7 @@
             <li>
               <a
                 pRipple
-                routerLink="admin/appraisal"
+                routerLink="admin/appraisal-management"
                 routerLinkActive="bg-cyan-50 border-cyan-600 text-cyan-600"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="flex align-items-center cursor-pointer no-underline p-3 hover:surface-100 hover:text-900 border-round text-600 hover:text-700 transition-duration-150 transition-colors"
@@ -103,23 +105,45 @@
             <li>
               <a
                 pRipple
-                routerLink="admin/appraisal/competency-bank"
+                routerLink="admin/appraisal-management/my-appraisal"
                 routerLinkActive="bg-cyan-50 border-cyan-600 text-cyan-600"
                 class="flex align-items-center cursor-pointer no-underline p-3 hover:surface-100 hover:text-900 border-round text-600 hover:text-700 transition-duration-150 transition-colors"
               >
-                <i class="pi pi-tags mr-2"></i>
-                <span class="font-medium">Competencies</span>
+                <i class="pi pi-user mr-2"></i>
+                <span class="font-medium">My Appraisal</span>
               </a>
             </li>
             <li>
               <a
                 pRipple
-                routerLink="admin/appraisal/kras-bank"
+                routerLink="admin/appraisal-management/configuration"
+                routerLinkActive="bg-cyan-50 border-cyan-600 text-cyan-600"
+                class="flex align-items-center cursor-pointer no-underline p-3 hover:surface-100 hover:text-900 border-round text-600 hover:text-700 transition-duration-150 transition-colors"
+              >
+                <i class="pi pi-spin pi-cog mr-2"></i>
+                <span class="font-medium">Appraisal Configuration</span>
+              </a>
+            </li>
+            <li>
+              <a
+                pRipple
+                routerLink="admin/appraisal-management/competency-bank"
+                routerLinkActive="bg-cyan-50 border-cyan-600 text-cyan-600"
+                class="flex align-items-center cursor-pointer no-underline p-3 hover:surface-100 hover:text-900 border-round text-600 hover:text-700 transition-duration-150 transition-colors"
+              >
+                <i class="pi pi-tags mr-2"></i>
+                <span class="font-medium">Competency Bank</span>
+              </a>
+            </li>
+            <li>
+              <a
+                pRipple
+                routerLink="admin/appraisal-management/kras-bank"
                 routerLinkActive="bg-cyan-50 border-cyan-600 text-cyan-600"
                 class="flex align-items-center cursor-pointer no-underline p-3 hover:surface-100 hover:text-900 border-round text-600 hover:text-700 transition-duration-150 transition-colors"
               >
                 <i class="pi pi-warehouse mr-2"></i>
-                <span class="font-medium">Key Result Areas</span>
+                <span class="font-medium">KRA Bank</span>
               </a>
             </li>
           </ul>
@@ -160,6 +184,7 @@
       <hr class="mb-3 mx-3 border-top-1 border-none surface-border" />
       <a
         pRipple
+        (click)="logout()"
         class="m-3 flex flex-row lg:flex-column align-items-center cursor-pointer p-3 lg:justify-content-center hover:surface-200 border-round text-600 transition-duration-150 transition-colors"
       >
         <img

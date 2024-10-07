@@ -13,9 +13,9 @@ const routes: Routes = [
   { path: 'reports', component: ReportsComponent },
   { path: 'roles', component: RolesLayoutComponent },
   {
-    path: 'appraisal',
+    path: 'appraisal-management',
     loadChildren: () =>
-      import('./staff-appraisal/appraisal-management.module').then(
+      import('./appraisal-management/appraisal-management.module').then(
         (m) => m.AppraisalManagementModule
       ),
   },

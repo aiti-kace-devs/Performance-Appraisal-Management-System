@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-side-bar',
@@ -6,10 +7,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./side-bar.component.scss'],
 })
 export class SideBarComponent {
-  // @Input()
-  visible = false;
+  constructor(private router: Router) {}
 
-  closeCallback(): void {
-    this.visible = !this.visible;
+  logout(): any {
+    return this.router.navigate(['/login']);
   }
 }
