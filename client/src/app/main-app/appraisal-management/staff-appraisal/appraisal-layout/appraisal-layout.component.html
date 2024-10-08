@@ -1,3 +1,26 @@
-<div class="flex align-items-center justify-content-center">
-  <p>appraisal-layout sections</p>
+<div class="surface-card p-4 shadow-2 border-round">
+  <p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-user-edit mr-2"></i>
+          <span class="font-bold white-space-nowrap m-0">
+            Roles and Permissions
+          </span>
+        </div>
+      </ng-template>
+      <p>Hello World</p>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-users mr-2"></i>
+          <span class="font-bold white-space-nowrap m-0">
+            Staff Permissions
+          </span>
+        </div>
+      </ng-template>
+      <p>My First Program</p>
+    </p-tabPanel>
+  </p-tabView>
 </div>

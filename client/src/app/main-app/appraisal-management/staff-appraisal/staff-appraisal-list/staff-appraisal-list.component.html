@@ -12,20 +12,8 @@
     [columnsDefinition]="columns"
     [title]="title"
     [showCaption]="true"
-    [bodyTemplate]="body"
+    [rowLink]="true"
+    [rowLinkUrl]="'details/'"
   >
   </app-table>
-
-  <ng-template #body let-data>
-    <tr
-      [routerLink]="['details/', data.id]"
-      class="cursor-pointer hover:bg-primary"
-      pTooltip="click to view details"
-      tooltipPosition="top"
-    >
-      <td>{{ data.full_name }}</td>
-      <td>{{ data.type }}</td>
-      <td>{{ data.status }}</td>
-    </tr>
-  </ng-template>
 </div>

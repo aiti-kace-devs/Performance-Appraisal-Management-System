@@ -18,11 +18,31 @@ export class StaffAppraisalListComponent {
 
   ngOnInit() {
     this.staffData = [
-      { full_name: 'Rachel Green', type: 'Yearly', status: 'In Progress' },
-      { full_name: 'Chandler Bing', type: 'Monthly', status: 'Completed' },
-      { full_name: 'Joey Tribbiani', type: 'Yearly', status: 'In Progress' },
-      { full_name: 'Ross Geller', type: 'Monthly', status: 'Completed' },
-      { full_name: 'Phoebe Buffay', type: 'Yearly', status: 'In Progress' },
+      {
+        full_name: 'Rachel Green',
+        type: 'Yearly',
+        status: 'In Progress',
+        id: 1,
+      },
+      {
+        full_name: 'Chandler Bing',
+        type: 'Monthly',
+        status: 'Completed',
+        id: 2,
+      },
+      {
+        full_name: 'Joey Tribbiani',
+        type: 'Yearly',
+        status: 'In Progress',
+        id: 3,
+      },
+      { full_name: 'Ross Geller', type: 'Monthly', status: 'Completed', id: 1 },
+      {
+        full_name: 'Phoebe Buffay',
+        type: 'Yearly',
+        status: 'In Progress',
+        id: 4,
+      },
     ];
   }
 }

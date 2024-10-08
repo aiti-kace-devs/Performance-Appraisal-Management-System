@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'configuration', component: AppraisalLayoutComponent },
   { path: 'kras-bank', component: KeyAreaListComponent },
   { path: 'competency-bank', component: CompetencyBankListComponent },
+  { path: 'details/:id', component: AppraisalLayoutComponent },
 ];
 
 @NgModule({

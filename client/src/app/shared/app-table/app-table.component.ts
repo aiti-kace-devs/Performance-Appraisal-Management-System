@@ -95,6 +95,9 @@ export class AppTableComponent implements OnInit {
     return {};
   };
 
+  @Input() rowLink: boolean = false;
+  @Input() rowLinkUrl: string = '';
+
   @Input() filename = 'download';
 
   @Input() showDownload = false;

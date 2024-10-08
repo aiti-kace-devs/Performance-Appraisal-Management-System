@@ -140,67 +140,81 @@
 
       <!-- body-template -->
       <ng-template pTemplate="body" let-rowData let-columns="columns">
-        <tr [ngStyle]="renderRow(rowData)" [pSelectableRow]="rowData">
-          <!-- action template -->
-          <ng-container *ngIf="showAction && actionPositionLeft">
-            <td class="sticky left-0 z-1 bg-white">
-              <ng-container
-                [ngTemplateOutlet]="actionTemplate"
-                [ngTemplateOutletContext]="{
-                  $implicit: rowData,
-                }"
-              ></ng-container>
-            </td>
-          </ng-container>
-          <!-- end action template -->
-          <td *ngIf="batchAction" class="w-3rem">
-            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+        <tr
+          *ngIf="rowLink; else normalRow"
+          [routerLink]="[rowLinkUrl, rowData.id]"
+          class="cursor-pointer hover:bg-cyan-50"
+          pTooltip="click to view details"
+          tooltipPosition="top"
+        >
+          <td *ngFor="let col of columns">
+            <span class="p-column-title">{{ col.header }}</span>
+            {{ col.subField ? rowData[col.field]?.[col.subField] : rowData[col.field] }}
           </td>
-          <ng-container *ngIf="bodyTemplate; else defaultBodyTemplate">
-            <ng-container
-              [ngTemplateOutlet]="bodyTemplate"
-              [ngTemplateOutletContext]="{ $implicit: rowData }"
-            ></ng-container>
-          </ng-container>
-
-          <!-- default body template -->
-          <ng-template #defaultBodyTemplate>
-            <td *ngFor="let col of columns">
-              <ng-container *ngIf="col.template; else normal">
-                <ng-template
-                  [ngTemplateOutlet]="col.template"
-                  [ngTemplateOutletContext]="{
-                    $implicit: col.subField
-                      ? rowData[col.field]?.[col.subField]
-                      : rowData[col.field],
-                  }"
-                ></ng-template>
-              </ng-container>
-
-              <ng-template #normal>
-                <span class="p-column-title">{{ col.header }}</span>
-                {{
-                  col.subField
-                    ? rowData[col.field]?.[col.subField]
-                    : rowData[col.field]
-                }}
-              </ng-template>
-            </td>
-          </ng-template>
-          <!-- end of default body template -->
-          <!-- action template -->
-          <ng-container *ngIf="showAction && !actionPositionLeft">
-            <td>
-              <ng-container
-                [ngTemplateOutlet]="actionTemplate"
-                [ngTemplateOutletContext]="{
-                  $implicit: rowData,
-                }"
-              ></ng-container>
-            </td>
-          </ng-container>
-          <!-- end action template -->
         </tr>
+        <ng-template #normalRow>
+          <tr [ngStyle]="renderRow(rowData)" [pSelectableRow]="rowData">
+            <!-- action template -->
+            <ng-container *ngIf="showAction && actionPositionLeft">
+              <td class="sticky left-0 z-1 bg-white">
+                <ng-container
+                  [ngTemplateOutlet]="actionTemplate"
+                  [ngTemplateOutletContext]="{
+                    $implicit: rowData,
+                  }"
+                ></ng-container>
+              </td>
+            </ng-container>
+            <!-- end action template -->
+            <td *ngIf="batchAction" class="w-3rem">
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <ng-container *ngIf="bodyTemplate; else defaultBodyTemplate">
+              <ng-container
+                [ngTemplateOutlet]="bodyTemplate"
+                [ngTemplateOutletContext]="{ $implicit: rowData }"
+              ></ng-container>
+            </ng-container>
+
+            <!-- default body template -->
+            <ng-template #defaultBodyTemplate>
+              <td *ngFor="let col of columns">
+                <ng-container *ngIf="col.template; else normal">
+                  <ng-template
+                    [ngTemplateOutlet]="col.template"
+                    [ngTemplateOutletContext]="{
+                      $implicit: col.subField
+                        ? rowData[col.field]?.[col.subField]
+                        : rowData[col.field],
+                    }"
+                  ></ng-template>
+                </ng-container>
+
+                <ng-template #normal>
+                  <span class="p-column-title">{{ col.header }}</span>
+                  {{
+                    col.subField
+                      ? rowData[col.field]?.[col.subField]
+                      : rowData[col.field]
+                  }}
+                </ng-template>
+              </td>
+            </ng-template>
+            <!-- end of default body template -->
+            <!-- action template -->
+            <ng-container *ngIf="showAction && !actionPositionLeft">
+              <td>
+                <ng-container
+                  [ngTemplateOutlet]="actionTemplate"
+                  [ngTemplateOutletContext]="{
+                    $implicit: rowData,
+                  }"
+                ></ng-container>
+              </td>
+            </ng-container>
+            <!-- end action template -->
+          </tr>
+        </ng-template>
       </ng-template>
     </p-table>
   </div>
