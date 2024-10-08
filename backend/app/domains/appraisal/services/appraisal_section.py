@@ -8,7 +8,7 @@ from domains.appraisal.respository.appraisal_section import appraisal_section_ac
 from domains.appraisal.schemas.appraisal_section import AppraisalSectionSchema, AppraisalSectionUpdate, AppraisalSectionCreate
 from domains.appraisal.models.appraisal_section import AppraisalSection
 from datetime import datetime
-
+from domains.appraisal.models.appraisal_cycle import AppraisalCycle
 
 
 class AppraisalSectionService:
@@ -23,17 +23,27 @@ class AppraisalSectionService:
 
         check_for_duplicate = db.query(AppraisalSection).filter(AppraisalSection.name == payload.name).first()
 
+        date = datetime.now()
+        current_year = date.year
+
+        appraisal_cycle_data = None
+
         if check_for_duplicate:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Section %s already exists" % payload.name)
         
-        date = datetime.now()
-        current_year = date.year
+        get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year).first()
+        if get_appraisal_cycle:
+            appraisal_cycle_data = get_appraisal_cycle.id
+        else: 
+            appraisal_cycle_data = None
+        
+
         
         create_secttion = AppraisalSection()
         create_secttion.name = payload.name
         create_secttion.description = payload.description
         create_secttion.appraisal_year = current_year
-        #create_secttion.appraisal_cycle_id = current_year
+        create_secttion.appraisal_cycle_id = appraisal_cycle_data
         db.add(create_secttion)
         db.commit()
         db.refresh(create_secttion)
