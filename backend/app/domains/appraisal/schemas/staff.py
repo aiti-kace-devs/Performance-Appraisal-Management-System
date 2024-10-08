@@ -136,10 +136,16 @@ class RoleInfo(BaseModel):
     name: str
 
 
+class AppraisalCycleInfo(BaseModel):
+    id: Optional[UUID4] = Field(None) 
+    name: Optional[str] = Field(None)
+    year: Optional[int] = Field(None)
+
+
 class SupervisorInfo(BaseModel):
-    id: Optional[UUID4] = Field(None)  # Make it optional
+    id: Optional[UUID4] = Field(None) 
     full_name: Optional[str] = Field(None)
-    appraisal_year: Optional[str] = Field(None)
+    appraisal_year: Optional[int] = Field(None)
 
 class StaffWithFullNameInDBBase(BaseModel):
     id: Optional[UUID4] = Field(None)
@@ -151,9 +157,10 @@ class StaffWithFullNameInDBBase(BaseModel):
     gender : Gender
     email: EmailStr
     position : str
-    department_id : DepartmentInfo
     grade : str
     appointment_date : Optional[date]
+    apppraisal_cycle : Optional[AppraisalCycleInfo] = None
+    department_id : DepartmentInfo
     role_id: RoleInfo
     supervisor_id: Optional[SupervisorInfo] = None
 

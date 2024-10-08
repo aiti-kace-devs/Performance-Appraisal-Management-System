@@ -55,7 +55,7 @@ def create_appraisal_cycles(
         # 
         appraisal_cycles_in: schemas.AppraisalCycleCreate
 ) -> Any:
-    appraisal_cycles_router = actions.create_appraisal_cycle(db=db, appraisal_cycle=appraisal_cycles_in)
+    appraisal_cycles_router = actions.create_appraisal_cycle(db=db, payload=appraisal_cycles_in)
     return appraisal_cycles_router
 
 

@@ -13,7 +13,7 @@ class AppraisalSection(APIBase):
     name = Column(String, nullable=False) 
     description = Column(Text, nullable=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
-    appraisal_year = Column(String(255), nullable=True)
+    appraisal_year = Column(Integer, nullable=True)
     
 
     appraisal_sections_staff = relationship("Staff", back_populates="staff_appraisal_sections")

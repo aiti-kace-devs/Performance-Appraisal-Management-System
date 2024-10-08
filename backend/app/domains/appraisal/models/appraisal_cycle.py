@@ -11,10 +11,10 @@ from db.base_class import APIBase
 class AppraisalCycle(APIBase):
 
 
-    name = Column(String, unique=True, nullable=False) 
+    name = Column(String, nullable=False) 
     description = Column(String, nullable=False)
-    year = Column(Integer, nullable=False)
-    created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), unique=True, nullable=False)
+    year = Column(String, nullable=False)
+    created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
 
     appraisal_cycles_staff = relationship("Staff", back_populates="staff_appraisal_cycles")
     

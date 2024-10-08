@@ -8,7 +8,7 @@ from db.base_class import APIBase
 
 class StaffSupervisor(APIBase):
 
-    appraisal_year = Column(String(255), nullable=True)
+    appraisal_year = Column(Integer, nullable=True)
     staff_id = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
     supervisor_id = Column(UUID(as_uuid=True), nullable=True)
 

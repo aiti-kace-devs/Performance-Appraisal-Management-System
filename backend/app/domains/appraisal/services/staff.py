@@ -1,5 +1,5 @@
 from domains.appraisal.respository.staff import Staff_form_actions as Staff_form_repo
-from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase,DepartmentInfo,RoleInfo,SupervisorInfo
+from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,StaffWithFullNameInDBBase,DepartmentInfo,RoleInfo,SupervisorInfo,AppraisalCycleInfo
 from domains.appraisal.models.staff_role_permissions import Role, Staff, staff_permissions
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate, StaffResponse
 from domains.appraisal.models.department import Department
@@ -26,7 +26,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import aliased, Session
 from datetime import datetime
 from typing import List
-
+from domains.appraisal.models.appraisal_cycle import AppraisalCycle
 
 
 
@@ -38,11 +38,10 @@ class StaffService:
 
 
     async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
-        current_year = datetime.now().strftime("%Y") 
+        current_year = datetime.now().year 
 
         Supervisor = aliased(Staff)
 
-        # Subquery to get distinct staff by email
         distinct_staff_query = (
             db.query(
                 Staff.id.label('staff_id'),
@@ -64,7 +63,6 @@ class StaffService:
             .subquery()
         )
 
-        # Main query to fetch staff details along with department and role
         staff_query = (
             db.query(
                 distinct_staff_query.c.staff_id,
@@ -83,13 +81,17 @@ class StaffService:
                 Role.name.label('role_name'),
                 StaffSupervisor.supervisor_id.label('staff_supervisor_id'),
                 (Supervisor.first_name + ' ' + Supervisor.last_name + ' ' + Supervisor.other_name).label('supervisor_full_name'),
-                StaffSupervisor.appraisal_year.label('appraisal_year')
+                StaffSupervisor.appraisal_year.label('appraisal_year'),
+                AppraisalCycle.id.label('appraisal_cycle_id'),
+                AppraisalCycle.name.label('appraisal_cycle_name'),
+                AppraisalCycle.year.label('appraisal_cycle_year'),
             )
             .join(Department, distinct_staff_query.c.department_id == Department.id)
             .join(User, User.staff_id == distinct_staff_query.c.staff_id)
             .join(Role, User.role_id == Role.id)
             .outerjoin(StaffSupervisor, StaffSupervisor.staff_id == distinct_staff_query.c.staff_id)
             .outerjoin(Supervisor, Supervisor.id == StaffSupervisor.supervisor_id)
+            .outerjoin(AppraisalCycle, AppraisalCycle.year == current_year)
             .filter(
                 (StaffSupervisor.appraisal_year == current_year) | (StaffSupervisor.appraisal_year.is_(None))  # Filter by current year or None
             )
@@ -100,10 +102,9 @@ class StaffService:
         staff_with_details = staff_query.all()
 
         staff_list = []
-        seen_emails = set()  # Set to keep track of unique emails
+        seen_emails = set()
 
         for row in staff_with_details:
-            # Extract data from row tuple
             staff_id = row[0]
             title = row[1]
             first_name = row[2]
@@ -121,18 +122,18 @@ class StaffService:
             staff_supervisor_id = row[14]
             supervisor_full_name = row[15]
             appraisal_year = row[16]
+            appraisal_cycle_id = row[17]
+            appraisal_cycle_name = row[18]
+            appraisal_cycle_year = row[19]
 
-            # Only add staff if the email has not been seen before
             if email not in seen_emails:
-                seen_emails.add(email)  # Mark this email as seen
+                seen_emails.add(email) 
 
-                # Set supervisor fields to None if staff doesn't have a supervisor_id, full_name, or appraisal_year
                 if staff_supervisor_id is None or supervisor_full_name is None or appraisal_year is None:
                     staff_supervisor_id = None
                     supervisor_full_name = None
                     appraisal_year = None
 
-                # Build staff details
                 staff_list.append(
                     StaffWithFullNameInDBBase(
                         id=staff_id,
@@ -146,6 +147,11 @@ class StaffService:
                         position=position,
                         grade=grade,
                         appointment_date=appointment_date,
+                        apppraisal_cycle=AppraisalCycleInfo(
+                            id=appraisal_cycle_id if appraisal_cycle_id else None,
+                            name=appraisal_cycle_name if appraisal_cycle_name else None,
+                            year=appraisal_cycle_year if appraisal_cycle_year else None
+                        ),
                         department_id=DepartmentInfo(
                             id=department_id,
                             name=department_name
