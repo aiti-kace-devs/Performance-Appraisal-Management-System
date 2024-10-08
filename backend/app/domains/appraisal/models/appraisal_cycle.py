@@ -16,8 +16,8 @@ class AppraisalCycle(APIBase):
     year = Column(Integer, nullable=False)
     created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
 
-    appraisal_cycles_staff = relationship("Staff", back_populates="staff_appraisal_cycles")
-    appraisal_sections = relationship("AppraisalSection", back_populates="staff_appraisal_cycles")
+    staffs = relationship("Staff", back_populates="appraisal_cycles")
+    appraisal_sections = relationship("AppraisalSection", back_populates="appraisal_cycles")
     
 
 

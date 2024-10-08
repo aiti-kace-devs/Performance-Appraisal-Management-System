@@ -76,7 +76,7 @@ class Staff(APIBase):
     department = relationship("Department", back_populates="staff_departments")
     staff_supervisors = relationship("StaffSupervisor", back_populates="staffs")
     appraisal_sections = relationship("AppraisalSection", back_populates="staffs")
-    staff_appraisal_cycles = relationship("AppraisalCycle", back_populates="appraisal_cycles_staff")
+    appraisal_cycles = relationship("AppraisalCycle", back_populates="staffs")
     appraisal_forms = relationship("AppraisalForm", back_populates="staffs")
 
     # Many-to-many relationship with Permission through StaffPermission
