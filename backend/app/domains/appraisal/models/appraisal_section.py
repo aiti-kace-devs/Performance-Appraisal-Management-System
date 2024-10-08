@@ -16,7 +16,8 @@ class AppraisalSection(APIBase):
     appraisal_year = Column(Integer, nullable=True)
     
 
-    appraisal_sections_staff = relationship("Staff", back_populates="staff_appraisal_sections")
+    staffs = relationship("Staff", back_populates="appraisal_sections")
+    appraisal_forms = relationship("AppraisalForm", back_populates="appraisal_sections")
     
     
 
