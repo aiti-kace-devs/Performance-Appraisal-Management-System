@@ -44,11 +44,11 @@ APIBase.query = session.query_property()
 def drop_table():
     check_settings = session.execute(text('select id from staffs'))
     if check_settings:
-        session.execute(text('ALTER TABLE appraisal_configurations DROP CONSTRAINT appraisal_configurations_appraisal_cycles_id_fkey'))
+        #session.execute(text('ALTER TABLE appraisal_configurations DROP CONSTRAINT appraisal_configurations_appraisal_cycles_id_fkey'))
         session.execute(text('drop table appraisal_cycles'))
-        session.execute(text('drop table appraisal_forms'))
-        session.execute(text('drop table appraisal_sections'))
-        # session.commit()
+        # session.execute(text('drop table appraisal_forms'))
+        # session.execute(text('drop table appraisal_sections'))
+        session.commit()
         session.close()
     
     return ""
