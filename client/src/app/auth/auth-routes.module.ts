@@ -1,8 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
-const routes: Routes = [{ path: '', component: LoginComponent }];
+const routes: Routes = [
+  { path: '', component: LoginComponent },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
+    pathMatch: 'full',
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
