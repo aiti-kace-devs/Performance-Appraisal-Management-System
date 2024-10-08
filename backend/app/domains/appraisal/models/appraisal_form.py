@@ -12,4 +12,4 @@ class AppraisalForm(APIBase):
     form_fields = Column(JSON, nullable=False)
 
     staffs = relationship("Staff", back_populates="appraisal_forms")
-    #appraisal_sections = relationship("AppraisalSection", back_populates="appraisal_forms")
+    appraisal_sections = relationship("AppraisalSection", back_populates="appraisal_forms")
