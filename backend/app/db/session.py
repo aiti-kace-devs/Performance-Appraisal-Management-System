@@ -45,11 +45,9 @@ def drop_table():
     check_settings = session.execute(text('select id from staffs'))
     if check_settings:
         session.execute(text('ALTER TABLE appraisal_configurations DROP CONSTRAINT appraisal_configurations_pkey'))
-        session.execute(text('drop table appraisal_cycles'))
-        session.execute(text('drop table staff_supervisors'))
-        session.execute(text('drop table appraisal_sections'))
-        
-        
+        # session.execute(text('drop table appraisal_cycles'))
+        # session.execute(text('drop table staff_supervisors'))
+        # session.execute(text('drop table appraisal_sections'))
         session.commit()
         session.close()
     
