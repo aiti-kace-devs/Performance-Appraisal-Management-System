@@ -33,6 +33,7 @@ class AppraisalSectionService:
         create_secttion.name = payload.name
         create_secttion.description = payload.description
         create_secttion.appraisal_year = current_year
+        #create_secttion.appraisal_cycle_id = current_year
         db.add(create_secttion)
         db.commit()
         db.refresh(create_secttion)
