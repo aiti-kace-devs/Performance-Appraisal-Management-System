@@ -14,7 +14,8 @@ class Settings:
     SMS_API_KEY:str  = os.getenv("ARKESEL_API_KEY")
     SMS_API_URL: str = os.getenv("ARKESEL_BASE_URL")
     
-
+    intruder_list = []
+    
     MAX_CONCURRENT_THREADS: int = 10  # Maximum number of concurrent threads
     MAX_RETRIES: int = 1  # Maximum number of retry attempts
     RETRY_DELAY_BASE: int = 0  # Initial retry delay in seconds
@@ -27,6 +28,16 @@ class Settings:
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
+    SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+    # POSTGRES_USER: str = os.getenv("POSTGRES_USER", "appraisal_user")
+    # POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "XSC79Nvr225grMygGYMPP9nomFd550ei")
+    # POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "dpg-cr28tljqf0us739p3hj0-a")
+    # POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
+    # POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
+    # SQLALCHEMY_DATABASE_URL = f"postgresql://appraisal_user:XSC79Nvr225grMygGYMPP9nomFd550ei@dpg-cr28tljqf0us739p3hj0-a/appraisal_db"
+
+
     INSTANCE_CONNECTION_NAME: str = os.getenv("INSTANCE_CONNECTION_NAME", None)
     UNIX_SOCKET: str = os.getenv("INSTANCE_UNIX_SOCKET", '/cloudsql/')
     PROJECT_ID: str = os.getenv("PROJECT_ID")
@@ -39,25 +50,39 @@ class Settings:
     SYSTEM_LOGO: str = os.getenv("SYSTEM_LOGO", "https://storage.googleapis.com/developers-bucket/developers-bucket/smart-conference-app/flyers/GI-KACE-Logo.jpeg")
 
 
-    SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-
-    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
-    MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
+    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME", 'dev.aiti.com.gh@gmail.com')
+    MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", 'palvpbokbnisspps') #uefuovgtfwyfgskv previous password
     MAIL_FROM: str = os.getenv("MAIL_FROM", "dev.aiti.com.gh@gmail.com")
-    MAIL_PORT: str = os.getenv("MAIL_PORT")
-    MAIL_SERVER: str = os.getenv("MAIL_SERVER")
+    MAIL_PORT: int = os.getenv("MAIL_PORT", 587)
+    MAIL_SERVER: str = os.getenv("MAIL_SERVER", 'smtp.gmail.com')
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS: bool = os.getenv("MAIL_SSL_TLS", False)
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
 
 
+    # MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
+    # MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
+    # MAIL_FROM: str = os.getenv("MAIL_FROM", "dev.aiti.com.gh@gmail.com")
+    # MAIL_PORT: str = os.getenv("MAIL_PORT")
+    # MAIL_SERVER: str = os.getenv("MAIL_SERVER")
+    # MAIL_STARTTLS: bool = True
+    # MAIL_SSL_TLS: bool = os.getenv("MAIL_SSL_TLS", False)
+    # USE_CREDENTIALS: bool = True
+    # VALIDATE_CERTS: bool = True
+
+
+
+
+
+
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://smconf-test.web.app")
 
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 45
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 2700
     REFRESH_TOKEN_DURATION_IN_MINUTES: int =  2592000
+    REFRESH_TOKEN_REMEMBER_ME_DAYS: int = 5184000  # or any appropriate value
     COOKIE_ACCESS_EXPIRE = 1800
     COOKIE_REFRESH_EXPIRE = 2592000 # 1 Month
     COOKIE_DOMAIN: str = os.getenv("COOKIE_DOMAIN", "gikace.dev")
