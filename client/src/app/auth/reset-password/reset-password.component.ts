@@ -8,7 +8,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppAlertService } from '../../shared/alerts/service/app-alert.service';
 import { PrimeNgAlerts } from '../../config/app-config';
-import { EMPTY, filter, skip } from 'rxjs';
+import { catchError, EMPTY, filter, skip } from 'rxjs';
+import { LoginService } from '../service/login.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -23,7 +24,7 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    // private loginService: LoginService,
+    private loginService: LoginService,
     private alert: AppAlertService,
     private router: Router
   ) {}
@@ -78,25 +79,25 @@ export class ResetPasswordComponent implements OnInit {
       const data = {
         password: this.form.value.password,
       };
-      // this.loginService
-      //   .resetPassword(this.token, data)
-      //   .pipe(
-      //     catchError((er) => {
-      //       this.alert.showToast(
-      //         er.error.detail ??
-      //           `Password reset unsuccessful. Please try again`,
-      //         PrimeNgAlerts.ERROR
-      //       );
-      //       return EMPTY;
-      //     })
-      //   )
-      //   .subscribe((res: any) => {
-      //     this.alert.showToast(
-      //       'password created successfully',
-      //       PrimeNgAlerts.SUCCESS
-      //     );
-      //     this.router.navigate(['/']);
-      //   });
+      this.loginService
+        .resetPassword(this.token, data)
+        .pipe(
+          catchError((er) => {
+            this.alert.showToast(
+              er.error.detail ??
+                `Password reset unsuccessful. Please try again`,
+              PrimeNgAlerts.ERROR
+            );
+            return EMPTY;
+          })
+        )
+        .subscribe((res: any) => {
+          this.alert.showToast(
+            'Password created successfully',
+            PrimeNgAlerts.SUCCESS
+          );
+          this.router.navigate(['/']);
+        });
     }
   }
 }

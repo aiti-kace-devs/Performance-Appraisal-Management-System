@@ -10,7 +10,7 @@ export class AuthService {
     return localStorage.getItem(APP_ACCESS_TOKEN) || '';
   }
 
-  // jwtHelper: JwtHelperService = new JwtHelperService();
+  jwtHelper: JwtHelperService = new JwtHelperService();
   // ...
   public isAuthenticated(): boolean {
     const token = this.getToken(); // Check whether the token is expired and return

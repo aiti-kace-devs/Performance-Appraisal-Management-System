@@ -14,7 +14,11 @@ import { NgxsModule } from '@ngxs/store';
 import { StaffState } from './store/staff/staff.state';
 import { DepartmentState } from './store/department/department.state';
 import { AuthState } from './store/auth/auth.state';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import {
   errorTailorImports,
   provideErrorTailorConfig,
@@ -25,6 +29,7 @@ import {
   blurPrdicateFunction,
 } from './config/app-config';
 import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.component';
+import { TokenInterceptor } from './shared/interceptors/token-interceptor';
 
 @NgModule({
   declarations: [
@@ -33,6 +38,7 @@ import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.compon
     SideBarComponent,
     PageNotFoundComponent,
   ],
+  bootstrap: [AppComponent],
   imports: [
     CommonModule,
     RouterOutlet,
@@ -42,17 +48,21 @@ import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.compon
     AlertsModule,
     PrimeNgImportsModule,
     MainAppModule,
-    HttpClientModule,
     NgxsModule.forRoot([StaffState, DepartmentState, AuthState]),
     errorTailorImports,
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
     provideErrorTailorConfig({
       ...ERROR_MESSAGES_MAPPING,
       blurPredicate: blurPrdicateFunction,
       controlErrorComponentAnchorFn: anchorErrorComponentFn,
     }),
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}
