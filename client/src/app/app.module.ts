@@ -13,6 +13,7 @@ import { MainAppModule } from './main-app/main-app.module';
 import { NgxsModule } from '@ngxs/store';
 import { StaffState } from './store/staff/staff.state';
 import { DepartmentState } from './store/department/department.state';
+import { AuthState } from './store/auth/auth.state';
 import { HttpClientModule } from '@angular/common/http';
 import {
   errorTailorImports,
@@ -42,7 +43,7 @@ import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.compon
     PrimeNgImportsModule,
     MainAppModule,
     HttpClientModule,
-    NgxsModule.forRoot([StaffState, DepartmentState]),
+    NgxsModule.forRoot([StaffState, DepartmentState, AuthState]),
     errorTailorImports,
   ],
   providers: [
