@@ -22,41 +22,29 @@ class AppraisalService:
 
 
     def get_appraisal_by_id(self, db: Session, id: UUID):
-        # Initialize empty structures
         get_staff_empty_info = {}
         get_staff_appraisal_submission = []
-        get_staff_empty_sections = {}
-        get_empty_staff_appraisal_form = []
         data = []
-        get_the_entire_data = []
 
-        # Retrieve staff info
         get_staff_info = db.query(Staff).filter(Staff.id == id).first()
 
-        # If staff info doesn't exist, return empty
         if not get_staff_info:
             return {
                 "staff_info": {},
                 "data": []
             }
 
-        # Retrieve appraisal submissions for the staff member
         get_staff_appraisal_submission = db.query(AppraisalSubmission).filter(AppraisalSubmission.submitted_by == id).all()
 
-        # Process each submission
         for submission in get_staff_appraisal_submission:
-            # Retrieve the corresponding appraisal form
             appraisal_form = db.query(AppraisalForm).filter(AppraisalForm.id == submission.appraisal_forms_id).first()
 
-            # If appraisal form exists, retrieve associated sections and form fields
             if appraisal_form:
-                # Retrieve the section corresponding to the appraisal form
+              
                 appraisal_section = db.query(AppraisalSection).filter(AppraisalSection.id == appraisal_form.appraisal_sections_id).first()
 
-                # Parse form fields (assuming stored as JSON in DB)
                 form_fields = json.loads(appraisal_form.form_fields)
 
-                # Prepare the data structure for this specific appraisal
                 section_data = {
                     "appraisal_sections": {
                         "name": appraisal_section.name,
@@ -70,7 +58,7 @@ class AppraisalService:
                     },
                     "appraisal_form": {
                         "id": appraisal_form.id,
-                        "form_fields": form_fields  # Assuming form_fields is already a list
+                        "form_fields": form_fields 
                     },
                     "appraisal_submission": {
                         "submitted_by": submission.submitted_by,
@@ -89,26 +77,8 @@ class AppraisalService:
                     }
                 }
 
-                # Append the processed section data to the main list
                 data.append(section_data)
 
-        # Populate the staff info for the response
-        # get_staff_empty_info = {
-        #     "role_id": get_staff_info.role_id,
-        #     "other_name": get_staff_info.other_name,
-        #     "grade": get_staff_info.grade,
-        #     "gender": get_staff_info.gender,
-        #     "created_date": get_staff_info.created_date,
-        #     "position": get_staff_info.position,
-        #     "updated_date": get_staff_info.updated_date,
-        #     "email": get_staff_info.email,
-        #     "department_id": get_staff_info.department_id,
-        #     "title": get_staff_info.title,
-        #     "first_name": get_staff_info.first_name,
-        #     "id": get_staff_info.id,
-        #     "last_name": get_staff_info.last_name,
-        #     "appointment_date": get_staff_info.appointment_date
-        # }
 
         get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == id).first()
 
@@ -123,7 +93,7 @@ class AppraisalService:
                 supervisor_data = {
                     'id': None,
                     'full_name': None,
-                }  # or handle this case as necessary
+                } 
             else:
                 supervisor_data = {
                     'id': get_staff.id,

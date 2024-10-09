@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from db.base_class import UUID
 from domains.auth.respository.user_account import users_form_actions as users_form_repo
-from domains.auth.schemas.user_account import UserSchema, UserCreate, UserUpdate
+from domains.auth.schemas.user_account import UserSchema, UserCreate, UserUpdate,UpdatePassword
 from domains.auth.models.users import User
 from domains.appraisal.models.staff_role_permissions import Role, Staff
 
@@ -22,7 +22,6 @@ class UserService:
             .all()
         )
         
-        print(f"Retrieved users: {len(users)}")
         
         user_list = []
         for user in users:
@@ -52,9 +51,6 @@ class UserService:
             user_list.append(user_data)
 
         return user_list
-
-
-
 
 
 
@@ -92,14 +88,6 @@ class UserService:
             )
         return users_form
 
-    def get_users_forms_by_keywords(self, *, db: Session, tag: str) -> List[UserSchema]:
-        pass
-
-    def search_users_forms(self, *, db: Session, search: str, value: str) -> List[UserSchema]:
-        pass
-
-    def read_by_kwargs(self, *, db: Session, **kwargs) -> Any:
-        return users_form_repo.get_by_kwargs(self, db, kwargs)
 
 
 users_forms_service = UserService()
