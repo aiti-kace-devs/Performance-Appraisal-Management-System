@@ -88,7 +88,7 @@ class Settings:
 
 
 
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://smconf-test.web.app")
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:4200")
 
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15

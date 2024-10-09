@@ -159,7 +159,7 @@ def get_new_access_token(response:Response, refresh_token: schema.RefreshToken, 
 
 
 
-async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
+def send_reset_email(email: str, reset_link: str) -> EmailSchema:
     ## prepare the email data
     email_data = EmailSchema(
         subject= "Password Reset Request",

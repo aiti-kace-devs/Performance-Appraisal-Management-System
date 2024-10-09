@@ -7,7 +7,7 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import appraisal_configuration as schemas
 from domains.appraisal.services.appraisal_configuration import appraisal_configuration_service as actions
 from db.session import get_db
-
+from utils import rbac as UserRolesManager
 
 appraisal_configuration_router = APIRouter(
        prefix="/appraisal_configuration",
@@ -54,8 +54,8 @@ def search_appraisal_configuration_by_keyword(
 )
 def create_appraisal_configuration(
         *, db: Session = Depends(get_db),
-        # 
-        appraisal_configuration_in: schemas.AppraisalConfigurationCreate
+        appraisal_configuration_in: schemas.AppraisalConfigurationCreate,
+        current_user=Depends(UserRolesManager.check_if_user_is_supervisor_or_super_admin_or_hr)
 ) -> Any:
     appraisal_configuration_router = actions.create_appraisal_configuration(db=db, appraisal_configuration=appraisal_configuration_in)
     return appraisal_configuration_router

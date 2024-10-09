@@ -8,6 +8,7 @@ class ReadAppraisalCycleBase(BaseModel):
     name: Annotated[str, Field(min_length=1)] = Field(...)
     description: Annotated[str, Field(min_length=1)] = Field(...)
     year: int = Field(default_factory=lambda: datetime.now().year)
+    created_by: Optional[UUID4]
 
 
 

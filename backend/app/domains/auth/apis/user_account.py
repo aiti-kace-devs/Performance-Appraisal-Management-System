@@ -120,7 +120,7 @@ async def request_password_reset(email: str, db: Session = Depends(get_db)):
 
         reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
         email_data = await send_reset_email(user.email, reset_link)
-        await Email.sendMailService(email_data, template_name='password_reset.html')
+        await Email.sendMailService(email_data, template_name='request_password.html')
         
     except Exception as error:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,

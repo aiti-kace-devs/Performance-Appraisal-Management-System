@@ -1,14 +1,15 @@
 from typing import List, Any
 import re
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status,Depends
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal_cycle import appraisal_cycle_actions as appraisal_cycle_repo
 from domains.appraisal.schemas.appraisal_cycle import AppraisalCycleSchema, AppraisalCycleUpdate, AppraisalCycleCreate
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
+from domains.appraisal.models.staff_role_permissions import Staff
 from datetime import datetime
-
+from utils import rbac as UserRolesManager
 
 class AppraisalCycleService:
 
@@ -17,10 +18,21 @@ class AppraisalCycleService:
         appraisal_cycle = appraisal_cycle_repo.get_all(db=db, skip=skip, limit=limit)
         return appraisal_cycle
 
-    def create_appraisal_cycle(self, *, db: Session, payload: AppraisalCycleCreate) -> AppraisalCycleSchema:
+    def create_appraisal_cycle(self, *, db: Session, 
+                               payload: AppraisalCycleCreate,
+                                 current_user=Depends(UserRolesManager.check_if_user_is_supervisor_or_hr)
+                                 ) -> AppraisalCycleSchema:
 
         date = datetime.now()
         current_year = date.year
+
+
+        check_if_staff_exist = db.query(Staff).filter(Staff.id == current_user).first()
+
+        if not check_if_staff_exist:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff does not exist")
+        
+
 
         check_for_duplicate = db.query(AppraisalCycle).filter(AppraisalCycle.name == payload.name, AppraisalCycle.year == current_year).first()
 
@@ -33,6 +45,7 @@ class AppraisalCycleService:
         create_appraisal_cycl.name = payload.name
         create_appraisal_cycl.description = payload.description
         create_appraisal_cycl.year = current_year
+        create_appraisal_cycl.created_by = current_user
         db.add(create_appraisal_cycl)
         db.commit()
         db.refresh(create_appraisal_cycl)

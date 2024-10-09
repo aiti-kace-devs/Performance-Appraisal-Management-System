@@ -7,6 +7,7 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import appraisal_cycle as schemas
 from domains.appraisal.services.appraisal_cycle import appraisal_cycle_service as actions
 from db.session import get_db
+from utils import rbac as UserRolesManager
 
 
 appraisal_cycles_router = APIRouter(
@@ -52,11 +53,11 @@ def search_appraisal_cycles_by_name_or_by_year(
 )
 def create_appraisal_cycles(
         *, db: Session = Depends(get_db),
-        # 
-        appraisal_cycles_in: schemas.AppraisalCycleCreate
+        appraisal_cycles_in: schemas.AppraisalCycleCreate,
+         current_user=Depends(UserRolesManager.check_if_user_is_supervisor_or_hr)
 ) -> Any:
-    appraisal_cycles_router = actions.create_appraisal_cycle(db=db, payload=appraisal_cycles_in)
-    return appraisal_cycles_router
+    appraisal_cycles = actions.create_appraisal_cycle(db=db, payload=appraisal_cycles_in)
+    return appraisal_cycles
 
 
 @appraisal_cycles_router.put(
