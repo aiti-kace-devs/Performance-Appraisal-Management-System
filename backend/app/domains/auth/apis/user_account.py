@@ -105,9 +105,9 @@ async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
 
 
 
-@users_router.post("/forgot-password/")
-async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == reset_password_request.email).first()
+@users_router.get("/forgot-password/{email}")
+async def request_password_reset(email: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -116,11 +116,15 @@ async def request_password_reset(reset_password_request: ResetPasswordRequest, d
     user.reset_password_token = token
     db.commit()
 
-    reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
+    try:
 
-    email_data = await send_reset_email(user.email, reset_link)
-
-    await Email.sendMailService(email_data, template_name='password_reset.html')
+        reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
+        email_data = await send_reset_email(user.email, reset_link)
+        await Email.sendMailService(email_data, template_name='password_reset.html')
+        
+    except Exception as error:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail='There was an error sending email')
     
     return JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
 
