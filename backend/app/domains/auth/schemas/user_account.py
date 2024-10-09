@@ -7,16 +7,42 @@ from pydantic import BaseModel, field_validator, EmailStr
 from pydantic import UUID4
 
 
+
+from pydantic import BaseModel
+from typing import Optional
+
+
+class StaffSchema(BaseModel):
+    id: Optional[UUID4]
+    first_name: str
+    last_name: str
+    other_name: Optional[str] = None
+    full_name: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class RoleSchema(BaseModel):
+    id: Optional[UUID4]
+    name: str
+
+    class Config:
+        orm_mode = True
+
 class UserBase(BaseModel):
     email:EmailStr
     password:Optional[str]
     reset_password_token:Optional[str]
-    staff_id: UUID4
-    role_id: Optional[UUID4]
     is_active: bool = True
     failed_login_attempts: int 
     account_locked_until: Optional[datetime]
     lock_count: Optional[int]
+    staff: Optional[StaffSchema] 
+    role: Optional[RoleSchema]
+
+    class Config:
+        orm_mode = True
 
 
     @field_validator('email','reset_password_token' ,mode='before')
@@ -27,13 +53,13 @@ class UserBase(BaseModel):
         return v
 
       # Checking if UUID4 fields accept only UUID4 as value
-    @field_validator('staff_id', mode='before')
-    def validate_fields_with_uuid4(cls, v, info):
-        try:
-            uuid.UUID(str(v), version=4)
-        except ValueError:
-            raise ValueError(f'\n{info.field_name} must have a valid UUID4')
-        return v
+    # @field_validator('staff_id', mode='before')
+    # def validate_fields_with_uuid4(cls, v, info):
+    #     try:
+    #         uuid.UUID(str(v), version=4)
+    #     except ValueError:
+    #         raise ValueError(f'\n{info.field_name} must have a valid UUID4')
+    #     return v
 
 class UserCreate(UserBase):
     pass

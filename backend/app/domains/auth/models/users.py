@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy import JSON, Boolean, Column, Date, DateTime, ForeignKey, String, Text,Integer
 from sqlalchemy.dialects.postgresql import UUID
 from db.base_class import APIBase
-
+from sqlalchemy.orm import relationship
 
 
 
@@ -18,6 +18,9 @@ class User(APIBase):
     failed_login_attempts = Column(Integer, default=0)
     account_locked_until = Column(DateTime, nullable=True)
     lock_count = Column(Integer, default=0)
+
+    staffs = relationship("Staff", back_populates="users", uselist=True)
+    roles = relationship("Role", back_populates="users", uselist=True)
 
     def is_account_locked(self):
         return self.account_locked_until and self.account_locked_until > datetime.now()

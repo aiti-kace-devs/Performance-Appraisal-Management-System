@@ -34,6 +34,7 @@ class Role(APIBase):
         back_populates="roles"
     )
     staff_members = relationship("Staff", back_populates="role")
+    users = relationship("User", back_populates="roles")
 
 
 class Permission(APIBase):
@@ -79,6 +80,7 @@ class Staff(APIBase):
     appraisal_cycles = relationship("AppraisalCycle", back_populates="staffs")
     appraisal_forms = relationship("AppraisalForm", back_populates="staffs")
     appraisal_submissions = relationship("AppraisalSubmission", back_populates="staffs")
+    users = relationship("User", back_populates="staffs", uselist=True)
 
     # Many-to-many relationship with Permission through StaffPermission
     permissions = relationship(

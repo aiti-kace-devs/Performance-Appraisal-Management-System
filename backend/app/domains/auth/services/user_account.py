@@ -6,14 +6,58 @@ from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.auth.respository.user_account import users_form_actions as users_form_repo
 from domains.auth.schemas.user_account import UserSchema, UserCreate, UserUpdate
-
+from domains.auth.models.users import User
+from domains.appraisal.models.staff_role_permissions import Role, Staff
 
 class UserService:
 
 
     def list_users_forms(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[UserSchema]:
-        users_form = users_form_repo.get_all(db=db, skip=skip, limit=limit)
-        return users_form
+        users = (
+            db.query(User)
+            .join(Staff, User.staff_id == Staff.id)
+            .join(Role, User.role_id == Role.id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+        
+        print(f"Retrieved users: {len(users)}")
+        
+        user_list = []
+        for user in users:
+
+            user_data = {
+                "id": user.id,
+                "is_active": user.is_active,
+                "failed_login_attempts": user.failed_login_attempts,
+                "account_locked_until": user.account_locked_until,
+                "lock_count": user.lock_count,
+                "email": user.email,
+                "password": user.password,
+                "reset_password_token": user.reset_password_token,
+                "staff": {
+                    "id": user.staffs[0].id if user.staffs else None, 
+                    "first_name": user.staffs[0].first_name if user.staffs else None,
+                    "last_name": user.staffs[0].last_name if user.staffs else None,
+                    "other_name": user.staffs[0].other_name if user.staffs else None,
+                    "full_name": f"{user.staffs[0].first_name} {user.staffs[0].last_name}" + (f" {user.staffs[0].other_name}" if user.staffs[0].other_name or user.staffs[0].first_name or user.staffs[0].other_name else None)
+                } if user.staffs else None, 
+                "role": {
+                    "id": user.roles[0].id if user.roles else None, 
+                    "name": user.roles[0].name if user.roles else None,
+                } if user.roles else None, 
+            }
+
+            user_list.append(user_data)
+
+        return user_list
+
+
+
+
+
+
 
     def create_users_forms(self, *, db: Session, users_form: UserCreate) -> UserSchema:
         users_form = users_form_repo.create(db=db, obj_in=users_form)
