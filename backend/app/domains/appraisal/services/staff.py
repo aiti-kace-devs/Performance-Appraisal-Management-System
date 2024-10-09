@@ -274,7 +274,7 @@ class StaffService:
         db.commit()
 
         # Send email with the reset link
-        reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
+        reset_link = f"{settings.FRONTEND_URL}/login/reset-password?token={token}"
 
         email_data = send_reset_email(staff.email, reset_link)
 

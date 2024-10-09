@@ -118,7 +118,7 @@ async def request_password_reset(email: str, db: Session = Depends(get_db)):
 
     try:
 
-        reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
+        reset_link = f"{settings.FRONTEND_URL}/login/reset-password?token={token}"
         email_data = await send_reset_email(user.email, reset_link)
         await Email.sendMailService(email_data, template_name='request_password.html')
         
