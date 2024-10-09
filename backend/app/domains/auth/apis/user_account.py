@@ -72,18 +72,18 @@ def update_users(
     "/{id}",
     response_model=schemas.UserSchema
 )
-def get_users(
+def get_user_by_id(
         *, db: Session = Depends(get_db),
 
         id: UUID4
 ) -> Any:
-    users_router = actions.get_users_forms(db=db, id=id)
-    if not users_router:
+    get_user = actions.get_user_by_id(db=db, id=id)
+    if not get_user:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,
-            detail="users_forms_router not found"
+            detail="User not found"
         )
-    return users_router
+    return get_user
 
 
 
