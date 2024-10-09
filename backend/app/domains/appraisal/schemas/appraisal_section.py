@@ -7,10 +7,17 @@ from domains.appraisal.models.appraisal_section import AppraisalSection
 
 # Custom Validator Function
 
+
+class AppraisalCycleBase(BaseModel):
+    id: Optional[UUID4] = None
+    name: Optional[str] = None
+
+
 class ReadAppraisalSectionBase(BaseModel):
     name: Annotated[str, Field(min_length=1)] = Field(...)
     description: Annotated[str, Field(min_length=1)] = Field(...)
-    appraisal_year: Optional[str]
+    appraisal_year: Optional[int]
+    appraisal_cycle: Optional[AppraisalCycleBase] = None
     created_by: Optional[UUID4] 
 
 

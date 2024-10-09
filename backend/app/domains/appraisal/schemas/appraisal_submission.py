@@ -1,16 +1,25 @@
 from dateutil.parser import parse
 from datetime import date, datetime,time
-from typing import Annotated, Optional, Any, Dict
+from typing import Annotated, Optional, Any, Dict, List
 import uuid
-
 from pydantic import BaseModel, Field, field_validator,UUID4
 from sqlalchemy import JSON
 
 
-class AppraisalSubmissionBase(BaseModel):
-    appraisals_id : Optional[UUID4]
-    staffs_id : Optional[UUID4]
+
+class RaedStaffWithFullNameInDBBase(BaseModel):
+    id: Optional[UUID4] = Field(None)
+    first_name : str
+    last_name : str
+    other_name : str
+    full_name : str
+    email : str
+
+
+
+class ReadAppraisalSubmissionBase(BaseModel):
     appraisal_forms_id : Optional[UUID4]
+    submitted_by : Optional[RaedStaffWithFullNameInDBBase]
     submitted_values : Dict[str, Any]
     started_at : Optional[date]
     completed_at : Optional[date]
@@ -22,8 +31,23 @@ class AppraisalSubmissionBase(BaseModel):
 
 
 
+
+class AppraisalSubmissionBase(BaseModel):
+    submitted_by : Optional[UUID4]
+    appraisal_forms_id : Optional[UUID4]
+    submitted_values : Dict[str, Any]
+    started_at : Optional[date]
+    completed_at : Optional[date]
+    submitted : Optional[bool]
+    completed : Optional[bool]
+    approval_status : Optional[bool]
+    approval_date : Optional[date]
+    comment : Optional[str] = None
+
+
+
      # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', 'comment', mode='before')
+    @field_validator('submitted_by', 'appraisal_forms_id', 'comment', mode='before')
     def check_non_empty_and_not_string(cls, v, info):
         if isinstance(v, str) and (v.strip() == '' or v.strip().lower() == 'string'):
             raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
@@ -31,7 +55,7 @@ class AppraisalSubmissionBase(BaseModel):
 
 
     # Checking if UUID4 fields accept only UUID4 as value
-    @field_validator('appraisals_id', 'staffs_id', 'appraisal_forms_id', mode='before')
+    @field_validator('submitted_by', 'appraisal_forms_id', mode='before')
     def validate_fields_with_uuid4(cls, v, info):
         try:
             uuid.UUID(str(v), version=4)
@@ -74,7 +98,7 @@ class AppraisalSubmissionCreate(AppraisalSubmissionBase):
 class AppraisalSubmissionUpdate(AppraisalSubmissionBase):
     pass
 
-class AppraisalSubmissionInDBBase(AppraisalSubmissionBase):
+class AppraisalSubmissionInDBBase(ReadAppraisalSubmissionBase):
     id: UUID4
 
     class Config:

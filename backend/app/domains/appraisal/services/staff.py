@@ -276,9 +276,9 @@ class StaffService:
         # Send email with the reset link
         reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
 
-        # email_data = await send_reset_email(staff.email, reset_link)
+        email_data = await send_reset_email(staff.email, reset_link)
 
-        # await Email.sendMailService(email_data, template_name='password_reset.html')
+        await Email.sendMailService(email_data, template_name='password_reset.html')
 
         JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
 

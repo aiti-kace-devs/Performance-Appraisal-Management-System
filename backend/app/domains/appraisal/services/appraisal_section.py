@@ -21,33 +21,52 @@ class AppraisalSectionService:
 
     def create_appraisal_section(self, *, db: Session, payload: AppraisalSectionCreate) -> AppraisalSectionSchema:
 
-        check_for_duplicate = db.query(AppraisalSection).filter(AppraisalSection.name == payload.name).first()
-
         date = datetime.now()
         current_year = date.year
 
         appraisal_cycle_data = None
 
+        check_for_duplicate = db.query(AppraisalSection).filter(AppraisalSection.name == payload.name, AppraisalSection.appraisal_year == current_year).first()
+
         if check_for_duplicate:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Section %s already exists" % payload.name)
-        
-        get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year).first()
-        if get_appraisal_cycle:
-            appraisal_cycle_data = get_appraisal_cycle.id
-        else: 
-            appraisal_cycle_data = None
-        
+            raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, 
+                    detail=f"Appraisal Section {payload.name} already exists for {current_year}"
+                )
 
         
-        create_secttion = AppraisalSection()
-        create_secttion.name = payload.name
-        create_secttion.description = payload.description
-        create_secttion.appraisal_year = current_year
-        create_secttion.appraisal_cycle_id = appraisal_cycle_data
-        db.add(create_secttion)
+        get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year).first()
+        if not get_appraisal_cycle:
+            appraisal_cycle_data = None
+
+
+        appraisal_cycle_data = get_appraisal_cycle.id
+            
+        create_section = AppraisalSection()
+        create_section.name = payload.name
+        create_section.description = payload.description
+        create_section.appraisal_year = current_year
+        create_section.appraisal_cycle_id = appraisal_cycle_data
+        create_section.created_by = None
+        db.add(create_section)
         db.commit()
-        db.refresh(create_secttion)
-        return create_secttion
+        db.refresh(create_section)
+
+        
+
+        return {
+            "id": create_section.id,
+            "name": create_section.name,
+            "description": create_section.description,
+            "appraisal_year": create_section.appraisal_year,
+            "created_by": create_section.created_by,
+            "appraisal_cycle": {
+                "id": create_section.appraisal_cycles.id,
+                "name": create_section.appraisal_cycles.name
+            },
+            "created_at": create_section.created_date,
+            "updated_at": create_section.updated_date
+        }
 
     
 

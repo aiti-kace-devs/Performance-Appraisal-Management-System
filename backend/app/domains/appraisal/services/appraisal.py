@@ -1,16 +1,187 @@
 from typing import List, Any
-
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal import appraisal_form_actions as appraisal_repo
 from domains.appraisal.schemas.appraisal import AppraisalSchema, AppraisalUpdate, AppraisalCreate
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
 from domains.appraisal.models.staff_role_permissions import Staff
+from domains.appraisal.models.appraisal_section import AppraisalSection
+from domains.appraisal.models.appraisal_submission import AppraisalSubmission
+from domains.appraisal.models.appraisal_form import AppraisalForm
+from domains.appraisal.models.staff_supervisor import StaffSupervisor
+import json
+
+
 
 
 class AppraisalService:
+
+
+
+
+
+    def get_appraisal_by_id(self, db: Session, id: UUID):
+        # Initialize empty structures
+        get_staff_empty_info = {}
+        get_staff_appraisal_submission = []
+        get_staff_empty_sections = {}
+        get_empty_staff_appraisal_form = []
+        data = []
+        get_the_entire_data = []
+
+        # Retrieve staff info
+        get_staff_info = db.query(Staff).filter(Staff.id == id).first()
+
+        # If staff info doesn't exist, return empty
+        if not get_staff_info:
+            return {
+                "staff_info": {},
+                "data": []
+            }
+
+        # Retrieve appraisal submissions for the staff member
+        get_staff_appraisal_submission = db.query(AppraisalSubmission).filter(AppraisalSubmission.submitted_by == id).all()
+
+        # Process each submission
+        for submission in get_staff_appraisal_submission:
+            # Retrieve the corresponding appraisal form
+            appraisal_form = db.query(AppraisalForm).filter(AppraisalForm.id == submission.appraisal_forms_id).first()
+
+            # If appraisal form exists, retrieve associated sections and form fields
+            if appraisal_form:
+                # Retrieve the section corresponding to the appraisal form
+                appraisal_section = db.query(AppraisalSection).filter(AppraisalSection.id == appraisal_form.appraisal_sections_id).first()
+
+                # Parse form fields (assuming stored as JSON in DB)
+                form_fields = json.loads(appraisal_form.form_fields)
+
+                # Prepare the data structure for this specific appraisal
+                section_data = {
+                    "appraisal_sections": {
+                        "name": appraisal_section.name,
+                        "description": appraisal_section.description,
+                        "updated_date": appraisal_section.updated_date,
+                        "created_by": appraisal_section.created_by,
+                        "appraisal_year": appraisal_section.appraisal_year,
+                        "appraisal_cycle_id": appraisal_section.appraisal_cycle_id,
+                        "id": appraisal_section.id,
+                        "created_date": appraisal_section.created_date
+                    },
+                    "appraisal_form": {
+                        "id": appraisal_form.id,
+                        "form_fields": form_fields  # Assuming form_fields is already a list
+                    },
+                    "appraisal_submission": {
+                        "submitted_by": submission.submitted_by,
+                        "started_at": submission.started_at,
+                        "completed_at": submission.completed_at,
+                        "approval_date": submission.approval_date,
+                        "completed": submission.completed,
+                        "comment": submission.comment,
+                        "created_date": submission.created_date,
+                        "appraisal_forms_id": submission.appraisal_forms_id,
+                        "submitted_values": submission.submitted_values,
+                        "submitted": submission.submitted,
+                        "approval_status": submission.approval_status,
+                        "id": submission.id,
+                        "updated_date": submission.updated_date
+                    }
+                }
+
+                # Append the processed section data to the main list
+                data.append(section_data)
+
+        # Populate the staff info for the response
+        # get_staff_empty_info = {
+        #     "role_id": get_staff_info.role_id,
+        #     "other_name": get_staff_info.other_name,
+        #     "grade": get_staff_info.grade,
+        #     "gender": get_staff_info.gender,
+        #     "created_date": get_staff_info.created_date,
+        #     "position": get_staff_info.position,
+        #     "updated_date": get_staff_info.updated_date,
+        #     "email": get_staff_info.email,
+        #     "department_id": get_staff_info.department_id,
+        #     "title": get_staff_info.title,
+        #     "first_name": get_staff_info.first_name,
+        #     "id": get_staff_info.id,
+        #     "last_name": get_staff_info.last_name,
+        #     "appointment_date": get_staff_info.appointment_date
+        # }
+
+        get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == id).first()
+
+        if get_supervisor is None:
+            supervisor_data = {
+                    'id': None,
+                    'full_name': None,
+                }
+        else:
+            get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id).first()
+            if get_staff is None:
+                supervisor_data = {
+                    'id': None,
+                    'full_name': None,
+                }  # or handle this case as necessary
+            else:
+                supervisor_data = {
+                    'id': get_staff.id,
+                    'full_name': f"{get_staff.first_name} {get_staff.last_name}" + (f" {get_staff.other_name}" if get_staff.other_name else ""),
+                }
+
+
+                
+
+        get_staff_empty_info = {
+            'id': get_staff_info.id,
+            'title': get_staff_info.title,
+            'first_name': get_staff_info.first_name,
+            'last_name': get_staff_info.last_name,
+            'other_name': get_staff_info.other_name,
+            'full_name': f"{get_staff_info.first_name} {get_staff_info.last_name}" + (f" {get_staff_info.other_name}" if get_staff_info.other_name else ""),
+            'department_id': {
+                'id': get_staff_info.department.id,
+                'name': get_staff_info.department.name,
+            },
+            'gender': get_staff_info.gender,
+            'email': get_staff_info.email,
+            'position': get_staff_info.position,
+            'grade': get_staff_info.grade,
+            'appointment_date': get_staff_info.appointment_date, 
+            'role_id': {
+                'id': get_staff_info.role.id,
+                'name': get_staff_info.role.name,
+            },
+            'supervisor_id': supervisor_data,  # Update this to use the new variable
+            'created_at': get_staff_info.created_date,
+        }
+
+        # Return the final response
+        return {
+            "staff_info": get_staff_empty_info,
+            "data": data  # This contains all appraisal section and form data
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     def list_appraisal(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalSchema]:
@@ -54,14 +225,7 @@ class AppraisalService:
         appraisal = appraisal_repo.remove(db=db, id=id)
         return appraisal
 
-    def get_appraisal_by_id(self, *, id: UUID) -> AppraisalSchema:
-        appraisal = appraisal_repo.get(id)
-        if not appraisal:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="appraisal not found"
-            )
-        return appraisal
+
 
     def get_appraisal_by_keywords(self, *, db: Session, tag: str) -> List[AppraisalSchema]:
         pass
