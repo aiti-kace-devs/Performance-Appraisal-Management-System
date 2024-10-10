@@ -29,7 +29,7 @@ class AppraisalService:
         date = datetime.now()
         current_year = date.year
 
-        get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == staff_id).first()
+        get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == staff_id, StaffSupervisor.appraisal_year == current_year).first()
         if get_supervisor:
             get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id).first()
             if get_staff:
@@ -217,7 +217,7 @@ class AppraisalService:
 
         get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == staff_id).first()
         if get_supervisor:
-            get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id).first()
+            get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id, StaffSupervisor.appraisal_year == appraisal_year).first()
             if get_staff:
                 supervisor_data = {
                     'id': get_staff.id,

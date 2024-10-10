@@ -103,6 +103,9 @@ class AppraisalSectionService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_section not found")
         appraisal_section = appraisal_section_repo.remove(db=db, id=id)
         return appraisal_section
+    
+
+    
 
     def get_appraisal_section_by_id(self, *, id: UUID) -> AppraisalSectionSchema:
         appraisal_section = appraisal_section_repo.get(id)
