@@ -9,4 +9,4 @@ import { PrimeNgImportsModule } from '../../../shared/PrimeNgImports/PrimeNgImpo
   declarations: [KeyAreaListComponent],
   exports: [KeyAreaListComponent],
 })
-export class KeyAreaModule {}
+export class KeyAreaBankModule {}
