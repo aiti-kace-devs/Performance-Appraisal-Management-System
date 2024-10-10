@@ -32,7 +32,7 @@ async def list_staff(
         skip: int = 0,
         limit: int = 100
 ) -> Any:
-    staff_router = await actions.list_staff(db=db, skip=skip, limit=limit)
+    staff_router = await actions.list_staff(current_user=current_user,db=db, skip=skip, limit=limit)
     return staff_router
 
 

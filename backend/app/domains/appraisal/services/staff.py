@@ -3,12 +3,11 @@ from domains.appraisal.schemas.staff import StaffSchema,StaffUpdate,StaffCreate,
 from domains.appraisal.models.staff_role_permissions import Role, Staff, staff_permissions
 from domains.appraisal.schemas.staff import StaffSchema, StaffUpdate, StaffCreate, StaffResponse
 from domains.appraisal.models.department import Department
-# from domains.appraisal.models.staff import Staff
 from domains.auth.models.users import User
-from fastapi import HTTPException,status
+from fastapi import HTTPException,status,Depends
 from sqlalchemy.orm import Session
 from db.base_class import UUID
-from typing import List, Any
+from typing import List, Any,Annotated
 from config.settings import settings
 from domains.auth.schemas.password_reset import ResetPasswordRequest
 from domains.auth.services.password_reset import password_reset_service
@@ -27,7 +26,8 @@ from sqlalchemy.orm import aliased, Session
 from datetime import datetime
 from typing import List
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
-
+from domains.auth.models.users import User
+from utils import rbac
 
 
 
@@ -37,11 +37,14 @@ class StaffService:
 
 
 
-    async def list_staff(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
+    async def list_staff(self, *, current_user: Annotated[User, Depends(rbac.get_current_user)], db: Session, skip: int = 0, limit: int = 100) -> List[StaffWithFullNameInDBBase]:
         current_year = datetime.now().year 
-
         Supervisor = aliased(Staff)
 
+        # Get current user's role
+        check_current_user_role = db.query(Role).filter(Role.id == current_user.role_id).first()
+
+        # Query to get distinct staff information
         distinct_staff_query = (
             db.query(
                 Staff.id.label('staff_id'),
@@ -63,6 +66,7 @@ class StaffService:
             .subquery()
         )
 
+        # Base query to retrieve staff data
         staff_query = (
             db.query(
                 distinct_staff_query.c.staff_id,
@@ -93,12 +97,20 @@ class StaffService:
             .outerjoin(Supervisor, Supervisor.id == StaffSupervisor.supervisor_id)
             .outerjoin(AppraisalCycle, AppraisalCycle.year == current_year)
             .filter(
-                (StaffSupervisor.appraisal_year == current_year) | (StaffSupervisor.appraisal_year.is_(None))  # Filter by current year or None
+                (StaffSupervisor.appraisal_year == current_year) | (StaffSupervisor.appraisal_year.is_(None))
             )
-            .offset(skip)
-            .limit(limit)
         )
 
+        # Apply filters based on current user's role
+        if check_current_user_role.name == "Super Admin" or check_current_user_role.name == "HR":
+            # No additional filter, retrieve all staff
+            pass
+        elif check_current_user_role.name == "Supervisor":
+            # Filter staff to only show those supervised by the current user (supervisor)
+            staff_query = staff_query.filter(StaffSupervisor.supervisor_id == current_user.staff_id)
+
+        # Apply pagination and execute the query
+        staff_query = staff_query.offset(skip).limit(limit)
         staff_with_details = staff_query.all()
 
         staff_list = []
@@ -127,7 +139,7 @@ class StaffService:
             appraisal_cycle_year = row[19]
 
             if email not in seen_emails:
-                seen_emails.add(email) 
+                seen_emails.add(email)
 
                 if staff_supervisor_id is None or supervisor_full_name is None or appraisal_year is None:
                     staff_supervisor_id = None
@@ -169,6 +181,8 @@ class StaffService:
                 )
 
         return staff_list
+
+
 
 
 
