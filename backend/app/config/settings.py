@@ -23,6 +23,7 @@ class Settings:
 
     set_allow_origin = "http://localhost:4200, https://performance-appraisal.netlify.app"
 
+
     # POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
     # POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
     # POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")

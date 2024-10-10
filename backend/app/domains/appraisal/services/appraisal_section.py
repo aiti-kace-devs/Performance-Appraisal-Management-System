@@ -26,52 +26,54 @@ class AppraisalSectionService:
 
 
     def create_appraisal_section(self, *, db: Session, 
-    payload: AppraisalSectionCreate,
-        current_user: Annotated[User, Depends(rbac.get_current_user)]
-    ) -> AppraisalSectionSchema:
+        payload: AppraisalSectionCreate,
+            current_user: Annotated[User, Depends(rbac.get_current_user)]
+        ) -> AppraisalSectionSchema:
 
-        date = datetime.now()
-        current_year = date.year
+            date = datetime.now()
+            current_year = date.year
 
-        check_for_duplicate = db.query(AppraisalSection).filter(
-            AppraisalSection.name == payload.name,
-            AppraisalSection.appraisal_year == current_year,
-            AppraisalSection.created_by == current_user.staff_id
-        ).first()
+            
 
-        if check_for_duplicate:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
-                detail=f"Appraisal Section {payload.name} already exists for {current_year}"
-            )
+            check_for_duplicate = db.query(AppraisalSection).filter(
+                AppraisalSection.name == payload.name,
+                AppraisalSection.appraisal_year == current_year,
+                AppraisalSection.created_by == current_user.staff_id
+            ).first()
 
-        get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year).first()
+            if check_for_duplicate:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, 
+                    detail=f"Appraisal Section {payload.name} already exists for {current_year}"
+                )
 
-        appraisal_cycle_data = get_appraisal_cycle.id if get_appraisal_cycle else None
+            get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year).first()
 
-        create_section = AppraisalSection()
-        create_section.name = payload.name
-        create_section.description = payload.description
-        create_section.appraisal_year = current_year
-        create_section.appraisal_cycle_id = appraisal_cycle_data
-        create_section.created_by = current_user.staff_id
-        db.add(create_section)
-        db.commit()
-        db.refresh(create_section)
+            appraisal_cycle_data = get_appraisal_cycle.id if get_appraisal_cycle else None
 
-        return {
-            "id": create_section.id,
-            "name": create_section.name,
-            "description": create_section.description,
-            "appraisal_year": create_section.appraisal_year,
-            "created_by": create_section.created_by,
-            "appraisal_cycle": {
-                "id": create_section.appraisal_cycles.id if create_section.appraisal_cycles else None,
-                "name": create_section.appraisal_cycles.name if create_section.appraisal_cycles else None
-            },
-            "created_at": create_section.created_date,
-            "updated_at": create_section.updated_date
-        }
+            create_section = AppraisalSection()
+            create_section.name = payload.name
+            create_section.description = payload.description
+            create_section.appraisal_year = current_year
+            create_section.appraisal_cycle_id = appraisal_cycle_data
+            create_section.created_by = current_user.staff_id
+            db.add(create_section)
+            db.commit()
+            db.refresh(create_section)
+
+            return {
+                "id": create_section.id,
+                "name": create_section.name,
+                "description": create_section.description,
+                "appraisal_year": create_section.appraisal_year,
+                "created_by": create_section.created_by,
+                "appraisal_cycle": {
+                    "id": create_section.appraisal_cycles.id if create_section.appraisal_cycles else None,
+                    "name": create_section.appraisal_cycles.name if create_section.appraisal_cycles else None
+                },
+                "created_at": create_section.created_date,
+                "updated_at": create_section.updated_date
+            }
 
     
 

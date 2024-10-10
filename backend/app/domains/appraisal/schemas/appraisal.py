@@ -1,51 +1,111 @@
-from datetime import date,time
-from typing import Optional, Any, Dict
+from datetime import date,time,datetime
+from typing import Optional, Any, Dict,List
 import uuid
-
 from pydantic import BaseModel, Field, field_validator
 from pydantic import UUID4
 
 
-class AppraisalBase(BaseModel):
-     appraisal_cycles_id:UUID4
-     staffs_id: UUID4
-     supervisor_id: UUID4
-     overall_score: str
-
-class AppraisalCreate(AppraisalBase):
-    appraisal_cycles_id:UUID4
-    staffs_id: UUID4
-    supervisor_id: UUID4
-    overall_score: Optional[str]
-
-
-     # Checking if fields are not empty and also not allowing the word string as value
-    @field_validator('appraisal_cycles_id', 'supervisor_id', 'staffs_id', 'overall_score', mode='before')
-    def check_non_empty_and_not_string(cls, value, info):
-        if isinstance(value, str) and (value.strip() == '' or value.strip().lower() == 'string'):
-            raise ValueError(f'\n{info.field_name} should not be empty or the word "string"')
-        return value
-    
-
-     # Checking if UUID4 fields accept only UUID4 as value
-    @field_validator('appraisal_cycles_id', 'staffs_id', 'supervisor_id', mode='before')
-    def validate_fields_with_uuid4(cls, value, info):
-        try:
-            uuid.UUID(value, version=4)
-        except ValueError:
-            raise ValueError(f'\n{info.field_name} must have a valid UUID4')
-        return value
+class GetDepartmentBase(BaseModel):
+     id: UUID4
+     name: str
 
 
 
-class AppraisalUpdate(AppraisalBase):
-    pass
+class GetRoleBase(BaseModel):
+     id: UUID4
+     name: str
 
-class AppraisalInDBBase(AppraisalBase):
+
+
+class GetSupervisorBase(BaseModel):
+     id: UUID4
+     full_name: str
+
+
+
+class GetStaffBase(BaseModel):
     id: UUID4
+    title: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    other_name: Optional[str]
+    full_name: Optional[str]
+    gender: Optional[str]
+    email: Optional[str]
+    position: Optional[str]
+    grade: Optional[str]
+    appointment_date: Optional[date]
+    department: Optional[GetDepartmentBase] = None
+    role: Optional[GetRoleBase] = None
+    supervisor: Optional[GetSupervisorBase] = None
+    created_date: Optional[datetime]
 
-    class Config:
-        orm_mode= True
 
-class AppraisalSchema(AppraisalInDBBase):
-    pass
+
+
+
+class GetAppraisalCycleBase(BaseModel):
+    id: UUID4
+    name: Optional[str]
+    description: Optional[str]
+    year: Optional[int]
+    created_by: Optional[UUID4]
+    created_date: Optional[datetime]
+    updated_date: Optional[datetime]
+
+
+
+
+
+class GetAppraisalSectionBase(BaseModel):
+    id: UUID4
+    name: Optional[str]
+    description: Optional[str]
+    appraisal_year: Optional[int]
+    created_by: Optional[UUID4]
+    appraisal_cycle_id: Optional[UUID4]
+    created_date: Optional[datetime]
+    updated_date: Optional[datetime]
+
+
+
+
+class ReadAppraisalFormBase(BaseModel):
+    id: Optional[UUID4]
+    form_fields : List[Dict]
+
+
+
+
+
+class ReadAppraisalSubmissionBase(BaseModel):
+    id : Optional[UUID4]
+    appraisal_forms_id : Optional[UUID4]
+    submitted_by : Optional[UUID4]
+    submitted_values : Dict[str, Any]
+    started_at : Optional[date]
+    completed_at : Optional[date]
+    submitted : Optional[bool]
+    completed : Optional[bool]
+    approval_status : Optional[bool]
+    approval_date : Optional[date]
+    comment : Optional[str]
+    created_date : Optional[datetime]
+    updated_date : Optional[datetime]
+
+
+
+
+
+class AppraisalDataBase(BaseModel):
+    appraisal_section: Optional[GetAppraisalSectionBase] = None
+    appraisal_form: Optional[ReadAppraisalFormBase] = None
+    submission: Optional[ReadAppraisalSubmissionBase] = None
+
+
+
+
+class GetStaffAppraisalBase(BaseModel):
+    staff_info: Optional[GetStaffBase] = None
+    appraisal_cycle: Optional[GetAppraisalCycleBase] = None
+    data: Optional[List[AppraisalDataBase]] = None

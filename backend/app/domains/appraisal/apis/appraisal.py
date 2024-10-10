@@ -21,7 +21,7 @@ appraisals_router = APIRouter(
 
 @appraisals_router.get(
     "/{staff_id}",
-    #response_model=List[schemas.AppraisalSchema]
+    response_model=schemas.GetStaffAppraisalBase
 )
 def get_staff_appraisals_by_staff_id(
     staff_id: UUID4,
