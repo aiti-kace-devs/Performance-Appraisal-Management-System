@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { AppComponent } from './app.component';
@@ -30,6 +31,7 @@ import {
 } from './config/app-config';
 import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.component';
 import { TokenInterceptor } from './shared/interceptors/token-interceptor';
+import { ErrorMessageInterceptor } from './shared/interceptors/error-message-interceptor';
 
 @NgModule({
   declarations: [
@@ -50,11 +52,17 @@ import { TokenInterceptor } from './shared/interceptors/token-interceptor';
     MainAppModule,
     NgxsModule.forRoot([StaffState, DepartmentState, AuthState]),
     errorTailorImports,
+    FormsModule,
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorMessageInterceptor,
       multi: true,
     },
     provideErrorTailorConfig({
