@@ -1,6 +1,6 @@
-from typing import List, Any
+from typing import List, Any,Annotated
 import re
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
@@ -9,6 +9,9 @@ from domains.appraisal.schemas.appraisal_section import AppraisalSectionSchema, 
 from domains.appraisal.models.appraisal_section import AppraisalSection
 from datetime import datetime
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
+from domains.auth.models.users import User
+from utils import rbac
+
 
 
 class AppraisalSectionService:
@@ -19,7 +22,13 @@ class AppraisalSectionService:
         return appraisal_section
     
 
-    def create_appraisal_section(self, *, db: Session, payload: AppraisalSectionCreate) -> AppraisalSectionSchema:
+
+
+
+    def create_appraisal_section(self, *, db: Session, 
+                                 payload: AppraisalSectionCreate,
+                                 current_user: Annotated[User, Depends(rbac.get_current_user)]
+                                 ) -> AppraisalSectionSchema:
 
         date = datetime.now()
         current_year = date.year
@@ -47,7 +56,7 @@ class AppraisalSectionService:
         create_section.description = payload.description
         create_section.appraisal_year = current_year
         create_section.appraisal_cycle_id = appraisal_cycle_data
-        create_section.created_by = None
+        create_section.created_by = current_user.staff_id
         db.add(create_section)
         db.commit()
         db.refresh(create_section)
@@ -69,6 +78,10 @@ class AppraisalSectionService:
         }
 
     
+
+
+
+
 
 
     def update_appraisal_section(self, *, db: Session, id: UUID, appraisal_section: AppraisalSectionUpdate) -> AppraisalSectionSchema:

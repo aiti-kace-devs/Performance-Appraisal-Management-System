@@ -1,4 +1,4 @@
-from typing import Any, List,Union
+from typing import Any, List,Union,Annotated
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -7,6 +7,9 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import appraisal_form as schemas
 from domains.appraisal.services.appraisal_form import appraisal_form_service as actions
 from db.session import get_db
+from domains.auth.models.users import User
+from utils import rbac
+
 
 
 appraisal_form_router = APIRouter(
@@ -41,9 +44,12 @@ def list_appraisal_form(
     "/",
     response_model=Union[schemas.AppraisalFormSchema, List[schemas.AppraisalFormSchema]],
 )
-async def create_appraisal_form(*, db: Session = Depends(get_db), payload:Union[schemas.AppraisalFormCreate, List[schemas.AppraisalFormCreate]]):
+async def create_appraisal_form(*, db: Session = Depends(get_db), 
+                                payload:Union[schemas.AppraisalFormCreate, List[schemas.AppraisalFormCreate]],
+                                current_user: Annotated[User, Depends(rbac.get_current_user)]
+                                ):
 
-    create_appraisal_form = actions.create_appraisal_form(db, payload)
+    create_appraisal_form = actions.create_appraisal_form(current_user,db, payload)
 
     return create_appraisal_form
 

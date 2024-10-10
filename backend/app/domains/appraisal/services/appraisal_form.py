@@ -1,5 +1,5 @@
-from typing import List, Any
-from fastapi import HTTPException, status
+from typing import List, Any,Annotated
+from fastapi import HTTPException, status,Depends
 from sqlalchemy.orm import Session
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal_form import Appraisal_form_actions as Appraisal_form_repo
@@ -8,6 +8,8 @@ from domains.appraisal.models.appraisal_form import AppraisalForm
 from domains.appraisal.models.appraisal_section import AppraisalSection
 from fastapi.encoders import jsonable_encoder
 import json
+from domains.auth.models.users import User
+from utils import rbac
 
 
 class AppraisalFormService:
@@ -21,7 +23,7 @@ class AppraisalFormService:
 
 
 
-    def create_appraisal_form(self, db: Session, payload: AppraisalFormCreate,  **kw):
+    def create_appraisal_form(self, current_user: Annotated[User, Depends(rbac.get_current_user)], db: Session, payload: AppraisalFormCreate,  **kw):
         
         #check if the appraisal section ID exists in the appraisal section table
         check_appraisal_section_id = db.query(AppraisalSection).filter(AppraisalSection.id ==payload.appraisal_sections_id).first()
@@ -35,7 +37,7 @@ class AppraisalFormService:
         new_appraisal_form = AppraisalForm(**obj_in_data)
         new_appraisal_form.form_fields = json.dumps(json_data)
         new_appraisal_form.appraisal_sections_id = payload.appraisal_sections_id
-        new_appraisal_form.created_by = None
+        new_appraisal_form.created_by = current_user.staff_id
         db.add(new_appraisal_form)
         db.commit()
         db.refresh(new_appraisal_form)

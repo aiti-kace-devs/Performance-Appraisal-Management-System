@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Annotated
 from fastapi import APIRouter, Depends, Query
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -7,6 +7,9 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import appraisal_section as schemas
 from domains.appraisal.services.appraisal_section import appraisal_section_service as actions
 from db.session import get_db
+from domains.auth.models.users import User
+from utils import rbac
+
 
 
 appraisal_sections_router = APIRouter(
@@ -51,10 +54,10 @@ def list_appraisal_sections(
 )
 def create_appraisal_sections(
         *, db: Session = Depends(get_db),
-        # 
-        appraisal_sections_in: schemas.AppraisalSectionCreate
+        appraisal_sections_in: schemas.AppraisalSectionCreate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
-    appraisal_sections_router = actions.create_appraisal_section(db=db, payload=appraisal_sections_in)
+    appraisal_sections_router = actions.create_appraisal_section(db=db, payload=appraisal_sections_in, current_user=current_user)
     return appraisal_sections_router
 
 
