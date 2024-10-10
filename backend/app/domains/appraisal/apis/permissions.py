@@ -18,7 +18,7 @@ from db.session import get_db
 
 # APIRouter creates path operations for admin and users module
 perm_router = APIRouter(
-    prefix="/perms",
+    prefix="/permissions",
     tags=["Permission"],
     responses={404: {"description": "Not found"}},
 )
@@ -64,7 +64,7 @@ def get_perm(*, db: Session = Depends(get_db), id: UUID4) -> Any:
 
 ## endpoint to 
 @perm_router.get("/", response_model=List[PermissionRead])
-def get_all_perms(*, db: Session = Depends(get_db), skip: int=0, limit: int=0):
+def get_all_perms(*, db: Session = Depends(get_db)):
     all_perms = actions.get_all_perms(db=db)
     return all_perms
 

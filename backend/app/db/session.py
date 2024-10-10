@@ -41,6 +41,20 @@ APIBase.query = session.query_property()
 
 
 
+# def drop_table():
+#     check_settings = session.execute(text('select id from staffs'))
+#     if check_settings:
+#         #session.execute(text('ALTER TABLE appraisal_forms DROP CONSTRAINT appraisal_forms_appraisal_sections_id_fkey'))
+#         # session.execute(text('drop table appraisal_cycles'))
+#         # session.execute(text('drop table appraisal_forms'))
+#         session.execute(text('drop table appraisal_submissions'))
+#         session.commit()
+#         session.close()
+    
+#     return ""
+# drop_table()
+
+
 def get_db():
     db = SessionLocal()
     try:

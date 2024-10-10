@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Annotated
 from fastapi import APIRouter, Depends, Query
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -7,6 +7,10 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import appraisal_configuration as schemas
 from domains.appraisal.services.appraisal_configuration import appraisal_configuration_service as actions
 from db.session import get_db
+from utils import rbac
+from domains.auth.models.users import User
+
+
 
 
 appraisal_configuration_router = APIRouter(
@@ -54,8 +58,8 @@ def search_appraisal_configuration_by_keyword(
 )
 def create_appraisal_configuration(
         *, db: Session = Depends(get_db),
-        # 
-        appraisal_configuration_in: schemas.AppraisalConfigurationCreate
+        appraisal_configuration_in: schemas.AppraisalConfigurationCreate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
     appraisal_configuration_router = actions.create_appraisal_configuration(db=db, appraisal_configuration=appraisal_configuration_in)
     return appraisal_configuration_router

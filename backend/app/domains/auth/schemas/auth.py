@@ -7,6 +7,19 @@ import uuid
 
 
 
+class CurrentUserRoleBase(BaseModel):
+    id: Optional[UUID4]
+    name: Optional[str] = None
+
+
+
+class CurrentUserBase(BaseModel):
+    id: Optional[UUID4]
+    email: Optional[str]
+    role: Optional[CurrentUserRoleBase] = None
+
+
+
 
 class TokenPayload(BaseModel):
     email: Optional[str]

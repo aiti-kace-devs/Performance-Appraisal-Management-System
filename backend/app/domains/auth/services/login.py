@@ -1,10 +1,10 @@
 from domains.auth.respository.login import logged_in_users_actions as logged_in_users_repo
 from domains.auth.services.user_account import users_forms_service
-from domains.appraisal.models.role_permissions import Role
+from domains.appraisal.models.staff_role_permissions import Role, Staff
 from domains.auth.models.refresh_token import RefreshToken
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends,status,Response,Request
-from domains.appraisal.models.staff import Staff
+# from domains.appraisal.models.staff import Staff
 from domains.auth.schemas import auth as schema
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException

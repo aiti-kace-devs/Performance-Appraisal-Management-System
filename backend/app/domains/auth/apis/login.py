@@ -20,7 +20,10 @@ from datetime import datetime
 from db.session import get_db
 from slowapi import Limiter
 import os
-
+from domains.auth.schemas import user_account as userSchema
+from domains.auth.respository.user_account import users_form_actions
+from utils.security import Security
+from domains.appraisal.models.staff_role_permissions import Role
 
 app = FastAPI()
 
@@ -134,6 +137,41 @@ async def login_for_both_access_and_refresh_tokens(request: Request, response:Re
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred. Please try again later.")
 
 
+
+
+
+
+
+@auth_router.post("/me",response_model=schema.CurrentUserBase)
+def get_current_user_by_access_token(access_token:schema.AccessToken, request: Request,db: Session = Depends(get_db)):
+    
+    ####decoding access token
+    ## check for access token
+    cookie_access_token = request.cookies.get('AccessToken')
+    if cookie_access_token == None or cookie_access_token != access_token.access_token:
+        raise HTTPException(status_code=401, detail="Access token is invalidated")
+    else:
+        refesh_data = Security.verify_access_token(access_token.access_token)
+        get_user_data = users_form_actions.get_by_email(db=db, email=refesh_data.email)
+
+        check_user_role = db.query(Role).filter(Role.id == get_user_data.role_id).first()
+    
+        db_role = {
+            "id": check_user_role.id,
+            "name": check_user_role.name
+        }
+
+        user_data = {
+            "id": get_user_data.id,
+            "email": get_user_data.email,
+            # "name": get_user_data.name,
+            # "contact": get_user_data.contact,
+            "role": db_role
+        }
+
+        return user_data
+    
+
 @auth_router.get("/logged_in_users")
 async def get_logged_in_users(request: Request, db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
     online_users= login_service.list_logged_in_users(request, db, skip=skip, limit=limit)
@@ -158,7 +196,7 @@ def get_new_access_token(response:Response, refresh_token: schema.RefreshToken, 
 
 
 
-async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
+def send_reset_email(email: str, reset_link: str) -> EmailSchema:
     ## prepare the email data
     email_data = EmailSchema(
         subject= "Password Reset Request",
@@ -171,35 +209,3 @@ async def send_reset_email(email: str, reset_link: str) -> EmailSchema:
     )
 
     return email_data
-
-@auth_router.post("/forgot_password/")
-async def request_password_reset(reset_password_request: ResetPasswordRequest, db: Session = Depends(get_db)):
-    ## confirm user email 
-    user = db.query(User).filter(User.email == reset_password_request.email).first()
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    # Generate reset token
-    token = password_reset_service.generate_reset_token()
-    user.reset_password_token = token
-    db.commit()
-
-    # Send email with the reset link
-    reset_link = f"{settings.FRONTEND_URL}/login/resetpassword?token={token}"
-    
-    # For demo purposes, print the reset link (use an email sender in production)
-    # print(f"Reset link: {reset_link}")
-    # print(f"User Emaail: {user.email}")
-    
-    # In production, send email with aiosmtplib or any other email library
-    email_data = await send_reset_email(user.email, reset_link)
-
-    # print(f"email_data: {email_data}")
-
-    await Email.sendMailService(email_data, template_name='password_reset.html')
-    
-    return JSONResponse(content={"message": "Password reset link has been sent to your email."}, status_code=200)
-
-    # current_user = service_login.get_current_user_by_access_token(token, request, db)
-    # return current_user

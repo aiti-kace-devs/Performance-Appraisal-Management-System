@@ -10,6 +10,8 @@ class Department(APIBase):
     name = Column(String, unique=True, nullable=False)
     description = Column(String, nullable=True)
 
+    staff_departments = relationship("Staff", back_populates="department")
+
     def serialize(self):
         return {
             'name': self.name,
