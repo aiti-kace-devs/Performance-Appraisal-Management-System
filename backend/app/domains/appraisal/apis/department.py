@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Annotated
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -7,7 +7,10 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import department as schemas
 from domains.appraisal.services.department import department_service as actions
 from db.session import get_db
-from domains.appraisal.schemas.staff import StaffSchema
+from domains.appraisal.schemas.staff import StaffSchema,StaffWithFullNameInDBBase
+from utils import rbac
+from domains.auth.models.users import User
+
 
 department_router = APIRouter(
        prefix="/department",
@@ -21,11 +24,11 @@ department_router = APIRouter(
 
 @department_router.get(
     "/",
-    response_model=List[schemas.DepartmentSchema]
+    response_model=List[schemas.DepartmentWithTotalStaff]
 )
 def list_department(
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
         db: Session = Depends(get_db),
-        
         skip: int = 0,
         limit: int = 100
 ) -> Any:
@@ -35,15 +38,15 @@ def list_department(
 
 @department_router.post(
     "/",
-    response_model=schemas.DepartmentSchema,
+    response_model=schemas.DepartmentWithTotalStaff,
     status_code=HTTP_201_CREATED
 )
 async def create_department(
         *, db: Session = Depends(get_db),
-        # 
-        department_in: schemas.DepartmentCreate
+        department_in: schemas.DepartmentCreate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
-    department_router = await actions.create_department(db=db, department=department_in)
+    department_router = actions.create_department(db=db, department=department_in)
     return department_router
 
 
@@ -54,8 +57,8 @@ async def create_department(
 )
 def get_department(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:
@@ -74,9 +77,9 @@ def get_department(
 )
 def update_department(
         *, db: Session = Depends(get_db),
-        
         id: UUID4,
-        department_in: schemas.DepartmentUpdate
+        department_in: schemas.DepartmentUpdate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:
@@ -92,22 +95,20 @@ def update_department(
 
 
 @department_router.get(
-    "/list/staff/{id}",
-    response_model=List[StaffSchema]
+    "/staff/{id}",
+    response_model=List[StaffWithFullNameInDBBase]
 )
 def list_all_staff_under_department(
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
         *, db: Session = Depends(get_db),
         id: UUID4,
         skip: int = 0,
         limit: int = 100
 ) -> Any:
-    lisy_of_staff = actions.list_all_staff_under_department(db=db, id=id, skip=skip, limit=limit)
-    if not lisy_of_staff:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="staffs not found"
-        )
-    return lisy_of_staff
+    list_staff = actions.list_all_staff_under_department(db=db, id=id, skip=skip, limit=limit)
+    if not list_staff:
+        return []
+    return list_staff
 
 
 @department_router.delete(
@@ -116,8 +117,8 @@ def list_all_staff_under_department(
 )
 def delete_department(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:
@@ -125,5 +126,14 @@ def delete_department(
             status_code=HTTP_404_NOT_FOUND,
             detail="department_router not found"
         )
+    
+    check_if_department_has_staff = actions.check_if_department_has_staff(db, id)
+
+    if check_if_department_has_staff:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail="This department has staff members so it cannot be deleted"
+        )
+
     department_router = actions.delete_department(db=db, id=id)
     return department_router

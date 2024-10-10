@@ -11,9 +11,13 @@ from db.base_class import APIBase
 class AppraisalCycle(APIBase):
 
 
-    name = Column(String, unique=True, nullable=False) 
+    name = Column(String, nullable=False) 
     description = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
+    created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
+
+    staffs = relationship("Staff", back_populates="appraisal_cycles")
+    appraisal_sections = relationship("AppraisalSection", back_populates="appraisal_cycles")
     
 
 

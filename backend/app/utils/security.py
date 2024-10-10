@@ -91,22 +91,16 @@ class Security():
 
 
 
+
     @staticmethod
-    def verify_access_token(request: Request, token:str):
-
-            ## decode the token to get the user id and then fetch the user role 
-         ## lets check if the cookies for access token is set
-        cookie_access_token = request.cookies.get('AccessToken')
-
-        if cookie_access_token == None or cookie_access_token != token:
-            raise HTTPException(status_code=401, detail="Access token is invalidated")
+    def verify_access_token(token:str = Depends(oauth2_scheme)):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate new access token credentials",
             headers={"WWW-Authenticate": "Bearer"}        
         )
         try:
-            payload = jwt.decode(cookie_access_token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
+            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
             username:str = payload.get("sub")
             if username is None:
                 raise credentials_exception

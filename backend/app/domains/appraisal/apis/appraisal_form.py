@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Union
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -33,18 +33,24 @@ def list_appraisal_form(
     return appraisal_form_router
 
 
+
+
+
+
 @appraisal_form_router.post(
     "/",
-    response_model=schemas.AppraisalFormSchema,
-    status_code=HTTP_201_CREATED
+    response_model=Union[schemas.AppraisalFormSchema, List[schemas.AppraisalFormSchema]],
 )
-def create_appraisal_form(
-        *, db: Session = Depends(get_db),
-         
-        appraisal_form_in: schemas.AppraisalFormCreate
-) -> Any:
-    appraisal_form_router = actions.create_appraisal_form(db=db, appraisal_form=appraisal_form_in)
-    return appraisal_form_router
+async def create_appraisal_form(*, db: Session = Depends(get_db), payload:Union[schemas.AppraisalFormCreate, List[schemas.AppraisalFormCreate]]):
+
+    create_appraisal_form = actions.create_appraisal_form(db, payload)
+
+    return create_appraisal_form
+
+
+
+
+
 
 
 @appraisal_form_router.put(
@@ -67,22 +73,27 @@ def update_appraisal_form(
     return appraisal_form_router
 
 
+
+
 @appraisal_form_router.get(
     "/{id}",
     response_model=schemas.AppraisalFormSchema
 )
-def get_appraisal_form(
+def get_appraisal_form_by_id(
         *, db: Session = Depends(get_db),
-
+        
         id: UUID4
 ) -> Any:
-    appraisal_form_router = actions.get_appraisal_form(db=db, id=id)
-    if not appraisal_form_router:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="appraisal_form_router not found"
-        )
-    return appraisal_form_router
+    get_appraisal_form_by_id = actions.get_appraisal_form_by_id(db=db, id=id)
+    if not get_appraisal_form_by_id:
+        data = []
+        return {
+            "data": data
+        }
+    return get_appraisal_form_by_id
+
+
+
 
 
 @appraisal_form_router.delete(

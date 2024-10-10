@@ -14,8 +14,9 @@ from domains.appraisal.models.appraisal_section import AppraisalSection
 from collections import OrderedDict
 from sqlalchemy import inspect
 from uuid import UUID
-
+from sqlalchemy.exc import NoResultFound
 from db.base_class import Base
+from utils.security import pwd_context
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -67,6 +68,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
         return base.offset(skip).limit(limit).all()
     
 
+
+
+
+    
+
     async def read_by_id(self, id, db: Session):
         return db.query(self.model).filter(self.model.id == id).first()
 
@@ -84,6 +90,34 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
 
     def get_by_email(self, db: Session, email: Any) -> Optional[ModelType]:
         return db.query(self.model).filter(self.model.email == email).first()
+    
+    def get_by_reset_password_token(self, db: Session, token: Any) -> Optional[ModelType]:
+        return db.query(self.model).filter(self.model.reset_password_token == token).first()
+    
+
+
+
+    def update_user_after_reset_password(self,db: Session,*,db_obj: ModelType,
+        obj_in: Union[UpdateSchemaType, Dict[str, Any]]):
+        
+        obj_data = jsonable_encoder(db_obj)
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
+        db_obj.password = pwd_context.hash(obj_in.password)
+        db_obj.reset_password_token = None
+        db.add(db_obj)
+        db.flush()
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+    
+
+
 
     async def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
 

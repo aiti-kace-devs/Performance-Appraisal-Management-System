@@ -8,9 +8,9 @@ from db.base_class import APIBase
 
 class AppraisalSubmission(APIBase):
 
-    appraisals_id = Column(UUID(as_uuid=True))
-    staffs_id = Column(UUID(as_uuid=True))
-    appraisal_forms_id = Column(UUID(as_uuid=True))
+    #appraisals_id = Column(UUID(as_uuid=True))
+    submitted_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)
+    appraisal_forms_id = Column(UUID(as_uuid=True), ForeignKey('appraisal_forms.id'), nullable=True)
     submitted_values = Column(JSON, nullable=True)
     started_at = Column(Date)
     completed_at = Column(Date)
@@ -21,5 +21,5 @@ class AppraisalSubmission(APIBase):
     comment = Column(String(255), nullable=True)
 
     #appraisals = relationship("Appraisal", back_populates = "appraisal_submissions")
-    #staffs = relationship("Staff", back_populates = "appraisal_submissions")
-    #appraisal_forms = relationship("AppraisalForm", back_populates = "appraisal_submissions") 
+    staffs = relationship("Staff", back_populates = "appraisal_submissions")
+    appraisal_forms = relationship("AppraisalForm", back_populates = "appraisal_submissions") 

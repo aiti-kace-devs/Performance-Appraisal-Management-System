@@ -1,12 +1,17 @@
-from typing import List, Any
+from typing import List, Any,Annotated
 import re
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status,Depends
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal_cycle import appraisal_cycle_actions as appraisal_cycle_repo
 from domains.appraisal.schemas.appraisal_cycle import AppraisalCycleSchema, AppraisalCycleUpdate, AppraisalCycleCreate
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
+from domains.appraisal.models.staff_role_permissions import Staff
+from datetime import datetime
+from utils.rbac import get_current_user
+from domains.auth.models.users import User
+from utils import rbac
 
 class AppraisalCycleService:
 
@@ -14,10 +19,62 @@ class AppraisalCycleService:
     def list_appraisal_cycle(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalCycleSchema]:
         appraisal_cycle = appraisal_cycle_repo.get_all(db=db, skip=skip, limit=limit)
         return appraisal_cycle
+    
 
-    def create_appraisal_cycle(self, *, db: Session, appraisal_cycle: AppraisalCycleCreate) -> AppraisalCycleSchema:
-        appraisal_cycle = appraisal_cycle_repo.create(db=db, obj_in=appraisal_cycle)
-        return appraisal_cycle
+
+
+
+
+
+
+    def create_appraisal_cycle(self, *, db: Session, 
+                               payload: AppraisalCycleCreate,
+                                 current_user: Annotated[User, Depends(rbac.get_current_user)]
+                                 ) -> AppraisalCycleSchema:
+
+        date = datetime.now()
+        current_year = date.year
+
+        print("current user in create appraisal cycle: ", current_user.id)
+
+        check_if_staff_exist = db.query(Staff).filter(Staff.id == current_user.staff_id).first()
+        print("check_if_staff_exist: ", check_if_staff_exist)
+        if not check_if_staff_exist:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff does not exist")
+        
+
+
+        check_for_duplicate = db.query(AppraisalCycle).filter(AppraisalCycle.name == payload.name, AppraisalCycle.year == current_year).first()
+
+        if check_for_duplicate:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Cycle %s already exists for this year" % payload.name)
+
+        
+        
+        create_appraisal_cycl = AppraisalCycle()
+        create_appraisal_cycl.name = payload.name
+        create_appraisal_cycl.description = payload.description
+        create_appraisal_cycl.year = current_year
+        create_appraisal_cycl.created_by = current_user.staff_id
+        db.add(create_appraisal_cycl)
+        db.commit()
+        db.refresh(create_appraisal_cycl)
+        return create_appraisal_cycl
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def update_appraisal_cycle(self, *, db: Session, id: UUID, appraisal_cycle: AppraisalCycleUpdate) -> AppraisalCycleSchema:
         appraisal_cycle_obj = appraisal_cycle_repo.get(db=db, id=id)

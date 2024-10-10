@@ -1,7 +1,7 @@
 from pydantic import UUID4,BaseModel,field_validator, EmailStr,Field
 from datetime import datetime,date
 from dateutil.parser import parse
-from typing import Optional, Any, Dict 
+from typing import Optional, Any, Dict , List
 import uuid
 from enum import Enum
 from domains.appraisal.schemas.department import DepartmentInDBBase
@@ -18,11 +18,38 @@ class Title(str, Enum):
     Prof = 'Prof.'
     Dr = 'Dr.'
     Ms = 'Ms.'
+    Miss = 'Miss'
+    Ing = 'Ing.'
+    Rev = 'Rev.'
+    #Rev.Dr = 'Rev.Dr.'
+    Bishop = 'Bishop.'
     Other = 'Other'
 
+class PermissionSchema(BaseModel):
+    id: UUID4
+    name: str
 
+class RoleSchema(BaseModel):
+    id: UUID4
+    name: str
+    permissions: List[PermissionSchema]
 
+class PermissionResponse(BaseModel):
+    id: int
+    name: str
+    codename: str
 
+class StaffResponse(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    role: str
+    permissions: List[PermissionResponse]
+
+    class Config:
+        orm_mode = True
+        
 class StaffBase(BaseModel):
     title: Title
     first_name : str
@@ -34,7 +61,9 @@ class StaffBase(BaseModel):
     department_id : UUID4
     grade : str
     appointment_date : Optional[date]
-    role_id : Optional[UUID4] = Field(None, exclude=True)
+    supervisor_id : Optional[Any] = Field(None, exclude=True)
+    role_id: UUID4
+    
 
 
     # Checking if fields are not empty and also not allowing the word string as value
@@ -97,6 +126,46 @@ class StaffInDBBase(BaseModel):
         orm_mode= True
         
 
+
+class DepartmentInfo(BaseModel):
+    id: UUID4
+    name: str
+
+class RoleInfo(BaseModel):
+    id: UUID4
+    name: str
+
+
+class AppraisalCycleInfo(BaseModel):
+    id: Optional[UUID4] = Field(None) 
+    name: Optional[str] = Field(None)
+    year: Optional[int] = Field(None)
+
+
+class SupervisorInfo(BaseModel):
+    id: Optional[UUID4] = Field(None) 
+    full_name: Optional[str] = Field(None)
+    appraisal_year: Optional[int] = Field(None)
+
+class StaffWithFullNameInDBBase(BaseModel):
+    id: Optional[UUID4] = Field(None)
+    title: Title
+    first_name : str
+    last_name : str
+    other_name : str
+    full_name : str
+    gender : Gender
+    email: EmailStr
+    position : str
+    grade : str
+    appointment_date : Optional[date]
+    apppraisal_cycle : Optional[AppraisalCycleInfo] = None
+    department_id : DepartmentInfo
+    role_id: RoleInfo
+    supervisor_id: Optional[SupervisorInfo] = None
+
+    class Config:
+        orm_mode= True
 
 
 class StaffSchema(StaffInDBBase):

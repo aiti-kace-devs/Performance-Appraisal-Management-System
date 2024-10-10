@@ -11,7 +11,6 @@ from db.session import get_db
 
 appraisal_submissions_router = APIRouter(
        prefix="/appraisal_submissions",
-    tags=["Appraisal Submission"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -21,7 +20,8 @@ appraisal_submissions_router = APIRouter(
 
 @appraisal_submissions_router.get(
     "/",
-    response_model=List[schemas.AppraisalSubmissionSchema]
+    response_model=List[schemas.AppraisalSubmissionSchema],
+    tags=["Appraisal Submission"]
 )
 def list_appraisal_submissions(
         db: Session = Depends(get_db),
@@ -36,20 +36,21 @@ def list_appraisal_submissions(
 @appraisal_submissions_router.post(
     "/",
     response_model=schemas.AppraisalSubmissionSchema,
-    status_code=HTTP_201_CREATED
+    tags=["Appraisal Submission"]
 )
 def create_appraisal_submissions(
         *, db: Session = Depends(get_db),
         # 
         appraisal_submissions_in: schemas.AppraisalSubmissionCreate
 ) -> Any:
-    appraisal_submissions_router = actions.create_appraisal_submission(db=db, appraisal_submission=appraisal_submissions_in)
+    appraisal_submissions_router = actions.create_appraisal_submission(db=db, payload=appraisal_submissions_in)
     return appraisal_submissions_router
 
 
 @appraisal_submissions_router.put(
     "/{id}",
-    response_model=schemas.AppraisalSubmissionSchema
+    response_model=schemas.AppraisalSubmissionSchema,
+    tags=["Appraisal Submission"]
 )
 def update_appraisal_submissions(
         *, db: Session = Depends(get_db),
@@ -69,7 +70,8 @@ def update_appraisal_submissions(
 
 @appraisal_submissions_router.get(
     "/{id}",
-    response_model=schemas.AppraisalSubmissionSchema
+    response_model=schemas.AppraisalSubmissionSchema,
+    tags=["Appraisal Submission"]
 )
 def get_appraisal_submissions(
         *, db: Session = Depends(get_db),
@@ -87,7 +89,8 @@ def get_appraisal_submissions(
 
 @appraisal_submissions_router.delete(
     "/{id}",
-    response_model=schemas.AppraisalSubmissionSchema
+    response_model=schemas.AppraisalSubmissionSchema,
+    tags=["Appraisal Submission"]
 )
 def delete_appraisal_submissions(
         *, db: Session = Depends(get_db),
