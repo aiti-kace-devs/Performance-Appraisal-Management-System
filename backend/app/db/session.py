@@ -46,7 +46,7 @@ def drop_table():
     if check_settings:
         session.execute(text('ALTER TABLE appraisal_submission DROP CONSTRAINT appraisal_submissions_appraisal_forms_id_fkey'))
         # session.execute(text('drop table appraisal_cycles'))
-        #session.execute(text('drop table appraisal_forms'))
+        session.execute(text('drop table appraisal_forms'))
         #session.execute(text('drop table appraisal_submissions'))
         session.commit()
         session.close()
