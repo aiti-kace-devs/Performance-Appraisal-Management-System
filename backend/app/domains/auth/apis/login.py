@@ -22,6 +22,8 @@ from slowapi import Limiter
 import os
 from domains.auth.schemas import user_account as userSchema
 from domains.auth.respository.user_account import users_form_actions
+from utils.security import Security
+from domains.appraisal.models.staff_role_permissions import Role
 
 app = FastAPI()
 
@@ -134,6 +136,41 @@ async def login_for_both_access_and_refresh_tokens(request: Request, response:Re
         print("Unexpected error in login: ", ex)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred. Please try again later.")
 
+
+
+
+
+
+
+@auth_router.post("/me",response_model=schema.CurrentUserBase)
+def get_current_user_by_access_token(access_token:schema.AccessToken, request: Request,db: Session = Depends(get_db)):
+    
+    ####decoding access token
+    ## check for access token
+    cookie_access_token = request.cookies.get('AccessToken')
+    if cookie_access_token == None or cookie_access_token != access_token.access_token:
+        raise HTTPException(status_code=401, detail="Access token is invalidated")
+    else:
+        refesh_data = Security.verify_access_token(access_token.access_token)
+        get_user_data = users_form_actions.get_by_email(db=db, email=refesh_data.email)
+
+        check_user_role = db.query(Role).filter(Role.id == get_user_data.role_id).first()
+    
+        db_role = {
+            "id": check_user_role.id,
+            "name": check_user_role.name
+        }
+
+        user_data = {
+            "id": get_user_data.id,
+            "email": get_user_data.email,
+            # "name": get_user_data.name,
+            # "contact": get_user_data.contact,
+            "role": db_role
+        }
+
+        return user_data
+    
 
 @auth_router.get("/logged_in_users")
 async def get_logged_in_users(request: Request, db: Session = Depends(get_db), skip: int = 0, limit: int = 100):

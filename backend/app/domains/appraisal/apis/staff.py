@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Annotated
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -7,6 +7,9 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import staff as schemas
 from domains.appraisal.services.staff import staff_service as actions
 from db.session import get_db
+from utils import rbac
+from domains.auth.models.users import User
+
 
 
 staff_router = APIRouter(
@@ -24,8 +27,8 @@ staff_router = APIRouter(
     #response_model=List[schemas.StaffWithFullNameInDBBase]
 )
 async def list_staff(
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
         db: Session = Depends(get_db),
-        
         skip: int = 0,
         limit: int = 100
 ) -> Any:
@@ -40,8 +43,8 @@ async def list_staff(
 )
 async def create_staff(
         *, db: Session = Depends(get_db),
-        # 
-        staff_in: schemas.StaffCreate
+        staff_in: schemas.StaffCreate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     staff_router = await actions.create_staff(db=db, staff=staff_in)
 
@@ -53,9 +56,9 @@ async def create_staff(
 )
 def update_staff(
         *, db: Session = Depends(get_db),
-        
         id: UUID4,
         staff_in: schemas.StaffUpdate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     staff_router = actions.get_staff_by_id(db=db, id=id)
     if not staff_router:
@@ -72,7 +75,8 @@ def update_staff(
     )
 def get_staff(
         *, db: Session = Depends(get_db),
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     staff_router = actions.get_staff_by_id(db=db, id=id)
     if not staff_router:
@@ -88,8 +92,8 @@ def get_staff(
 )
 def delete_staff(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     staff_router = actions.get_staff_by_id(db=db, id=id)
     if not staff_router:
@@ -113,7 +117,8 @@ def delete_staff(
 @staff_router.get("/search/{name}",)
 def search_staff(
         *, db: Session = Depends(get_db),
-        name: str
+        name: str,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     search_staff = actions.search_staff(db=db, name=name)
     if not search_staff:
@@ -132,6 +137,7 @@ def search_staff(
     response_model=List[schemas.StaffWithFullNameInDBBase]
 )
 async def list_supervisors(
+    current_user: Annotated[User, Depends(rbac.get_current_user)],
         db: Session = Depends(get_db),
         skip: int = 0,
         limit: int = 100
@@ -149,7 +155,8 @@ async def list_supervisors(
 @staff_router.get("/email/{email}",)
 def check_staff_email_if_exist(
         *, db: Session = Depends(get_db),
-        email: str
+        email: str,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     data = actions.check_staff_email_if_exist(db=db, email=email)
     if data:

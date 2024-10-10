@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Annotated
 from fastapi import APIRouter, Depends
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -8,6 +8,9 @@ from domains.appraisal.schemas import department as schemas
 from domains.appraisal.services.department import department_service as actions
 from db.session import get_db
 from domains.appraisal.schemas.staff import StaffSchema,StaffWithFullNameInDBBase
+from utils import rbac
+from domains.auth.models.users import User
+
 
 department_router = APIRouter(
        prefix="/department",
@@ -24,8 +27,8 @@ department_router = APIRouter(
     response_model=List[schemas.DepartmentWithTotalStaff]
 )
 def list_department(
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
         db: Session = Depends(get_db),
-        
         skip: int = 0,
         limit: int = 100
 ) -> Any:
@@ -40,8 +43,8 @@ def list_department(
 )
 async def create_department(
         *, db: Session = Depends(get_db),
-        # 
-        department_in: schemas.DepartmentCreate
+        department_in: schemas.DepartmentCreate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.create_department(db=db, department=department_in)
     return department_router
@@ -54,8 +57,8 @@ async def create_department(
 )
 def get_department(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:
@@ -74,9 +77,9 @@ def get_department(
 )
 def update_department(
         *, db: Session = Depends(get_db),
-        
         id: UUID4,
-        department_in: schemas.DepartmentUpdate
+        department_in: schemas.DepartmentUpdate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:
@@ -96,6 +99,7 @@ def update_department(
     response_model=List[StaffWithFullNameInDBBase]
 )
 def list_all_staff_under_department(
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
         *, db: Session = Depends(get_db),
         id: UUID4,
         skip: int = 0,
@@ -113,8 +117,8 @@ def list_all_staff_under_department(
 )
 def delete_department(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)],
 ) -> Any:
     department_router = actions.get_department(db=db, id=id)
     if not department_router:

@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List,Annotated
 from fastapi import APIRouter, Depends, Query
 from fastapi import HTTPException
 from pydantic import UUID4
@@ -7,7 +7,8 @@ from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 from domains.appraisal.schemas import appraisal_cycle as schemas
 from domains.appraisal.services.appraisal_cycle import appraisal_cycle_service as actions
 from db.session import get_db
-from utils import rbac as UserRolesManager
+from utils import rbac
+from domains.auth.models.users import User
 
 
 appraisal_cycles_router = APIRouter(
@@ -54,9 +55,9 @@ def search_appraisal_cycles_by_name_or_by_year(
 def create_appraisal_cycles(
         *, db: Session = Depends(get_db),
         appraisal_cycles_in: schemas.AppraisalCycleCreate,
-         current_user=Depends(UserRolesManager.check_if_user_is_supervisor_or_hr)
+         current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
-    appraisal_cycles = actions.create_appraisal_cycle(db=db, payload=appraisal_cycles_in)
+    appraisal_cycles = actions.create_appraisal_cycle(db=db, payload=appraisal_cycles_in, current_user=current_user)
     return appraisal_cycles
 
 
