@@ -35,16 +35,13 @@ class AppraisalCycleService:
         date = datetime.now()
         current_year = date.year
 
-        print("current user in create appraisal cycle: ", current_user.id)
 
         check_if_staff_exist = db.query(Staff).filter(Staff.id == current_user.staff_id).first()
-        print("check_if_staff_exist: ", check_if_staff_exist)
         if not check_if_staff_exist:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff does not exist")
         
 
-
-        check_for_duplicate = db.query(AppraisalCycle).filter(AppraisalCycle.name == payload.name, AppraisalCycle.year == current_year).first()
+        check_for_duplicate = db.query(AppraisalCycle).filter(AppraisalCycle.name == payload.name, AppraisalCycle.year == current_year, AppraisalCycle.created_by == current_user.staff_id).first()
 
         if check_for_duplicate:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Cycle %s already exists for this year" % payload.name)

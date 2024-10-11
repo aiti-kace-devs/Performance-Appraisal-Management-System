@@ -54,11 +54,8 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
     
     # user = User(email=email)
     user = db.query(User).filter(User.email == email).first()
-    print("user: ", user.id)
     if user is None:
         raise credentials_exception
-    
-    print("returning: ", user)
     return user 
 
 
