@@ -47,7 +47,10 @@ class AppraisalSectionService:
                     detail=f"Appraisal Section {payload.name} already exists for {current_year}"
                 )
 
-            get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year).first()
+            get_appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.year == current_year, AppraisalCycle.created_by == current_user.staff_id).first()
+
+            if not get_appraisal_cycle:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="You have to crerate an Appraisal Cycle first before creating a new Appraisal Section.")
 
             appraisal_cycle_data = get_appraisal_cycle.id if get_appraisal_cycle else None
 
