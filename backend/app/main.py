@@ -36,7 +36,8 @@ def start_application():
     app = FastAPI(docs_url="/", title=Settings.PROJECT_NAME, version=Settings.PROJECT_VERSION)
     app.add_middleware(
     CORSMiddleware,
-    allow_origins= Settings.SET_NEW_ORIGIN,
+    # allow_origins= Settings.SET_NEW_ORIGIN,
+    allow_origins= ["*"],
     allow_credentials=True,    
     allow_methods=["*"],
     allow_headers=["*"]

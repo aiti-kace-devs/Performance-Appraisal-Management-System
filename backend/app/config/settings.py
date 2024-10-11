@@ -21,7 +21,8 @@ class Settings:
     RETRY_DELAY_BASE: int = 0  # Initial retry delay in seconds
     RETRY_DELAY_MULTIPLIER: int = 1  # Exponential backoff multiplier
 
-    set_allow_origin = "http://localhost:4200,https://smconf.gikace.dev, https://smconf-test.web.app"
+    set_allow_origin = "http://localhost:4200, https://performance-appraisal.netlify.app"
+
 
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
@@ -88,7 +89,7 @@ class Settings:
 
 
 
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:4200")
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "https://performance-appraisal.netlify.app")
 
 
     EMAIL_CODE_DURATION_IN_MINUTES: int = 15

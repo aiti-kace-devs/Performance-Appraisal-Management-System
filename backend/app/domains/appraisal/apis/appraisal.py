@@ -20,84 +20,35 @@ appraisals_router = APIRouter(
 
 
 @appraisals_router.get(
-    "/{id}",
-    #response_model=List[schemas.AppraisalSchema]
+    "/{staff_id}",
+    response_model=schemas.GetStaffAppraisalBase
 )
 def get_staff_appraisals_by_staff_id(
     staff_id: UUID4,
     db: Session = Depends(get_db)
          
 ):
-    appraisals_router = actions.get_appraisal_by_id(db=db, id=staff_id)
+    appraisals_router = actions.get_appraisal_by_id(db=db, staff_id=staff_id)
     return appraisals_router
 
 
-# @appraisals_router.post(
-#     "/",
-#     response_model=schemas.AppraisalSchema,
-#     status_code=HTTP_201_CREATED
-# )
-# def create_appraisals(
-#         *, db: Session = Depends(get_db),
-#         # 
-#         appraisals_in: schemas.AppraisalCreate
-# ) -> Any:
-#     appraisals_router = actions.create_appraisal(db=db, appraisal=appraisals_in)
-#     return appraisals_router
 
 
-# @appraisals_router.put(
-#     "/{id}",
-#     response_model=schemas.AppraisalSchema
-# )
-# def update_appraisals(
-#         *, db: Session = Depends(get_db),
-        
-#         id: UUID4,
-#         appraisals_in: schemas.AppraisalUpdate
-# ) -> Any:
-#     appraisals_router = actions.get_appraisal(db=db, id=id)
-#     if not appraisals_router:
-#         raise HTTPException(
-#             status_code=HTTP_404_NOT_FOUND,
-#             detail="appraisals_router not found"
-#         )
-#     appraisals_router = actions.update_appraisal(db=db, id=appraisals_router.id, appraisal=appraisals_in)
-#     return appraisals_router
 
 
-# @appraisals_router.get(
-#     "/{id}",
-#     response_model=schemas.AppraisalSchema
-# )
-# def get_appraisals(
-#         *, db: Session = Depends(get_db),
-        
-#         id: UUID4
-# ) -> Any:
-#     appraisals_router = actions.get_appraisal(db=db, id=id)
-#     if not appraisals_router:
-#         raise HTTPException(
-#             status_code=HTTP_404_NOT_FOUND,
-#             detail="appraisals_router not found"
-#         )
-#     return appraisals_router
 
 
-# @appraisals_router.delete(
-#     "/{id}",
-#     response_model=schemas.AppraisalSchema
-# )
-# def delete_appraisals(
-#         *, db: Session = Depends(get_db),
-        
-#         id: UUID4
-# ) -> Any:
-#     appraisals_router = actions.get_appraisal(db=db, id=id)
-#     if not appraisals_router:
-#         raise HTTPException(
-#             status_code=HTTP_404_NOT_FOUND,
-#             detail="appraisals_router not found"
-#         )
-#     appraisals_router = actions.delete_appraisal(db=db, id=id)
-#     return appraisals_router
+
+
+
+@appraisals_router.get(
+    "/{staff_id}/{appraisal_year}",
+)
+def get_staff_appraisals_by_staff_id_and_appraisal_year(
+    staff_id: UUID4,
+    appraisal_year: int,
+    db: Session = Depends(get_db)
+         
+):
+    appraisals_router = actions.get_staff_appraisals_by_staff_id_and_appraisal_year(db=db, staff_id=staff_id, appraisal_year=appraisal_year)
+    return appraisals_router

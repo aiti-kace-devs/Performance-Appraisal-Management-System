@@ -47,7 +47,7 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
     try:
         payload = jwt.decode(cookie_access_token, settings.JWT_SECRET_KEY, algorithms=[settings.ALGORITHM])
         email: str = payload.get("sub")
-        print("username/email extracted is ", email)
+        #print("username/email extracted is ", email)
     
     except JWTError:
         raise credentials_exception
