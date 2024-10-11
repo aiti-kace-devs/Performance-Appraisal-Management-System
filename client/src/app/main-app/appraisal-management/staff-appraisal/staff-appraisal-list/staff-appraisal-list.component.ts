@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { IColumnDef } from '../../../../shared/interfaces';
+import { IColumnDef, IStaff } from '../../../../shared/interfaces';
+import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { StaffState } from '../../../../store/staff/staff.state';
+import { GetStaff } from '../../../../store/staff/staff.action';
 
 @Component({
   selector: 'app-staff-appraisal-list',
@@ -7,42 +11,24 @@ import { IColumnDef } from '../../../../shared/interfaces';
   styleUrls: ['./staff-appraisal-list.component.scss'],
 })
 export class StaffAppraisalListComponent {
+  staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
   staffData!: any;
 
   columns: IColumnDef[] = [
     { header: 'Staff Name', field: 'full_name', sortable: true },
-    { header: 'Appraisal Type', field: 'type' },
+    { header: 'Position', field: 'position' },
+    {
+      header: 'Appraisal Type',
+      field: 'apppraisal_cycle',
+      subField: 'name',
+    },
     { header: 'Status', field: 'status', sortable: true },
   ];
   title = 'Staff Appraisal List';
 
+  constructor(private store: Store) {}
+
   ngOnInit() {
-    this.staffData = [
-      {
-        full_name: 'Rachel Green',
-        type: 'Yearly',
-        status: 'In Progress',
-        id: 1,
-      },
-      {
-        full_name: 'Chandler Bing',
-        type: 'Monthly',
-        status: 'Completed',
-        id: 2,
-      },
-      {
-        full_name: 'Joey Tribbiani',
-        type: 'Yearly',
-        status: 'In Progress',
-        id: 3,
-      },
-      { full_name: 'Ross Geller', type: 'Monthly', status: 'Completed', id: 1 },
-      {
-        full_name: 'Phoebe Buffay',
-        type: 'Yearly',
-        status: 'In Progress',
-        id: 4,
-      },
-    ];
+    this.store.dispatch(new GetStaff());
   }
 }

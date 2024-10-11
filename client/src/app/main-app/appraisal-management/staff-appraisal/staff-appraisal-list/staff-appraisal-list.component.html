@@ -8,7 +8,7 @@
   </div>
 
   <app-table
-    [data]="staffData"
+    [data]="(staff$ | async) || []"
     [columnsDefinition]="columns"
     [title]="title"
     [showCaption]="true"

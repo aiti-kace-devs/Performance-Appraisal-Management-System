@@ -51,7 +51,7 @@ export class LoginService {
       : localStorage.getItem(APP_REFRESH_TOKEN);
     return this.http
       .post<IAuthResponse>(`${this.authUrl}/refresh`, {
-        token: refreshToken,
+        refresh_token: refreshToken,
       })
       .pipe(
         switchMap((response: IAuthResponse) => {
@@ -89,8 +89,8 @@ export class LoginService {
     }
 
     return this.http
-      .post<IUser>(`${environment.API_URL_BASE}/auth/me`, {
-        token: accessToken,
+      .post<IUser>(`${this.authUrl}/me`, {
+        access_token: accessToken,
       })
       .pipe(
         map((user: IUser) => {
