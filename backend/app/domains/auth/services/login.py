@@ -298,7 +298,7 @@ def get_new_access_token(response:Response, refresh_token: schema.RefreshToken, 
                         )
     
     # Get current user information
-    user_data = users_forms_service.get_user_by_id(db=db, id=refresh_token_check.user_id)
+    user_data = logged_in_users_repo.get(db=db, id=refresh_token_check.user_id)
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     new_access_token = Security.create_access_token(data={"sub": user_data.email}, expires_delta=access_token_expires)
