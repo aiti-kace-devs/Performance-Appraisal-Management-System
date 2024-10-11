@@ -29,7 +29,11 @@ def initial_data_insert():
         db.close()
 
 
-    
+# List of allowed origins
+origins = [
+    "http://localhost:4200",
+    "https://performance-appraisal.netlify.app"
+]    
 
 
 def start_application():
@@ -37,7 +41,7 @@ def start_application():
     app.add_middleware(
     CORSMiddleware,
     # allow_origins= Settings.SET_NEW_ORIGIN,
-    allow_origins= ["*"],
+    allow_origins= origins,
     allow_credentials=True,    
     allow_methods=["*"],
     allow_headers=["*"]
