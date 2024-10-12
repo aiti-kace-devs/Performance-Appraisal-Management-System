@@ -2,6 +2,10 @@ from typing import Any, List
 
 from db.base_class import UUID
 from domains.appraisal.respository.kra_bank import kra_bank_actions as kra_bank_repo
+from domains.appraisal.models.department import Department
+from domains.appraisal.models.kra_bank import KraBank
+from domains.appraisal.models.appraisal_section import AppraisalSection
+from domains.appraisal.models.staff import Staff
 from domains.appraisal.schemas.kra_bank import (
     KraBankCreate,
     KraBankSchema,
@@ -21,6 +25,29 @@ class KraBankService:
     def create_kra_bank(
         self, *, db: Session, kra_bank: KraBankCreate
     ) -> KraBankSchema:
+        
+        # Check if the department ID exists
+        department = db.query(Department).filter(Department.id == kra_bank.department_id).first()
+        if not department:
+            raise HTTPException(status_code=404, detail="Department ID does not exist")
+        
+        # Check for duplicate department ID in the Kra bank table
+        duplicate_department = db.query(KraBank).filter(KraBank.department_id == kra_bank.department_id).first()
+        if duplicate_department:
+            raise HTTPException(status_code=400, detail="Duplicate department ID in Kra bank table")
+        
+        # Check if the appraisal section ID exists
+        appraisal_section = db.query(AppraisalSection).filter(AppraisalSection.id == kra_bank.appraisal_section_id).first()
+        if not appraisal_section:
+            raise HTTPException(status_code=404, detail="Appraisal section ID does not exist")
+        
+        # Check if the supervisor ID exists in the staff table
+        supervisor = db.query(Staff).filter(Staff.id == kra_bank.supervisor_id).first()
+        if not supervisor:
+            raise HTTPException(status_code=404, detail="Supervisor ID does not exist")
+        
+
+        # Create KRA Bank
         kra_bank = kra_bank_repo.create(db=db, obj_in=kra_bank)
         return kra_bank
 
