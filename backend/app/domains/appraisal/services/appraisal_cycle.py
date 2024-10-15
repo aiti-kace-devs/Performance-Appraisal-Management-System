@@ -85,6 +85,29 @@ class AppraisalCycleService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_cycle not found")
         appraisal_cycle_ = appraisal_cycle_repo.update(db=db, db_obj=appraisal_cycle_obj, obj_in=appraisal_cycle)
         return appraisal_cycle_
+    
+
+
+
+
+
+
+    def delete_appraisal_cycle(self, *, db: Session, id: UUID, current_user: Annotated[User, Depends(rbac.get_current_user)]) -> AppraisalCycleSchema:
+        appraisal_cycle = appraisal_cycle_repo.get(db=db, id=id)
+        if not appraisal_cycle:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Cycle not found")
+        get_appraisal_sections = db.query(AppraisalSection).filter(AppraisalSection.appraisal_cycle_id == id).all()
+        if get_appraisal_sections:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="This Appraisal Cycle has sections so it can not be deleted")
+        appraisal_cycle = appraisal_cycle_repo.remove(db=db, id=id)
+        return appraisal_cycle
+
+
+
+
+
+
+
 
     def get_appraisal_cycle(self, *, db: Session, id: UUID) -> AppraisalCycleSchema:
         appraisal_cycle = appraisal_cycle_repo.get(db=db, id=id)
@@ -92,12 +115,7 @@ class AppraisalCycleService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_cycle not found")
         return appraisal_cycle
 
-    def delete_appraisal_cycle(self, *, db: Session, id: UUID) -> AppraisalCycleSchema:
-        appraisal_cycle = appraisal_cycle_repo.get(db=db, id=id)
-        if not appraisal_cycle:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_cycle not found")
-        appraisal_cycle = appraisal_cycle_repo.remove(db=db, id=id)
-        return appraisal_cycle
+
 
     def get_appraisal_cycle_by_id(self, *, id: UUID) -> AppraisalCycleSchema:
         appraisal_cycle = appraisal_cycle_repo.get(id)

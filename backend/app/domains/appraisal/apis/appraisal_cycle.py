@@ -123,8 +123,8 @@ def get_appraisal_sections_under_appraisal_cycle(
 )
 def delete_appraisal_cycles(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
     appraisal_cycles_router = actions.get_appraisal_cycle(db=db, id=id)
     if not appraisal_cycles_router:
@@ -132,5 +132,5 @@ def delete_appraisal_cycles(
             status_code=HTTP_404_NOT_FOUND,
             detail="appraisal_cycles_router not found"
         )
-    appraisal_cycles_router = actions.delete_appraisal_cycle(db=db, id=id)
+    appraisal_cycles_router = actions.delete_appraisal_cycle(db=db, id=id, current_user=current_user)
     return appraisal_cycles_router
