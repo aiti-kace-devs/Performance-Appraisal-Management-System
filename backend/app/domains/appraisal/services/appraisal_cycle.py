@@ -12,17 +12,19 @@ from datetime import datetime
 from utils.rbac import get_current_user
 from domains.auth.models.users import User
 from utils import rbac
+from domains.appraisal.models.appraisal_section import AppraisalSection
+from domains.appraisal.schemas import appraisal_section
+
 
 class AppraisalCycleService:
 
 
-    def list_appraisal_cycle(self, *, db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalCycleSchema]:
-        appraisal_cycle = appraisal_cycle_repo.get_all(db=db, skip=skip, limit=limit)
+    def list_appraisal_cycle(self, *, current_user: Annotated[User, Depends(rbac.get_current_user)], db: Session, skip: int = 0, limit: int = 100) -> List[AppraisalCycleSchema]:
+        appraisal_cycle = db.query(AppraisalCycle).filter(AppraisalCycle.created_by == current_user.staff_id).all()
+        if not appraisal_cycle:
+            return []
         return appraisal_cycle
     
-
-
-
 
 
 
@@ -64,7 +66,11 @@ class AppraisalCycleService:
 
 
 
-
+    def get_appraisal_sections_under_appraisal_cycle(self, *, db: Session, id: UUID, current_user: Annotated[User, Depends(rbac.get_current_user)]) -> List[appraisal_section.ReadAppraisalSectionWithOutCycleBase]:
+        get_appraisal_sections = db.query(AppraisalSection).filter(AppraisalSection.created_by == current_user.staff_id, AppraisalSection.appraisal_cycle_id == id).all()
+        if not get_appraisal_sections:
+            return []
+        return get_appraisal_sections
 
 
 

@@ -214,9 +214,9 @@ class AppraisalService:
         date = datetime.now()
         current_year = date.year
 
-        get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == staff_id).first()
+        get_supervisor = db.query(StaffSupervisor).filter(StaffSupervisor.staff_id == staff_id, StaffSupervisor.appraisal_year == appraisal_year).first()
         if get_supervisor:
-            get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id, StaffSupervisor.appraisal_year == appraisal_year).first()
+            get_staff = db.query(Staff).filter(Staff.id == get_supervisor.supervisor_id).first()
             if get_staff:
                 supervisor_data = {
                     'id': get_staff.id,
@@ -273,7 +273,7 @@ class AppraisalService:
                         },
                         "appraisal_form": {
                             "id": appraisal_form.id if appraisal_form else None,
-                            "form_fields": form_fields
+                            "form_fields": [form_fields]
                         },
                         "submission": {
                             "id": submission.id,
@@ -306,7 +306,7 @@ class AppraisalService:
                     },
                     "appraisal_form": {
                         "id": appraisal_form.id if appraisal_form else None,
-                        "form_fields": form_fields
+                        "form_fields": [form_fields]
                     },
                     "submission": None
                 }
@@ -314,7 +314,7 @@ class AppraisalService:
 
         get_appraisal_cycle = db.query(AppraisalCycle).filter(
             AppraisalCycle.created_by == supervisor_data.get('id'),
-            AppraisalCycle.year == appraisal_year
+            AppraisalCycle.year == current_year
         ).first()
 
         get_staff_empty_info = {
@@ -324,21 +324,21 @@ class AppraisalService:
             'last_name': get_staff_info.last_name,
             'other_name': get_staff_info.other_name,
             'full_name': f"{get_staff_info.first_name} {get_staff_info.last_name}" + (f" {get_staff_info.other_name}" if get_staff_info.other_name else ""),
-            'department_id': {
-                'id': get_staff_info.department.id,
-                'name': get_staff_info.department.name,
-            },
             'gender': get_staff_info.gender,
             'email': get_staff_info.email,
             'position': get_staff_info.position,
             'grade': get_staff_info.grade,
             'appointment_date': get_staff_info.appointment_date,
-            'role_id': {
+            'department': {
+                'id': get_staff_info.department.id,
+                'name': get_staff_info.department.name,
+            },
+            'role': {
                 'id': get_staff_info.role.id,
                 'name': get_staff_info.role.name,
             },
-            'supervisor_id': supervisor_data,
-            'created_at': get_staff_info.created_date,
+            'supervisor': supervisor_data,
+            'created_date': get_staff_info.created_date,
         }
 
         return {

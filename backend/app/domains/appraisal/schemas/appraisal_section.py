@@ -22,6 +22,15 @@ class ReadAppraisalSectionBase(BaseModel):
 
 
 
+class ReadAppraisalSectionWithOutCycleBase(BaseModel):
+    id: Optional[UUID4]
+    name: Annotated[str, Field(min_length=1)] = Field(...)
+    description: Annotated[str, Field(min_length=1)] = Field(...)
+    appraisal_year: Optional[int]
+    appraisal_cycle_id: Optional[UUID4] = None
+    created_by: Optional[UUID4]
+
+
 class AppraisalSectionBase(BaseModel):
     name: Annotated[str, Field(min_length=1)] = Field(...)
     description: Annotated[str, Field(min_length=1)] = Field(...)

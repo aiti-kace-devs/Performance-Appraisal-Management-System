@@ -9,7 +9,7 @@ from domains.appraisal.services.appraisal_cycle import appraisal_cycle_service a
 from db.session import get_db
 from utils import rbac
 from domains.auth.models.users import User
-
+from domains.appraisal.schemas import appraisal_section
 
 appraisal_cycles_router = APIRouter(
        prefix="/appraisal_cycles",
@@ -26,12 +26,13 @@ appraisal_cycles_router = APIRouter(
     response_model=List[schemas.AppraisalCycleSchema]
 )
 def list_appraisal_cycles(
+    current_user: Annotated[User, Depends(rbac.get_current_user)],
         db: Session = Depends(get_db),
-        
         skip: int = 0,
         limit: int = 100
+        
 ) -> Any:
-    appraisal_cycles_router = actions.list_appraisal_cycle(db=db, skip=skip, limit=limit)
+    appraisal_cycles_router = actions.list_appraisal_cycle(current_user=current_user, db=db, skip=skip, limit=limit)
     return appraisal_cycles_router
 
 
@@ -81,22 +82,39 @@ def update_appraisal_cycles(
     return appraisal_cycles_router
 
 
+
+
+
+
+
+
+
+
+
 @appraisal_cycles_router.get(
     "/{id}",
-    response_model=schemas.AppraisalCycleSchema
+    response_model=List[appraisal_section.ReadAppraisalSectionWithOutCycleBase]
 )
-def get_appraisal_cycles(
+def get_appraisal_sections_under_appraisal_cycle(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4
+        id: UUID4,
+        current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
-    appraisal_cycles_router = actions.get_appraisal_cycle(db=db, id=id)
-    if not appraisal_cycles_router:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="appraisal_cycles_router not found"
-        )
-    return appraisal_cycles_router
+    get_appraisal_sections = actions.get_appraisal_sections_under_appraisal_cycle(db=db, id=id, current_user=current_user)
+    if not get_appraisal_sections:
+            return []
+    return get_appraisal_sections
+
+
+
+
+
+
+
+
+
+
+
 
 
 @appraisal_cycles_router.delete(
