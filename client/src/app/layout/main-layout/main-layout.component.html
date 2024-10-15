@@ -2,7 +2,7 @@
   <app-side-bar></app-side-bar>
   <div class="min-h-screen flex flex-column relative flex-auto">
     <div
-      class="flex justify-content-between align-items-center px-5 surface-section relative lg:static border-bottom-1 surface-border"
+      class="flex justify-content-between align-items-center px-5 surface-section sticky top-0 z-2 border-bottom-1 surface-border"
       style="height: 60px"
     >
       <div class="flex">
@@ -62,7 +62,7 @@
         </ul>
       </div>
     </div>
-    <div class="p-5 flex flex-column flex-auto">
+    <div class="p-5 flex flex-column relative flex-auto">
       <div class="surface-border border-round surface-section flex-auto">
         <router-outlet></router-outlet>
       </div>

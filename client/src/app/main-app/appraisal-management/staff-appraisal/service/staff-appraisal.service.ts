@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { IStaffAppraisal } from '../../../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,6 @@ export class StaffAppraisalService {
   constructor(private http: HttpClient) {}
 
   getStaffAppraisal(id: string) {
-    return this.http.get(`${this.appraisalURL}/${id}`);
+    return this.http.get<IStaffAppraisal>(`${this.appraisalURL}/${id}`);
   }
 }

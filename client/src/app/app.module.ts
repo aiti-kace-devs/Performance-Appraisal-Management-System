@@ -15,6 +15,8 @@ import { NgxsModule } from '@ngxs/store';
 import { StaffState } from './store/staff/staff.state';
 import { DepartmentState } from './store/department/department.state';
 import { AuthState } from './store/auth/auth.state';
+import { StaffAppraisalState } from './store/appraisal/staff-appraisal.state';
+import { AppraisalCycleState } from './store/appraisal-cycle/appraisal-cycle.state';
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
@@ -50,7 +52,13 @@ import { ErrorMessageInterceptor } from './shared/interceptors/error-message-int
     AlertsModule,
     PrimeNgImportsModule,
     MainAppModule,
-    NgxsModule.forRoot([StaffState, DepartmentState, AuthState]),
+    NgxsModule.forRoot([
+      StaffState,
+      DepartmentState,
+      AuthState,
+      StaffAppraisalState,
+      AppraisalCycleState,
+    ]),
     errorTailorImports,
     FormsModule,
   ],
