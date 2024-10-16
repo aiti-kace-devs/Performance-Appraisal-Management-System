@@ -93,17 +93,15 @@ def update_appraisal_cycles(
 
 @appraisal_cycles_router.get(
     "/{id}",
-    response_model=List[appraisal_section.ReadAppraisalSectionWithOutCycleBase]
+    response_model=appraisal_section.ReadAppraisalSectionWithCycleBase
 )
 def get_appraisal_sections_under_appraisal_cycle(
         *, db: Session = Depends(get_db),
         id: UUID4,
         current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
-    get_appraisal_sections = actions.get_appraisal_sections_under_appraisal_cycle(db=db, id=id, current_user=current_user)
-    if not get_appraisal_sections:
-            return []
-    return get_appraisal_sections
+    return actions.get_appraisal_sections_under_appraisal_cycle(db=db, id=id, current_user=current_user)
+
 
 
 

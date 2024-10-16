@@ -66,11 +66,23 @@ class AppraisalCycleService:
 
 
 
-    def get_appraisal_sections_under_appraisal_cycle(self, *, db: Session, id: UUID, current_user: Annotated[User, Depends(rbac.get_current_user)]) -> List[appraisal_section.ReadAppraisalSectionWithOutCycleBase]:
+    def get_appraisal_sections_under_appraisal_cycle(self, *, db: Session, id: UUID, current_user: Annotated[User, Depends(rbac.get_current_user)]) -> appraisal_section.ReadAppraisalSectionWithCycleBase:
+        get_appraisal_cycle = appraisal_cycle_repo.get(db=db, id=id)
+
+        get_appraisal_sections = []
+        if not get_appraisal_cycle:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Cycle not found")
+        
         get_appraisal_sections = db.query(AppraisalSection).filter(AppraisalSection.created_by == current_user.staff_id, AppraisalSection.appraisal_cycle_id == id).all()
+
         if not get_appraisal_sections:
-            return []
-        return get_appraisal_sections
+            get_appraisal_sections = []
+        
+        appraisal_sections = get_appraisal_sections
+        return {
+            "appraisal_cycle": get_appraisal_cycle,
+            "appraisal_sections": appraisal_sections
+        }
 
 
 

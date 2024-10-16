@@ -12,7 +12,7 @@ class Settings:
    
 
     SMS_API_KEY:str  = os.getenv("ARKESEL_API_KEY")
-    SMS_API_URL: str = os.getenv("ARKESEL_BASE_URL")
+    SMS_API_URL: str = os.getenv("ARKESEL_BASE_URL", "https://sms.arkesel.com/api/v2/sms/send")
     
     intruder_list = []
     
