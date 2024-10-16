@@ -26,6 +26,7 @@ class ReadAppraisalSectionBase(BaseModel):
 class AppraisalSectionBase(BaseModel):
     name: Annotated[str, Field(min_length=1)] = Field(...)
     description: Annotated[str, Field(min_length=1)] = Field(...)
+    appraisal_cycle_id: UUID4 
 
 
     @field_validator('name', 'description', mode='before')
