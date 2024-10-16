@@ -10,6 +10,7 @@ from db.base_class import APIBase
 
 class AppraisalSection(APIBase):
 
+    #sections = Column(JSON, nullable=False)
     name = Column(String, nullable=False) 
     description = Column(Text, nullable=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey('staffs.id'), nullable=True)

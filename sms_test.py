@@ -14,8 +14,8 @@ recipients = ["233555560810"]
 
 # SEND SMS
 sms_payload = {
-    "sender": "Hello World",
-    "message": "You have been selected as one of our loyal customers",
+    "sender": "RAININ MALL",
+    "message": "You have been selected as one of our loyal customers. Click here to receive your reward https://smconf.gikace.dev/login",
     "recipients": recipients
 }
 
