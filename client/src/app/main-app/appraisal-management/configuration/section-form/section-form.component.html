@@ -1,0 +1,26 @@
+<ng-container *ngIf="sectionForm">
+  <div class="grid formgrid p-fluid w-12" [formGroup]="sectionForm" errorTailor>
+    <div class="field mb-4 col-12">
+      <label for="name">Section Name</label>
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        pInputText
+        pTooltip="Enter Section Name"
+        placeholder="ex. Start of Year"
+      />
+    </div>
+    <div class="field mb-4 col-12">
+      <label for="description">Section Description</label>
+      <input
+        id="description"
+        formControlName="description"
+        type="text"
+        pInputText
+        pTooltip="Enter Section Description"
+        placeholder="Section Description"
+      />
+    </div>
+  </div>
+</ng-container>

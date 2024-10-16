@@ -89,6 +89,7 @@ export interface IAppraisalCycle {
   created_by?: string;
   created_date?: string | number | Date;
   updated_date?: string | number | Date;
+  appraisal_sections?: IAppraisalSection[];
 }
 
 export interface IAppraisalSection {

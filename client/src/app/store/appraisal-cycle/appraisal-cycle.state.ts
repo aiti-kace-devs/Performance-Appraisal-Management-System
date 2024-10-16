@@ -9,14 +9,18 @@ import {
   DeleteAppraisalCycle,
   GetAppraisalCycle,
   UpdateAppraisalCycle,
+  SelectAppraisalCycle,
+  ClearSelectedAppraisalCycle,
 } from './appraisal-cycle.action';
 import { IAppraisalCycle } from '../../shared/interfaces';
 
 export class AppraisalCycleStateModel {
   cycle: IAppraisalCycle[];
+  selectedCycle: any;
 
   constructor() {
     this.cycle = [];
+    this.selectedCycle = undefined;
   }
 }
 
@@ -24,6 +28,7 @@ export class AppraisalCycleStateModel {
   name: 'appraisalCycleState',
   defaults: {
     cycle: [],
+    selectedCycle: undefined,
   },
 })
 @Injectable()
@@ -35,8 +40,18 @@ export class AppraisalCycleState {
 
   @Selector()
   static selectStateData(state: AppraisalCycleStateModel) {
-    return state.cycle || [];
+    return state.cycle;
   }
+
+  @Selector()
+  static getSelectedCycle(state: AppraisalCycleStateModel) {
+    return state.selectedCycle;
+  }
+
+  // @Selector()
+  // static getSelectedCycleSettings(state: AppraisalCycleStateModel) {
+  //   return state.selectedCycle?.settings?.settings;
+  // }
 
   @Action(GetAppraisalCycle)
   getDataFromState(ctx: StateContext<AppraisalCycleStateModel>) {
@@ -117,5 +132,31 @@ export class AppraisalCycleState {
         });
       })
     );
+  }
+
+  @Action(SelectAppraisalCycle)
+  selectAppraisalCycle(
+    ctx: StateContext<AppraisalCycleStateModel>,
+    { id }: SelectAppraisalCycle
+  ) {
+    return this.confService.getCycleWithSections(id).pipe(
+      tap((returnData) => {
+        const state = ctx.getState();
+
+        ctx.setState({
+          ...state,
+          selectedCycle: returnData,
+        });
+      })
+    );
+  }
+
+  @Action(ClearSelectedAppraisalCycle)
+  clearApprasialCycle(ctx: StateContext<AppraisalCycleStateModel>) {
+    const state = ctx.getState();
+    return ctx.setState({
+      ...state,
+      selectedCycle: undefined,
+    });
   }
 }

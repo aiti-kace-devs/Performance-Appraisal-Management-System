@@ -15,10 +15,6 @@ export class ConfigurationService {
     return this.http.get<IAppraisalCycle[]>(`${this.appraisalCycleURL}/all`);
   }
 
-  getCycle(id: string) {
-    return this.http.get<IAppraisalCycle>(`${this.appraisalCycleURL}/${id}`);
-  }
-
   addCycle(data: any) {
     return this.http.post<IAppraisalCycle>(
       `${this.appraisalCycleURL}/new`,
@@ -35,5 +31,9 @@ export class ConfigurationService {
 
   deleteCycle(id: string) {
     return this.http.delete(`${this.appraisalCycleURL}/${id}`);
+  }
+
+  getCycleWithSections(id: string) {
+    return this.http.get<IAppraisalCycle>(`${this.appraisalCycleURL}/${id}`);
   }
 }

@@ -7,6 +7,7 @@ import { CompetencyBankListComponent } from './competency-bank/competency-bank-l
 import { MyAppraisalListComponent } from './my-appraisal/my-appraisal-list/my-appraisal-list.component';
 import { StaffAppraisalListComponent } from './staff-appraisal/staff-appraisal-list/staff-appraisal-list.component';
 import { staffAppraisalGuard } from '../../shared/guards/staff-appraisal.guard';
+import { CycleDetailsComponent } from './configuration/cycle-details/cycle-details.component';
 
 const routes: Routes = [
   { path: '', component: StaffAppraisalListComponent },
@@ -18,6 +19,10 @@ const routes: Routes = [
     path: 'details/:staff_id',
     component: AppraisalLayoutComponent,
     canActivate: [staffAppraisalGuard],
+  },
+  {
+    path: 'configuration/:cycle_id',
+    component: CycleDetailsComponent,
   },
 ];
 

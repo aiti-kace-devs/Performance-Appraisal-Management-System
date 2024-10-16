@@ -22,3 +22,12 @@ export class DeleteAppraisalCycle {
   static readonly type = '[AppraisalCycle] Delete';
   constructor(public id: string) {}
 }
+
+export class SelectAppraisalCycle {
+  static readonly type = '[AppraisalCycle] Fetch Details';
+  constructor(public id: string) {}
+}
+
+export class ClearSelectedAppraisalCycle {
+  static readonly type = '[AppraisalCycle] Clear';
+}
