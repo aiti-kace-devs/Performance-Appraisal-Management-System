@@ -47,7 +47,7 @@ def start_application():
     allow_headers=["*"]
     )
     include(app)
-    #create_tables()
+    create_tables()
     initial_data_insert()
     return app
 app = start_application()
