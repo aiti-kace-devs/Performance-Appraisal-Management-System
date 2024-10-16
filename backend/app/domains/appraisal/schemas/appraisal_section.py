@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, UUID4, ValidationError, field_validator
 from sqlalchemy.orm import Session
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle  # Import the actual SQLAlchemy model
 from domains.appraisal.models.appraisal_section import AppraisalSection 
-from domains.appraisal.schemas.appraisal import GetAppraisalCycleBase,GetAppraisalSectionBase
+
 
 # Custom Validator Function
 
@@ -21,11 +21,6 @@ class ReadAppraisalSectionBase(BaseModel):
     appraisal_cycle: Optional[AppraisalCycleBase] = None
     created_by: Optional[UUID4] 
 
-
-
-class ReadAppraisalSectionWithCycleBase(BaseModel):
-    appraisal_cycle: Optional[GetAppraisalCycleBase]
-    appraisal_sections: Optional[List[GetAppraisalSectionBase]] = None
 
 
 class AppraisalSectionBase(BaseModel):

@@ -93,7 +93,7 @@ def update_appraisal_cycles(
 
 @appraisal_cycles_router.get(
     "/{id}",
-    response_model=appraisal_section.ReadAppraisalSectionWithCycleBase
+    response_model=schemas.ReadAppraisalSectionWithCycleBase
 )
 def get_appraisal_sections_under_appraisal_cycle(
         *, db: Session = Depends(get_db),

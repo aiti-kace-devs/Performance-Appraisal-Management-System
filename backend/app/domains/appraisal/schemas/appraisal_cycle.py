@@ -1,7 +1,7 @@
 from datetime import date,time, datetime
-from typing import Optional, Any, Dict, Annotated
+from typing import Optional, Any, Dict, Annotated,List
 from pydantic import BaseModel, Field, UUID4, constr, field_validator
-
+from domains.appraisal.schemas.appraisal import GetAppraisalCycleBase,GetAppraisalSectionBase
 
 
 class ReadAppraisalCycleBase(BaseModel):
@@ -47,3 +47,16 @@ class AppraisalCycleInDBBase(ReadAppraisalCycleBase):
 
 class AppraisalCycleSchema(AppraisalCycleInDBBase):
     pass
+
+
+
+
+class ReadAppraisalSectionWithCycleBase(BaseModel):
+    id: UUID4
+    name: Optional[str]
+    description: Optional[str]
+    year: Optional[int]
+    created_by: Optional[UUID4]
+    created_date: Optional[datetime]
+    updated_date: Optional[datetime]
+    appraisal_sections: Optional[List[GetAppraisalSectionBase]] = None

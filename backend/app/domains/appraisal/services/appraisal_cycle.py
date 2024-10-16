@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from db.base_class import UUID
 from domains.appraisal.respository.appraisal_cycle import appraisal_cycle_actions as appraisal_cycle_repo
-from domains.appraisal.schemas.appraisal_cycle import AppraisalCycleSchema, AppraisalCycleUpdate, AppraisalCycleCreate
+from domains.appraisal.schemas.appraisal_cycle import AppraisalCycleSchema, AppraisalCycleUpdate, AppraisalCycleCreate,ReadAppraisalSectionWithCycleBase
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
 from domains.appraisal.models.staff_role_permissions import Staff
 from datetime import datetime
@@ -66,7 +66,7 @@ class AppraisalCycleService:
 
 
 
-    def get_appraisal_sections_under_appraisal_cycle(self, *, db: Session, id: UUID, current_user: Annotated[User, Depends(rbac.get_current_user)]) -> appraisal_section.ReadAppraisalSectionWithCycleBase:
+    def get_appraisal_sections_under_appraisal_cycle(self, *, db: Session, id: UUID, current_user: Annotated[User, Depends(rbac.get_current_user)]) -> ReadAppraisalSectionWithCycleBase:
         get_appraisal_cycle = appraisal_cycle_repo.get(db=db, id=id)
 
         get_appraisal_sections = []
@@ -80,7 +80,13 @@ class AppraisalCycleService:
         
         appraisal_sections = get_appraisal_sections
         return {
-            "appraisal_cycle": get_appraisal_cycle,
+            "id": get_appraisal_cycle.id,
+            "name": get_appraisal_cycle.name,
+            "description": get_appraisal_cycle.description,
+            "year": get_appraisal_cycle.year,
+            "created_by": get_appraisal_cycle.created_by,
+            "created_date": get_appraisal_cycle.created_date,
+            "updated_date": get_appraisal_cycle.updated_date,
             "appraisal_sections": appraisal_sections
         }
 
