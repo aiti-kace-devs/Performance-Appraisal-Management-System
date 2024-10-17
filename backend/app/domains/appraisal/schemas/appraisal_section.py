@@ -41,8 +41,19 @@ class AppraisalSectionBase(BaseModel):
 class AppraisalSectionCreate(AppraisalSectionBase):
     pass
 
-class AppraisalSectionUpdate(AppraisalSectionBase):
-    pass
+
+
+class CreateBulkAppraisalSectionBase(BaseModel):
+    name: Annotated[str, Field(min_length=1)] = Field(...)
+    description: Annotated[str, Field(min_length=1)] = Field(...)
+    
+
+
+class AppraisalSectionUpdate(BaseModel):
+    appraisal_cycle_id: UUID4
+    appraisal_sections: List[CreateBulkAppraisalSectionBase]
+
+
 
 class AppraisalSectionInDBBase(ReadAppraisalSectionBase):
     id: UUID4

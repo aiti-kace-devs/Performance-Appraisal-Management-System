@@ -11,7 +11,7 @@ from datetime import datetime
 from domains.appraisal.models.appraisal_cycle import AppraisalCycle
 from domains.auth.models.users import User
 from utils import rbac
-
+from domains.appraisal.schemas.appraisal_cycle import ReadAppraisalSectionWithCycleBase
 
 
 class AppraisalSectionService:
@@ -89,12 +89,99 @@ class AppraisalSectionService:
 
 
 
-    def update_appraisal_section(self, *, db: Session, id: UUID, appraisal_section: AppraisalSectionUpdate) -> AppraisalSectionSchema:
-        appraisal_section_obj = appraisal_section_repo.get(db=db, id=id)
-        if not appraisal_section_obj:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="appraisal_section not found")
-        appraisal_section_ = appraisal_section_repo.update(db=db, db_obj=appraisal_section_obj, obj_in=appraisal_section)
-        return appraisal_section_
+
+
+
+    def update_appraisal_section(self, *, db: Session, appraisal_cycle_id: UUID, 
+                                payload: AppraisalSectionUpdate,
+                                current_user: Annotated[User, Depends(rbac.get_current_user)]
+                                ) -> ReadAppraisalSectionWithCycleBase:
+        
+        # Get appraisal cycle from the DB
+        appraisal_cycle_db = db.query(AppraisalCycle).filter(
+            AppraisalCycle.id == appraisal_cycle_id
+        ).first()
+        
+        if not appraisal_cycle_db:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appraisal Cycle not found")
+        
+        # Get the current year
+        current_year = datetime.now().year
+        
+        # Fetch all existing sections for this appraisal cycle from the database
+        existing_sections = db.query(AppraisalSection).filter(
+            AppraisalSection.appraisal_cycle_id == appraisal_cycle_id
+        ).all()
+
+        # Extract names of incoming sections from the payload
+        incoming_section_names = {section.name for section in payload.appraisal_sections}
+
+        # Find sections to delete: those in the DB but not in the incoming payload
+        sections_to_delete = [section for section in existing_sections if section.name not in incoming_section_names]
+
+        # Delete the obsolete sections
+        for section in sections_to_delete:
+            db.delete(section)
+
+        # Loop through each section in the payload
+        for section_data in payload.appraisal_sections:
+            # Check if the section already exists (by name) in the DB for this appraisal cycle
+            appraisal_section_obj = db.query(AppraisalSection).filter(
+                AppraisalSection.appraisal_cycle_id == payload.appraisal_cycle_id,
+                AppraisalSection.name == section_data.name  # Assuming 'name' is unique per appraisal cycle
+            ).first()
+
+            if appraisal_section_obj:
+                # If it exists, update the existing section
+                appraisal_section_obj.description = section_data.description
+                appraisal_section_obj.updated_date = datetime.now()  # Assuming you have an `updated_date` field
+            else:
+                # If it does not exist, create a new section
+                appraisal_section_obj = AppraisalSection(
+                    name=section_data.name,
+                    description=section_data.description,
+                    appraisal_year=current_year,
+                    appraisal_cycle_id=payload.appraisal_cycle_id,
+                    created_by=current_user.staff_id,
+                    created_date=datetime.now()
+                )
+                db.add(appraisal_section_obj)
+
+        # Commit all changes (insert, update, delete) to the database
+        db.commit()
+
+        # Refresh and get the updated/created appraisal sections
+        appraisal_sections = db.query(AppraisalSection).filter(
+            AppraisalSection.appraisal_cycle_id == payload.appraisal_cycle_id
+        ).all()
+
+        # Return the updated cycle along with its sections
+        return {
+            "id": appraisal_cycle_db.id,
+            "name": appraisal_cycle_db.name,
+            "description": appraisal_cycle_db.description,
+            "year": appraisal_cycle_db.year,
+            "created_by": appraisal_cycle_db.created_by,
+            "created_date": appraisal_cycle_db.created_date,
+            "updated_date": appraisal_cycle_db.updated_date,
+            "appraisal_sections": appraisal_sections
+        }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def get_appraisal_section(self, *, db: Session, id: UUID) -> AppraisalSectionSchema:
         appraisal_section = appraisal_section_repo.get(db=db, id=id)

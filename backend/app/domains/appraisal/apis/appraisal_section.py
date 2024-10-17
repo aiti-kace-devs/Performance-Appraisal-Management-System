@@ -9,7 +9,7 @@ from domains.appraisal.services.appraisal_section import appraisal_section_servi
 from db.session import get_db
 from domains.auth.models.users import User
 from utils import rbac
-
+from domains.appraisal.schemas.appraisal_cycle import ReadAppraisalSectionWithCycleBase
 
 
 appraisal_sections_router = APIRouter(
@@ -63,22 +63,17 @@ def create_appraisal_sections(
 
 @appraisal_sections_router.put(
     "/{id}",
-    response_model=schemas.AppraisalSectionSchema
+    response_model=ReadAppraisalSectionWithCycleBase
 )
 def update_appraisal_sections(
         *, db: Session = Depends(get_db),
-        
-        id: UUID4,
-        appraisal_sections_in: schemas.AppraisalSectionUpdate,
+        appraisal_cycle_id: UUID4,
+        payload: schemas.AppraisalSectionUpdate,
+        current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
-    appraisal_sections_router = actions.get_appraisal_section(db=db, id=id)
-    if not appraisal_sections_router:
-        raise HTTPException(
-            status_code=HTTP_404_NOT_FOUND,
-            detail="appraisal_sections_router not found"
-        )
-    appraisal_sections_router = actions.update_appraisal_section(db=db, id=appraisal_sections_router.id, appraisal_section=appraisal_sections_in)
-    return appraisal_sections_router
+
+    return actions.update_appraisal_section(db=db, appraisal_cycle_id=appraisal_cycle_id, payload=payload, current_user=current_user)
+
 
 
 @appraisal_sections_router.get(
