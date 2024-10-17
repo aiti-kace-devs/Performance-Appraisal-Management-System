@@ -20,15 +20,16 @@ appraisals_router = APIRouter(
 
 
 @appraisals_router.get(
-    "/{staff_id}",
+    "/{staff_id}/{appraisal_cycle_id}",
     response_model=schemas.GetStaffAppraisalBase
 )
 def get_staff_appraisals_by_staff_id(
     staff_id: UUID4,
+    appraisal_cycle_id: UUID4,
     db: Session = Depends(get_db)
          
 ):
-    appraisals_router = actions.get_appraisal_by_id(db=db, staff_id=staff_id)
+    appraisals_router = actions.get_appraisal_by_id(db=db, staff_id=staff_id, appraisal_cycle_id=appraisal_cycle_id)
     return appraisals_router
 
 
@@ -42,13 +43,14 @@ def get_staff_appraisals_by_staff_id(
 
 
 @appraisals_router.get(
-    "/{staff_id}/{appraisal_year}",
+    "/{staff_id}//{appraisal_cycle_id}/{appraisal_year}",
 )
 def get_staff_appraisals_by_staff_id_and_appraisal_year(
     staff_id: UUID4,
+    appraisal_cycle_id: UUID4,
     appraisal_year: int,
     db: Session = Depends(get_db)
          
 ):
-    appraisals_router = actions.get_staff_appraisals_by_staff_id_and_appraisal_year(db=db, staff_id=staff_id, appraisal_year=appraisal_year)
+    appraisals_router = actions.get_staff_appraisals_by_staff_id_and_appraisal_year(db=db, staff_id=staff_id, appraisal_cycle_id=appraisal_cycle_id, appraisal_year=appraisal_year)
     return appraisals_router

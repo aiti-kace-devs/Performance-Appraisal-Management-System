@@ -20,7 +20,7 @@ class AppraisalService:
 
 
 
-    def get_appraisal_by_id(self, db: Session, staff_id: UUID) -> GetStaffAppraisalBase:
+    def get_appraisal_by_id(self, db: Session, staff_id: UUID, appraisal_cycle_id: UUID) -> GetStaffAppraisalBase:
         get_staff_empty_info = {}
         data = []
         supervisor_data = {}
@@ -58,7 +58,8 @@ class AppraisalService:
 
         appraisal_sections = db.query(AppraisalSection).filter(
             AppraisalSection.created_by == supervisor_data.get('id'),
-            AppraisalSection.appraisal_year == current_year
+            AppraisalSection.appraisal_year == current_year,
+            AppraisalSection.appraisal_cycle_id == appraisal_cycle_id
         ).all()
 
         for section in appraisal_sections:
@@ -206,7 +207,7 @@ class AppraisalService:
 
 
 
-    def get_staff_appraisals_by_staff_id_and_appraisal_year(self, db: Session, staff_id: UUID, appraisal_year: int,):
+    def get_staff_appraisals_by_staff_id_and_appraisal_year(self, db: Session, staff_id: UUID,appraisal_cycle_id: UUID, appraisal_year: int,):
         get_staff_empty_info = {}
         data = []
         supervisor_data = {}
@@ -244,7 +245,8 @@ class AppraisalService:
 
         appraisal_sections = db.query(AppraisalSection).filter(
             AppraisalSection.created_by == supervisor_data.get('id'),
-            AppraisalSection.appraisal_year == appraisal_year
+            AppraisalSection.appraisal_year == appraisal_year,
+            AppraisalSection.appraisal_cycle_id == appraisal_cycle_id
         ).all()
 
         for section in appraisal_sections:
