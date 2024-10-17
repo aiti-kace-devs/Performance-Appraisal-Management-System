@@ -67,12 +67,12 @@ def create_appraisal_sections(
 )
 def update_appraisal_sections(
         *, db: Session = Depends(get_db),
-        appraisal_cycle_id: UUID4,
+        id: UUID4,
         payload: schemas.AppraisalSectionUpdate,
         current_user: Annotated[User, Depends(rbac.get_current_user)]
 ) -> Any:
 
-    return actions.update_appraisal_section(db=db, appraisal_cycle_id=appraisal_cycle_id, payload=payload, current_user=current_user)
+    return actions.update_appraisal_section(db=db, appraisal_cycle_id=id, payload=payload, current_user=current_user)
 
 
 
