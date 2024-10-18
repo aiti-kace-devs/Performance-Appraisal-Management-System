@@ -7,7 +7,7 @@ export interface IStaff {
   gender: string;
   email: string;
   position: string;
-  department_id: string;
+  department_id: IDepartment;
   grade: string;
   appointment_date: string | number | Date;
   role_id?: string;
@@ -67,6 +67,56 @@ export interface IAuthResponse {
   };
   refresh_token: string;
   refresh_token_expiration: string | Date;
+}
+
+export interface IStaffAppraisal {
+  staff_info: IStaff;
+  appraisal_cycles: IAppraisalCycle[];
+}
+
+export interface IAppraisalCycle {
+  id?: string;
+  name: string;
+  description: string;
+  year: string | number | Date;
+  created_by?: string;
+  created_date?: string | number | Date;
+  updated_date?: string | number | Date;
+  appraisal_sections?: IAppraisalSection[];
+}
+
+export interface IAppraisalSection {
+  id?: string;
+  name: string;
+  description: string;
+  appraisal_year: number | Date;
+  created_by: string;
+  appraisal_cycle_id: string;
+  created_date?: string | number | Date;
+  updated_date?: string | number | Date;
+  appraisal_form?: IAppraisalForm;
+  submission?: IAppraisalSubmission;
+}
+
+export interface IAppraisalForm {
+  id: string;
+  form_fields: {}[];
+}
+
+export interface IAppraisalSubmission {
+  id: string;
+  appraisal_forms_id: string;
+  submitted_by: string;
+  submitted_values: {};
+  started_at: string | number | Date;
+  completed_at: string | number | Date;
+  submitted: boolean;
+  completed: boolean;
+  approval_status: boolean;
+  approval_date: string | number | Date;
+  comment: string;
+  created_date: string | number | Date;
+  updated_date: string | number | Date;
 }
 
 export interface IKraBank {

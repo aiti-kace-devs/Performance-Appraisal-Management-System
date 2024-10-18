@@ -49,15 +49,15 @@ export class AuthState {
     });
   }
 
-  // @Action(GetUserAuthStatus)
-  // getUserAuthStatus(ctx: StateContext<AuthStateModel>) {
-  //   // check locally if user exists otherwise check remotely
-  //   return this.loginService.getMyDetails().pipe(
-  //     tap(details => {
-  //       ctx.patchState({
-  //         loggedInUser: details,
-  //       });
-  //     }),
-  //   );
-  // }
+  @Action(GetUserAuthStatus)
+  getUserAuthStatus(ctx: StateContext<AuthStateModel>) {
+    // check locally if user exists otherwise check remotely
+    return this.loginService.getMyDetails().pipe(
+      tap((details) => {
+        ctx.patchState({
+          loggedInUser: details,
+        });
+      })
+    );
+  }
 }

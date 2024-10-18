@@ -1,31 +1,19 @@
 <div class="surface-card p-4 shadow-2 border-round">
   <p-tabView styleClass="tabview-custom">
-    <p-tabPanel>
+    <p-tabPanel *ngFor="let section of appraisalCycles" [header]="section.name">
+      <p>{{ section.description }}</p>
+      <!-- <app-staff-appraisal-section
+        [formData]="section.formData"
+      ></app-staff-appraisal-section> -->
+    </p-tabPanel>
+    <!-- <p-tabPanel>
       <ng-template pTemplate="header">
         <div class="flex align-items-center gap-2">
           <i class="pi pi-file-import mr-2"></i>
           <span class="font-bold white-space-nowrap m-0"> Start of Year </span>
         </div>
       </ng-template>
-      <p>Hello World</p>
-    </p-tabPanel>
-    <p-tabPanel>
-      <ng-template pTemplate="header">
-        <div class="flex align-items-center gap-2">
-          <i class="pi pi-file-edit mr-2"></i>
-          <span class="font-bold white-space-nowrap m-0"> Mid Year </span>
-        </div>
-      </ng-template>
-      <p>My First Program</p>
-    </p-tabPanel>
-    <p-tabPanel>
-      <ng-template pTemplate="header">
-        <div class="flex align-items-center gap-2">
-          <i class="pi pi-file-export mr-2"></i>
-          <span class="font-bold white-space-nowrap m-0"> End of Year </span>
-        </div>
-      </ng-template>
-      <p>My First Program</p>
-    </p-tabPanel>
+      <app-staff-appraisal-section></app-staff-appraisal-section>
+    </p-tabPanel> -->
   </p-tabView>
 </div>

@@ -71,6 +71,7 @@ export class AppTableComponent implements OnInit {
     const filtered = this.data?.filter((d) => {
       return (
         d.name?.toLowerCase().includes(query) ||
+        d.full_name?.toLowerCase().includes(query) ||
         d.title?.toLowerCase().includes(query)
       );
     });

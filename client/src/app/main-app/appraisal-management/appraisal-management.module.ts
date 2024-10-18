@@ -5,6 +5,7 @@ import { KeyAreaBankModule } from './key-area/key-area-bank.module';
 import { CompetencyBankModule } from './competency-bank/competency.module';
 import { MyAppraisalModule } from './my-appraisal/my-appraisal.module';
 import { StaffAppraisalModule } from './staff-appraisal/staff-appraisal.module';
+import { ConfigurationModule } from './configuration/configuration.module';
 
 @NgModule({
   declarations: [],
@@ -15,6 +16,7 @@ import { StaffAppraisalModule } from './staff-appraisal/staff-appraisal.module';
     CompetencyBankModule,
     MyAppraisalModule,
     StaffAppraisalModule,
+    ConfigurationModule,
   ],
 })
 export class AppraisalManagementModule {}

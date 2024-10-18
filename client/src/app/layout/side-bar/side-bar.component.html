@@ -37,7 +37,7 @@
             >
           </a>
         </li>
-        <li>
+        <li *ngIf="(user$ | async)?.role?.name !== 'Staff'">
           <a
             pRipple
             routerLink="admin/staff"
@@ -52,7 +52,7 @@
             >
           </a>
         </li>
-        <li>
+        <li *ngIf="(user$ | async)?.role?.name !== 'Staff'">
           <a
             pRipple
             routerLink="admin/department"
@@ -124,7 +124,7 @@
                 <span class="font-medium">Appraisal Configuration</span>
               </a>
             </li>
-            <li>
+            <li *ngIf="(user$ | async)?.role?.name !== 'Staff'">
               <a
                 pRipple
                 routerLink="admin/appraisal-management/competency-bank"
@@ -135,7 +135,7 @@
                 <span class="font-medium">Competency Bank</span>
               </a>
             </li>
-            <li>
+            <li *ngIf="(user$ | async)?.role?.name !== 'Staff'">
               <a
                 pRipple
                 routerLink="admin/appraisal-management/kras-bank"
@@ -163,7 +163,7 @@
             >
           </a>
         </li>
-        <li>
+        <li *ngIf="(user$ | async)?.role?.name !== 'Staff'">
           <a
             pRipple
             routerLink="admin/roles"
