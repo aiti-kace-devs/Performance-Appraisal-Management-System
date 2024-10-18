@@ -20,9 +20,9 @@ class AppraisalService:
 
 
 
-    def get_appraisal_by_id(self, db: Session, staff_id: UUID, appraisal_cycle_id: UUID) -> GetStaffAppraisalBase:
+    def get_appraisal_by_id(self, db: Session, staff_id: UUID):
         get_staff_empty_info = {}
-        data = []
+        appraisal_cycle_data = []
         supervisor_data = {}
 
         date = datetime.now()
@@ -52,29 +52,66 @@ class AppraisalService:
         if not get_staff_info:
             return {
                 "staff_info": {},
-                "appraisal_cycle": {},
-                "data": []
+                "appraisal_cycle_data": []
             }
 
-        appraisal_sections = db.query(AppraisalSection).filter(
-            AppraisalSection.created_by == supervisor_data.get('id'),
-            AppraisalSection.appraisal_year == current_year,
-            AppraisalSection.appraisal_cycle_id == appraisal_cycle_id
+        appraisal_cycles = db.query(AppraisalCycle).filter(
+            AppraisalCycle.created_by == supervisor_data.get('id'),
+            AppraisalCycle.year == current_year
         ).all()
 
-        for section in appraisal_sections:
-            appraisal_form = db.query(AppraisalForm).filter(AppraisalForm.appraisal_sections_id == section.id).first()
+        for cycle in appraisal_cycles:
+            sections_data = []
+            appraisal_sections = db.query(AppraisalSection).filter(
+                AppraisalSection.appraisal_cycle_id == cycle.id
+            ).all()
 
-            form_fields = json.loads(appraisal_form.form_fields) if appraisal_form else {}
-            get_staff_appraisal_submission = []
+            for section in appraisal_sections:
+                appraisal_form = db.query(AppraisalForm).filter(AppraisalForm.appraisal_sections_id == section.id).first()
 
-            if appraisal_form:
-                get_staff_appraisal_submission = db.query(AppraisalSubmission).filter(
-                    AppraisalSubmission.appraisal_forms_id == appraisal_form.id
-                ).all()
+                form_fields = json.loads(appraisal_form.form_fields) if appraisal_form else {}
+                get_staff_appraisal_submission = []
 
-            if get_staff_appraisal_submission:
-                for submission in get_staff_appraisal_submission:
+                if appraisal_form:
+                    get_staff_appraisal_submission = db.query(AppraisalSubmission).filter(
+                        AppraisalSubmission.appraisal_forms_id == appraisal_form.id
+                    ).all()
+
+                if get_staff_appraisal_submission:
+                    for submission in get_staff_appraisal_submission:
+                        section_data = {
+                            "appraisal_section": {
+                                "id": section.id,
+                                "name": section.name,
+                                "description": section.description,
+                                "appraisal_year": section.appraisal_year,
+                                "created_by": section.created_by,
+                                "appraisal_cycle_id": section.appraisal_cycle_id,
+                                "created_date": section.created_date,
+                                "updated_date": section.updated_date,
+                            },
+                            "appraisal_form": {
+                                "id": appraisal_form.id if appraisal_form else None,
+                                "form_fields": [form_fields]
+                            },
+                            "submission": {
+                                "id": submission.id,
+                                "submitted_by": submission.submitted_by,
+                                "started_at": submission.started_at,
+                                "completed_at": submission.completed_at,
+                                "approval_date": submission.approval_date,
+                                "completed": submission.completed,
+                                "comment": submission.comment,
+                                "appraisal_forms_id": submission.appraisal_forms_id,
+                                "submitted_values": submission.submitted_values,
+                                "submitted": submission.submitted,
+                                "approval_status": submission.approval_status,
+                                "created_date": submission.created_date,
+                                "updated_date": submission.updated_date
+                            }
+                        }
+                        sections_data.append(section_data)
+                else:
                     section_data = {
                         "appraisal_section": {
                             "id": section.id,
@@ -90,47 +127,23 @@ class AppraisalService:
                             "id": appraisal_form.id if appraisal_form else None,
                             "form_fields": [form_fields]
                         },
-                        "submission": {
-                            "id": submission.id,
-                            "submitted_by": submission.submitted_by,
-                            "started_at": submission.started_at,
-                            "completed_at": submission.completed_at,
-                            "approval_date": submission.approval_date,
-                            "completed": submission.completed,
-                            "comment": submission.comment,
-                            "appraisal_forms_id": submission.appraisal_forms_id,
-                            "submitted_values": submission.submitted_values,
-                            "submitted": submission.submitted,
-                            "approval_status": submission.approval_status,
-                            "created_date": submission.created_date,
-                            "updated_date": submission.updated_date
-                        }
+                        "submission": None
                     }
-                    data.append(section_data)
-            else:
-                section_data = {
-                    "appraisal_section": {
-                        "id": section.id,
-                        "name": section.name,
-                        "description": section.description,
-                        "appraisal_year": section.appraisal_year,
-                        "created_by": section.created_by,
-                        "appraisal_cycle_id": section.appraisal_cycle_id,
-                        "created_date": section.created_date,
-                        "updated_date": section.updated_date,
-                    },
-                    "appraisal_form": {
-                        "id": appraisal_form.id if appraisal_form else None,
-                        "form_fields": [form_fields]
-                    },
-                    "submission": None
-                }
-                data.append(section_data)
+                    sections_data.append(section_data)
 
-        get_appraisal_cycle = db.query(AppraisalCycle).filter(
-            AppraisalCycle.created_by == supervisor_data.get('id'),
-            AppraisalCycle.year == current_year
-        ).first()
+            cycle_data = {
+                "appraisal_cycle": {
+                    "id": cycle.id,
+                    "name": cycle.name,
+                    "description": cycle.description,
+                    "appraisal_year": cycle.year,
+                    "created_by": cycle.created_by,
+                    "created_date": cycle.created_date,
+                    "updated_date": cycle.updated_date,
+                    "appraisal_section_data": sections_data
+                }
+            }
+            appraisal_cycle_data.append(cycle_data)
 
         get_staff_empty_info = {
             'id': get_staff_info.id,
@@ -158,9 +171,9 @@ class AppraisalService:
 
         return {
             "staff_info": get_staff_empty_info,
-            "appraisal_cycle": get_appraisal_cycle or None,
-            "data": data
+            "appraisal_cycle_data": appraisal_cycle_data
         }
+
     
 
 
@@ -207,7 +220,7 @@ class AppraisalService:
 
 
 
-    def get_staff_appraisals_by_staff_id_and_appraisal_year(self, db: Session, staff_id: UUID,appraisal_cycle_id: UUID, appraisal_year: int,):
+    def get_staff_appraisals_by_staff_id_and_appraisal_year(self, db: Session, staff_id: UUID, appraisal_year: int,):
         get_staff_empty_info = {}
         data = []
         supervisor_data = {}
@@ -245,8 +258,7 @@ class AppraisalService:
 
         appraisal_sections = db.query(AppraisalSection).filter(
             AppraisalSection.created_by == supervisor_data.get('id'),
-            AppraisalSection.appraisal_year == appraisal_year,
-            AppraisalSection.appraisal_cycle_id == appraisal_cycle_id
+            AppraisalSection.appraisal_year == appraisal_year
         ).all()
 
         for section in appraisal_sections:

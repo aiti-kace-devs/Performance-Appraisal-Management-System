@@ -1,0 +1,165 @@
+{
+    "staff_info": {
+      "id": "512e7a73-095e-45bf-98e3-e954b4827b34",
+      "title": "Mr.",
+      "first_name": "Bismark",
+      "last_name": "Otu",
+      "other_name": "Nana Kwesi",
+      "full_name": "Bismark Otu Nana Kwesi",
+      "gender": "Male",
+      "email": "obwebsitedesign@gmail.com",
+      "position": "Backend Dev",
+      "grade": "50",
+      "appointment_date": "2024-10-08",
+      "department": {
+        "id": "08bf4df5-6166-4d3d-8b4d-4bd60c948efc",
+        "name": "Faculty"
+      },
+      "role": {
+        "id": "00e1578e-6e5e-413a-aff3-667a60f7828b",
+        "name": "Staff"
+      },
+      "supervisor": {
+        "id": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+        "full_name": "Frederick Yeboah"
+      },
+      "created_date": "2024-10-04T10:43:24.150513"
+    },
+    
+    "appraisal_cycle_data": [
+            {
+                "appraisal_cycle": {
+                    "id": "e7242529-5e9d-4a7f-a9bc-0707106f08f9",
+                    "name": "Yearly",
+                    "description": "Performance planning for the year",
+                    "appraisal_year": 2024,
+                    "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+                    "created_date": "2024-10-11T14:11:43.638325",
+                    "updated_date": "2024-10-11T14:11:43.638325",
+              "appraisal_section_data": [
+                {
+                  "appraisal_section": {
+                    "id": "50d1c63b-f9e2-43b0-8a27-24abeeea17fb",
+                    "name": "Weekly",
+                    "description": "This is for weekly purposes",
+                    "appraisal_year": 2024,
+                    "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+                    "appraisal_cycle_id": "e7242529-5e9d-4a7f-a9bc-0707106f08f9",
+                    "created_date": "2024-10-17T13:59:23.465634",
+                    "updated_date": "2024-10-17T15:04:51.805675"
+                  },
+                  "appraisal_form": {
+                    "id": null,
+                    "form_fields": [
+                      {}
+                    ]
+                  },
+                  "submission": null
+                },
+        
+                {
+                    "appraisal_section": {
+                      "id": "f560476a-391d-43cc-a7f7-94b9fb28e070",
+                      "name": "Start of Year",
+                      "description": "Performance Planning",
+                      "appraisal_year": 2024,
+                      "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+                      "appraisal_cycle_id": "e7242529-5e9d-4a7f-a9bc-0707106f08f9",
+                      "created_date": "2024-10-17T17:11:31.161873",
+                      "updated_date": "2024-10-17T17:11:49.633620"
+                    },
+                    "appraisal_form": {
+                      "id": null,
+                      "form_fields": [
+                        {}
+                      ]
+                    },
+                    "submission": null
+                  }
+        
+            ]
+        
+            }
+            
+        },
+
+
+
+        {
+
+        "appraisal_cycle": {
+            "id": "c11d5c57-ce90-4a2c-be52-b76331beddc8",
+            "name": "Yearly",
+            "description": "Performance planning for the year",
+            "appraisal_year": 2024,
+            "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+            "created_date": "2024-10-11T14:11:43.638325",
+            "updated_date": "2024-10-11T14:11:43.638325",
+      "appraisal_section_data": [
+        {
+            "appraisal_section": {
+              "id": "f560476a-391d-43cc-a7f7-94b9fb28e070",
+              "name": "Start of Year",
+              "description": "Performance Planning",
+              "appraisal_year": 2024,
+              "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+              "appraisal_cycle_id": "c11d5c57-ce90-4a2c-be52-b76331beddc8",
+              "created_date": "2024-10-17T17:11:31.161873",
+              "updated_date": "2024-10-17T17:11:49.633620"
+            },
+            "appraisal_form": {
+              "id": null,
+              "form_fields": [
+                {}
+              ]
+            },
+            "submission": null
+          },
+          {
+            "appraisal_section": {
+              "id": "dc2fe8c3-6214-48e6-b5ee-f59d91997b13",
+              "name": "Mid Year",
+              "description": "Reviewing and Commenting on Appraisal",
+              "appraisal_year": 2024,
+              "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+              "appraisal_cycle_id": "c11d5c57-ce90-4a2c-be52-b76331beddc8",
+              "created_date": "2024-10-17T17:11:49.637634",
+              "updated_date": "2024-10-17T17:06:07.858438"
+            },
+            "appraisal_form": {
+              "id": null,
+              "form_fields": [
+                {}
+              ]
+            },
+            "submission": null
+          },
+          {
+            "appraisal_section": {
+              "id": "3162e3cd-bd29-4e46-b690-6b6189ffb6ed",
+              "name": "End of Year",
+              "description": "End of Appraisal",
+              "appraisal_year": 2024,
+              "created_by": "aceff584-dce0-48eb-b4aa-e42723c2c4c8",
+              "appraisal_cycle_id": "c11d5c57-ce90-4a2c-be52-b76331beddc8",
+              "created_date": "2024-10-17T17:11:49.637634",
+              "updated_date": "2024-10-17T17:06:07.858438"
+            },
+            "appraisal_form": {
+              "id": null,
+              "form_fields": [
+                {}
+              ]
+            },
+            "submission": null
+          }
+
+    ]
+
+    }
+    
+}
+
+    ]
+
+}
