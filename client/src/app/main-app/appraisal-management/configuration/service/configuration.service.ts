@@ -8,6 +8,7 @@ import { IAppraisalCycle } from '../../../../shared/interfaces';
 })
 export class ConfigurationService {
   private appraisalCycleURL = `${environment.API_URL_BASE}/appraisal_cycles`;
+  private appraisalSectionURL = `${environment.API_URL_BASE}/appraisal_sections`;
 
   constructor(private http: HttpClient) {}
 
@@ -15,7 +16,7 @@ export class ConfigurationService {
     return this.http.get<IAppraisalCycle[]>(`${this.appraisalCycleURL}/all`);
   }
 
-  addCycle(data: any) {
+  addCycle(data: IAppraisalCycle) {
     return this.http.post<IAppraisalCycle>(
       `${this.appraisalCycleURL}/new`,
       data
@@ -35,5 +36,12 @@ export class ConfigurationService {
 
   getCycleWithSections(id: string) {
     return this.http.get<IAppraisalCycle>(`${this.appraisalCycleURL}/${id}`);
+  }
+
+  updateCycleSections(data: any, id: string) {
+    return this.http.put<IAppraisalCycle>(
+      `${this.appraisalSectionURL}/${id}`,
+      data
+    );
   }
 }

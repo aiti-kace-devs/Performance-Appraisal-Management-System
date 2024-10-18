@@ -63,6 +63,14 @@
       </div>
     </div>
     <div class="p-5 flex flex-column relative flex-auto">
+      <div class="surface-ground">
+        <p-breadcrumb
+          *ngIf="((breadcrumbs$ | async) || []).length > 1"
+          styleClass="p-0 border-noround border-none m-0 pl-2 mb-3 surface-ground"
+          [model]="(breadcrumbs$ | async) ?? []"
+        ></p-breadcrumb>
+      </div>
+
       <div class="surface-border border-round surface-section flex-auto">
         <router-outlet></router-outlet>
       </div>

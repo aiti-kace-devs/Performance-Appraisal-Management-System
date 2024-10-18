@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { PrimeNgAlerts } from '../../config/app-config';
 import { AppAlertService } from '../../shared/alerts/service/app-alert.service';
 import { ConfigurationService } from '../../main-app/appraisal-management/configuration/service/configuration.service';
@@ -11,6 +11,7 @@ import {
   UpdateAppraisalCycle,
   SelectAppraisalCycle,
   ClearSelectedAppraisalCycle,
+  UpdateAppraisalCycleSection,
 } from './appraisal-cycle.action';
 import { IAppraisalCycle } from '../../shared/interfaces';
 
@@ -73,7 +74,7 @@ export class AppraisalCycleState {
     { payload }: AddAppraisalCycle
   ) {
     return this.confService.addCycle(payload).pipe(
-      tap((returnData) => {
+      map((returnData) => {
         this.alert.showToast(
           'Appraisal Cycle added successfully',
           PrimeNgAlerts.SUCCESS
@@ -82,6 +83,7 @@ export class AppraisalCycleState {
         ctx.patchState({
           cycle: [...state.cycle, returnData],
         });
+        return returnData;
       })
     );
   }
@@ -158,5 +160,25 @@ export class AppraisalCycleState {
       ...state,
       selectedCycle: undefined,
     });
+  }
+
+  @Action(UpdateAppraisalCycleSection)
+  updateCycleSections(
+    ctx: StateContext<AppraisalCycleStateModel>,
+    { payload, id }: UpdateAppraisalCycleSection
+  ) {
+    return this.confService.updateCycleSections(payload, id).pipe(
+      tap((returnData) => {
+        this.alert.showToast(
+          'Appraisal Cycle edited successfully',
+          PrimeNgAlerts.SUCCESS
+        );
+        const state = ctx.getState();
+        ctx.setState({
+          ...state,
+          selectedCycle: returnData,
+        });
+      })
+    );
   }
 }

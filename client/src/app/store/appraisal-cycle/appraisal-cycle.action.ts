@@ -31,3 +31,8 @@ export class SelectAppraisalCycle {
 export class ClearSelectedAppraisalCycle {
   static readonly type = '[AppraisalCycle] Clear';
 }
+
+export class UpdateAppraisalCycleSection {
+  static readonly type = '[AppraisalCycle] Update Sections';
+  constructor(public payload: any, public id: string) {}
+}

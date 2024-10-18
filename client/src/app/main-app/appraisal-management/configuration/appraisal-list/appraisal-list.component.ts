@@ -5,10 +5,12 @@ import { Observable } from 'rxjs';
 import { IAppraisalCycle } from '../../../../shared/interfaces';
 import { AppraisalCycleState } from '../../../../store/appraisal-cycle/appraisal-cycle.state';
 import {
+  ClearSelectedAppraisalCycle,
   DeleteAppraisalCycle,
   GetAppraisalCycle,
 } from '../../../../store/appraisal-cycle/appraisal-cycle.action';
-import { CycleFormComponent } from '../cycle-form/cycle-form.component';
+import { CycleFormDialogComponent } from '../cycle-form/cycle-form-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-appraisal-list',
@@ -20,9 +22,14 @@ export class AppraisalListComponent implements OnInit {
     AppraisalCycleState.selectStateData
   );
 
-  constructor(public alert: AppAlertService, private store: Store) {}
+  constructor(
+    private alert: AppAlertService,
+    private store: Store,
+    private router: Router
+  ) {}
 
   ngOnInit() {
+    this.store.dispatch(new ClearSelectedAppraisalCycle());
     this.getCycle();
   }
 
@@ -31,19 +38,19 @@ export class AppraisalListComponent implements OnInit {
   }
 
   addNewCycle() {
-    this.alert.openDialog(CycleFormComponent, {
+    this.alert.openDialog(CycleFormDialogComponent, {
       header: 'Add New Appraisal Cycle',
       closable: true,
     });
   }
 
   editCycle(data: any) {
-    this.alert.openDialog(CycleFormComponent, {
-      header: 'Update Appraisal Cycle',
-      data: data,
-      closable: true,
-    });
+    this.router.navigate([
+      'admin/appraisal-management/configuration/',
+      data.id,
+    ]);
   }
+
   removeCycle(data: any) {
     this.alert.showConfirmation({
       popupTarget: event?.target,

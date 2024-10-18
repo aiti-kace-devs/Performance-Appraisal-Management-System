@@ -14,18 +14,17 @@ export class AppraisalLayoutComponent implements OnInit, OnDestroy {
   selectedAppraisal$: Observable<IStaffAppraisal | null | undefined> =
     this.store.select(StaffAppraisalState.getSelectedAppraisal);
 
-  appraisalSections: { name: string; description: string; formData: any }[] =
-    [];
+  appraisalCycles: { name: string; description: string; sections: any }[] = [];
 
   constructor(private store: Store) {}
 
   ngOnInit() {
     this.selectedAppraisal$?.subscribe((data) => {
-      if (data?.data) {
-        this.appraisalSections = data.data.map((section: any) => ({
-          name: section.appraisal_section.name,
-          description: section.appraisal_section.description,
-          formData: section.appraisal_form,
+      if (data?.appraisal_cycles) {
+        this.appraisalCycles = data.appraisal_cycles.map((app: any) => ({
+          name: app.name,
+          description: app.description,
+          sections: app.appraisal_sections,
         }));
       }
     });

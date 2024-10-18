@@ -10,13 +10,17 @@
     </div>
     <div class="surface-border border-top-1 opacity-50 mb-4 col-12"></div>
   </div>
-  <button
-    [disabled]="cycleForm.invalid"
-    pButton
-    pRipple
-    label="Submit"
-    icon="pi pi-send"
-    class="w-auto"
-    (click)="submitForm()"
-  ></button>
+  <div class="flex align-content-end justify-content-end">
+    <div class="flex align-content-end m-2">
+      <button
+        [disabled]="cycleForm.invalid"
+        pButton
+        pRipple
+        label="Submit"
+        icon="pi pi-send"
+        class="w-auto"
+        (click)="submitForm()"
+      ></button>
+    </div>
+  </div>
 </div>

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -13,7 +14,7 @@ import { debounceTime, distinctUntilChanged, merge } from 'rxjs';
   templateUrl: './section-form.component.html',
   styleUrls: ['./section-form.component.scss'],
 })
-export class SectionFormComponent {
+export class SectionFormComponent implements AfterViewInit {
   @Input() data: any = undefined;
   @Input() readonly = false;
 
@@ -61,10 +62,22 @@ export class SectionFormComponent {
 
   get sectionFormData(): IAppraisalSection {
     const data = this.sectionForm.getRawValue();
-    data.fieldType = data.fieldType?.value;
-    return {
-      ...data,
-      // validators: this.validatorForm.form.value,
-    };
+    return data;
+    // return {
+    //   ...data,
+    //   // validators: this.validatorForm.form.value,
+    // };
+  }
+
+  get formIsInvalid() {
+    return this.sectionForm.invalid;
+  }
+
+  isDataValid(data = this.data) {
+    if (!data.name || !data.description) {
+      return false;
+    }
+
+    return true;
   }
 }

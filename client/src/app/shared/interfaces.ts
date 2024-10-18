@@ -71,14 +71,7 @@ export interface IAuthResponse {
 
 export interface IStaffAppraisal {
   staff_info: IStaff;
-  appraisal_cycle: IAppraisalCycle;
-  data: [
-    {
-      appraisal_section: IAppraisalSection;
-      appraisal_form: IAppraisalForm;
-      submission: IAppraisalSubmission;
-    }
-  ];
+  appraisal_cycles: IAppraisalCycle[];
 }
 
 export interface IAppraisalCycle {
@@ -101,6 +94,8 @@ export interface IAppraisalSection {
   appraisal_cycle_id: string;
   created_date?: string | number | Date;
   updated_date?: string | number | Date;
+  appraisal_form?: IAppraisalForm;
+  submission?: IAppraisalSubmission;
 }
 
 export interface IAppraisalForm {

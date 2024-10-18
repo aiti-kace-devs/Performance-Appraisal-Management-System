@@ -1,13 +1,10 @@
 <div class="surface-card p-4 shadow-2 border-round">
   <p-tabView styleClass="tabview-custom">
-    <p-tabPanel
-      *ngFor="let section of appraisalSections"
-      [header]="section.name"
-    >
+    <p-tabPanel *ngFor="let section of appraisalCycles" [header]="section.name">
       <p>{{ section.description }}</p>
-      <app-staff-appraisal-section
+      <!-- <app-staff-appraisal-section
         [formData]="section.formData"
-      ></app-staff-appraisal-section>
+      ></app-staff-appraisal-section> -->
     </p-tabPanel>
     <!-- <p-tabPanel>
       <ng-template pTemplate="header">

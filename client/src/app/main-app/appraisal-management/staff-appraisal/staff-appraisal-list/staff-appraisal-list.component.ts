@@ -18,11 +18,10 @@ export class StaffAppraisalListComponent {
     { header: 'Staff Name', field: 'full_name', sortable: true },
     { header: 'Position', field: 'position' },
     {
-      header: 'Appraisal Type',
-      field: 'apppraisal_cycle',
+      header: 'Department',
+      field: 'department_id',
       subField: 'name',
     },
-    { header: 'Status', field: 'status', sortable: true },
   ];
   title = 'Staff Appraisal List';
 

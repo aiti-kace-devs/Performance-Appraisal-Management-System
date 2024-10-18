@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { IStaff } from '../../shared/interfaces';
@@ -7,13 +12,14 @@ import { GetStaff } from '../../store/staff/staff.action';
 import { Router } from '@angular/router';
 import { StaffAppraisalState } from '../../store/appraisal/staff-appraisal.state';
 import { IStaffAppraisal } from '../../shared/interfaces';
+import { NavigationService } from '../../service/navigation.service';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit, AfterViewInit {
   staff$: Observable<IStaff[]> = this.store.select(StaffState.selectStateData);
 
   // @Select(StaffAppraisalState.getSelectedAppraisal) selectedAppraisal$:
@@ -26,11 +32,14 @@ export class MainLayoutComponent {
   staff: { label: any; value: any }[] = [];
   selectedStaff: any;
 
+  breadcrumbs$ = this.navigator.breadCrumbs$;
+
   constructor(
     private store: Store,
-    private router: Router
-  ) // private cdref: ChangeDetectorRef
-  {}
+    private router: Router,
+    private navigator: NavigationService,
+    private cdref: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.store.dispatch(new GetStaff());
@@ -48,8 +57,12 @@ export class MainLayoutComponent {
             value: selectedStaff.staff_info.id,
           }
         : null;
-      // this.cdref.detectChanges();
     });
+    this.cdref.detectChanges();
+  }
+
+  ngAfterViewInit(): void {
+    this.cdref.detectChanges();
   }
 
   onStaffChange(event: any) {

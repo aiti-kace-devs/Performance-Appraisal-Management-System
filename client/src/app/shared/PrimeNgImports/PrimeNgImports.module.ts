@@ -15,6 +15,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TooltipModule } from 'primeng/tooltip';
 import { BadgeModule } from 'primeng/badge';
 import { OrderListModule } from 'primeng/orderlist';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 const sharedImports = [
   ButtonModule,
@@ -32,6 +33,7 @@ const sharedImports = [
   TooltipModule,
   BadgeModule,
   OrderListModule,
+  BreadcrumbModule,
 ];
 
 @NgModule({
