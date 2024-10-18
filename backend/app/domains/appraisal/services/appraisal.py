@@ -133,7 +133,6 @@ class AppraisalService:
                     sections_data.append(section_data)
 
             cycle_data = {
-                "appraisal_cycle": {
                     "id": cycle.id,
                     "name": cycle.name,
                     "description": cycle.description,
@@ -142,7 +141,6 @@ class AppraisalService:
                     "created_date": cycle.created_date,
                     "updated_date": cycle.updated_date,
                     "appraisal_sections": sections_data
-                }
             }
             appraisal_cycle_data.append(cycle_data)
 
@@ -172,7 +170,7 @@ class AppraisalService:
 
         return {
             "staff_info": get_staff_empty_info,
-            "appraisal_cycle_data": appraisal_cycle_data
+            "appraisal_cycles": appraisal_cycle_data
         }
 
     
