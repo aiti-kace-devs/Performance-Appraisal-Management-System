@@ -89,31 +89,31 @@ class AppraisalService:
                                 "appraisal_cycle_id": section.appraisal_cycle_id,
                                 "created_date": section.created_date,
                                 "updated_date": section.updated_date,
-                            },
-                            "appraisal_form": {
-                                "id": appraisal_form.id if appraisal_form else None,
-                                "form_fields": [form_fields]
-                            },
-                            "submission": {
-                                "id": submission.id,
-                                "submitted_by": submission.submitted_by,
-                                "started_at": submission.started_at,
-                                "completed_at": submission.completed_at,
-                                "approval_date": submission.approval_date,
-                                "completed": submission.completed,
-                                "comment": submission.comment,
-                                "appraisal_forms_id": submission.appraisal_forms_id,
-                                "submitted_values": submission.submitted_values,
-                                "submitted": submission.submitted,
-                                "approval_status": submission.approval_status,
-                                "created_date": submission.created_date,
-                                "updated_date": submission.updated_date
+                                "appraisal_form": {
+                                    "id": appraisal_form.id if appraisal_form else None,
+                                    "form_fields": [form_fields]
+                                },
+                                "submission": {
+                                    "id": submission.id,
+                                    "submitted_by": submission.submitted_by,
+                                    "started_at": submission.started_at,
+                                    "completed_at": submission.completed_at,
+                                    "approval_date": submission.approval_date,
+                                    "completed": submission.completed,
+                                    "comment": submission.comment,
+                                    "appraisal_forms_id": submission.appraisal_forms_id,
+                                    "submitted_values": submission.submitted_values,
+                                    "submitted": submission.submitted,
+                                    "approval_status": submission.approval_status,
+                                    "created_date": submission.created_date,
+                                    "updated_date": submission.updated_date
+                                }
                             }
+
                         }
                         sections_data.append(section_data)
                 else:
                     section_data = {
-                        "appraisal_section": {
                             "id": section.id,
                             "name": section.name,
                             "description": section.description,
@@ -122,12 +122,13 @@ class AppraisalService:
                             "appraisal_cycle_id": section.appraisal_cycle_id,
                             "created_date": section.created_date,
                             "updated_date": section.updated_date,
-                        },
-                        "appraisal_form": {
+                             "appraisal_form": {
                             "id": appraisal_form.id if appraisal_form else None,
                             "form_fields": [form_fields]
-                        },
-                        "submission": None
+                            },
+                            "submission": None
+                        
+                       
                     }
                     sections_data.append(section_data)
 
@@ -136,11 +137,11 @@ class AppraisalService:
                     "id": cycle.id,
                     "name": cycle.name,
                     "description": cycle.description,
-                    "appraisal_year": cycle.year,
+                    "year": cycle.year,
                     "created_by": cycle.created_by,
                     "created_date": cycle.created_date,
                     "updated_date": cycle.updated_date,
-                    "appraisal_section_data": sections_data
+                    "appraisal_sections": sections_data
                 }
             }
             appraisal_cycle_data.append(cycle_data)
