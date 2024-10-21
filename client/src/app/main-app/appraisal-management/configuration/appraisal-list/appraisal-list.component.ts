@@ -11,6 +11,8 @@ import {
 } from '../../../../store/appraisal-cycle/appraisal-cycle.action';
 import { CycleFormDialogComponent } from '../cycle-form/cycle-form-dialog.component';
 import { Router } from '@angular/router';
+import { NavigationService } from '../../../../service/navigation.service';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-appraisal-list',
@@ -25,12 +27,26 @@ export class AppraisalListComponent implements OnInit {
   constructor(
     private alert: AppAlertService,
     private store: Store,
-    private router: Router
+    private router: Router,
+    private readonly navigator: NavigationService
   ) {}
 
   ngOnInit() {
     this.store.dispatch(new ClearSelectedAppraisalCycle());
     this.getCycle();
+
+    const breadcrumbs: MenuItem[] = [];
+    breadcrumbs.push(
+      ...[
+        {
+          label: 'Appraisal',
+        },
+        {
+          label: 'Appraisal Cycles',
+        },
+      ]
+    );
+    this.navigator.breadCrumbs$.next(breadcrumbs);
   }
 
   getCycle() {

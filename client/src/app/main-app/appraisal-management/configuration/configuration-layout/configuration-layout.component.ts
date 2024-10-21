@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationService } from '../../../../service/navigation.service';
 import { MenuItem } from 'primeng/api';
 import { ActivatedRoute } from '@angular/router';
-import { SelectAppraisalCycle } from '../../../../store/appraisal-cycle/appraisal-cycle.action';
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { IAppraisalCycle } from '../../../../shared/interfaces';
@@ -13,7 +12,7 @@ import { AppraisalCycleState } from '../../../../store/appraisal-cycle/appraisal
   templateUrl: './configuration-layout.component.html',
   styleUrls: ['./configuration-layout.component.scss'],
 })
-export class ConfigurationLayoutComponent {
+export class ConfigurationLayoutComponent implements OnInit {
   selectedCycle$: Observable<IAppraisalCycle | undefined> = this.store.select(
     AppraisalCycleState.getSelectedCycle
   );
@@ -53,7 +52,6 @@ export class ConfigurationLayoutComponent {
           },
           {
             label: cycle.name,
-            routerLink: ['/admin/appraisal-management/configuration', cycle.id],
           },
         ]
       );
