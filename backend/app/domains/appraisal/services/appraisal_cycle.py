@@ -183,6 +183,42 @@ class AppraisalCycleService:
 
         return response
     
+
+    
+    def search_cycle_by_year(self, db: Session, value: int) -> List[AppraisalCycle]:
+        # search_field = "name"
+        response = []
+
+        # Sanitize and validate input
+        # search_value = re.sub(r'[^\w\s]', '', value.strip())  # Remove special characters
+        # if not search_value:
+        #     return response
+
+        try:
+            # Use parameterized queries to prevent SQL injection
+            # if search_field and search_value:
+            #     response = db.query(AppraisalCycle).filter(
+            #         getattr(AppraisalCycle, search_field).ilike(f"%{search_value}%")
+            #     ).all()
+
+            if not response and self.is_valid_year(value):
+                response = db.query(AppraisalCycle).filter(
+                    AppraisalCycle.year == value
+                ).all()
+
+        except SQLAlchemyError as e:
+            print(f"Database error occurred: {e}")
+            # Log the error and return a safe message
+            # log.error(f"Database error occurred: {e}")
+            return {"error": "An error occurred while processing your request."}
+        except KeyError as ke:
+            # Log the error and return a safe message
+            # log.error(f"Key error: {ke}")
+            print(f"Key error: {ke}")
+            return {"error": "Invalid search parameter."}
+
+        return response
+    
     def read_appraisal_cycle_by_name_by_year(self, *, db:Session, search_word: str) -> List[AppraisalCycleSchema]:
         appraisal_cycle_name = self.iread(db=db, value=search_word)
         return appraisal_cycle_name

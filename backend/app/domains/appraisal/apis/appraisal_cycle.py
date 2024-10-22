@@ -48,6 +48,18 @@ def search_appraisal_cycles_by_name_or_by_year(
     return appraisal_cycles_router
 
 
+@appraisal_cycles_router.get(
+    "/search_year",
+    response_model=List[schemas.AppraisalCycleSchema]
+)
+def search_appraisal_cycles_by_year(
+        search_year: int,
+        db: Session = Depends(get_db)
+) -> Any:
+    appraisal_cycles_router = actions.search_cycle_by_year(db=db, value=search_year)
+    return appraisal_cycles_router
+
+
 @appraisal_cycles_router.post(
     "/new",
     response_model=schemas.AppraisalCycleSchema,
