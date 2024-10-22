@@ -21,17 +21,19 @@ export class DepartmentListComponent implements OnInit {
     DepartmentState.selectStateData
   );
 
-  columns: IColumnDef[] = [
-    { header: 'Department Name', field: 'name' },
-    { header: 'Description', field: 'description' },
-    { header: 'No. of Staff', field: 'total_staff' },
-  ];
+  columns!: IColumnDef[];
   title = 'Department List';
   filename: string = 'department-list';
 
   constructor(public alert: AppAlertService, private store: Store) {}
 
   ngOnInit() {
+    this.columns = [
+      { header: 'Department Name', field: 'name' },
+      { header: 'Description', field: 'description' },
+      { header: 'No. of Staff', field: 'total_staff' },
+    ];
+
     this.getDepartment();
   }
 

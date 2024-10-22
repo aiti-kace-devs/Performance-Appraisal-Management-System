@@ -142,5 +142,6 @@
     icon="pi pi-file"
     class="w-auto"
     (click)="submitForm()"
+    [loading]="(loading$ | async) || false"
   ></button>
 </div>

@@ -37,7 +37,7 @@ export class SectionFormComponent implements AfterViewInit {
       });
     }
 
-    merge(this.sectionForm.valueChanges)
+    this.sectionForm.valueChanges
       .pipe(
         debounceTime(200),
         distinctUntilChanged(

@@ -17,6 +17,7 @@ import { DepartmentState } from './store/department/department.state';
 import { AuthState } from './store/auth/auth.state';
 import { StaffAppraisalState } from './store/appraisal/staff-appraisal.state';
 import { AppraisalCycleState } from './store/appraisal-cycle/appraisal-cycle.state';
+import { AppState } from './store/app/app.state';
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
@@ -34,6 +35,7 @@ import {
 import { PageNotFoundComponent } from './shared/pageNotFound/pageNotFound.component';
 import { TokenInterceptor } from './shared/interceptors/token-interceptor';
 import { ErrorMessageInterceptor } from './shared/interceptors/error-message-interceptor';
+import { LoadingInterceptor } from './shared/interceptors/loading-interceptor';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,7 @@ import { ErrorMessageInterceptor } from './shared/interceptors/error-message-int
     PrimeNgImportsModule,
     MainAppModule,
     NgxsModule.forRoot([
+      AppState,
       StaffState,
       DepartmentState,
       AuthState,
@@ -63,6 +66,11 @@ import { ErrorMessageInterceptor } from './shared/interceptors/error-message-int
     FormsModule,
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

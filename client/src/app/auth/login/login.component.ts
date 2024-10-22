@@ -2,9 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginService } from '../service/login.service';
-import { catchError, take } from 'rxjs';
+import { catchError, Observable, take } from 'rxjs';
 import { AppAlertService } from '../../shared/alerts/service/app-alert.service';
 import { APP_ACCESS_TOKEN, PrimeNgAlerts } from '../../config/app-config';
+import { Store } from '@ngxs/store';
+import { AppState } from '../../store/app/app.state';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +14,8 @@ import { APP_ACCESS_TOKEN, PrimeNgAlerts } from '../../config/app-config';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
+  loading$: Observable<boolean> = this.store.select(AppState.getLoadingState);
+
   userForm!: FormGroup;
   loginError = false;
 
@@ -22,7 +26,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private loginService: LoginService,
     private alert: AppAlertService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private store: Store
   ) {}
 
   ngOnInit() {

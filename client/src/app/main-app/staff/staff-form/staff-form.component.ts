@@ -17,6 +17,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AppAlertService } from '../../../shared/alerts/service/app-alert.service';
 import { AddStaff, UpdateStaff } from '../../../store/staff/staff.action';
 import { CustomValidators } from '../../../config/validators';
+import { AppState } from '../../../store/app/app.state';
 
 interface IDropdown {
   label: string;
@@ -33,6 +34,7 @@ export class StaffFormComponent implements OnInit {
   staffForm!: FormGroup;
   staff!: any;
 
+  loading$: Observable<boolean> = this.store.select(AppState.getLoadingState);
   department$: Observable<IDepartment[]> = this.store.select(
     DepartmentState.selectStateData
   );

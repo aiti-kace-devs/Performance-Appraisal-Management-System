@@ -36,8 +36,9 @@ export class CycleSectionComponent implements OnInit, AfterViewInit {
   @ViewChild('formFieldContainer', { read: ViewContainerRef })
   formFieldContainer!: ViewContainerRef;
 
-  selectedCycle$: Observable<IAppraisalCycle | null | undefined> =
-    this.store.select(AppraisalCycleState.getSelectedCycle);
+  selectedCycle$: Observable<IAppraisalCycle | undefined> = this.store.select(
+    AppraisalCycleState.getSelectedCycle
+  );
 
   disbledPicker$ = signal(false);
   sectionData: IAppraisalSection[] = [];
@@ -78,8 +79,8 @@ export class CycleSectionComponent implements OnInit, AfterViewInit {
 
   addNewSections() {
     const newFieldGroup: FormGroup = this.formBuilder.group({
-      name: ['Appraisal', Validators.required],
-      description: ['Description', Validators.required],
+      name: ['', Validators.required],
+      description: ['', Validators.required],
     });
 
     this.sectionData.push(newFieldGroup.value);
@@ -92,21 +93,26 @@ export class CycleSectionComponent implements OnInit, AfterViewInit {
   }
 
   async selectFieldAndReturnComponent(data: any, index: number) {
+    // Reset selection
     this.selectedField$.set(null);
     this.selectedField$.set(data);
     this.selectedIndex = index;
+
+    // Set selection in orderList and detect changes
     this.orderList.selection = [data];
     this.orderList.cd.detectChanges();
-    this.formFieldContainer.clear();
-    let fieldComponent: ComponentRef<SectionFormComponent> | undefined =
-      undefined;
-    // create component and add to view
 
+    // Clear the container for the form field component
+    this.formFieldContainer.clear();
+
+    // Only create the form component if data is present
     if (data) {
-      fieldComponent =
+      let fieldComponent: ComponentRef<SectionFormComponent> | undefined =
         this.formFieldContainer.createComponent(SectionFormComponent);
+
       fieldComponent.instance.data = data;
-      // fieldComponent.instance.readonly = !isAdmin;
+
+      // Subscribe to form value changes and update section data accordingly
       const updateFormDataSubscription = fieldComponent.instance.onValueChange
         .pipe(
           debounceTime(500),
@@ -122,26 +128,30 @@ export class CycleSectionComponent implements OnInit, AfterViewInit {
         )
         .subscribe();
 
+      // Handle form status changes
       const statusChangeSubscription =
         fieldComponent.instance.onStatusChange.subscribe((status) => {
-          if (status === 'INVALID') {
-            this.disbledPicker$.set(true);
-          }
-          if (status === 'VALID') {
-            this.disbledPicker$.set(false);
-          }
+          this.disbledPicker$.set(status === 'INVALID');
           this.orderList.cd.detectChanges();
           this.cdref.detectChanges();
         });
 
+      // Clean up subscriptions on component destroy
       fieldComponent.onDestroy(() => {
-        statusChangeSubscription.unsubscribe();
         updateFormDataSubscription.unsubscribe();
+        statusChangeSubscription.unsubscribe();
       });
 
+      // Insert the newly created form component into the view
       this.formFieldContainer.insert(fieldComponent.hostView);
+
+      // Ensure changes are detected after inserting the component
+      this.cdref.detectChanges();
+
+      return fieldComponent;
     }
-    return fieldComponent;
+
+    return undefined;
   }
 
   async submitSections() {

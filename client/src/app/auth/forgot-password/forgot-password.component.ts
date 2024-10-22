@@ -3,7 +3,9 @@ import { AppAlertService } from '../../shared/alerts/service/app-alert.service';
 import { FormControl, Validators } from '@angular/forms';
 import { PrimeNgAlerts } from '../../config/app-config';
 import { LoginService } from '../service/login.service';
-import { catchError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
+import { AppState } from '../../store/app/app.state';
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'app-forgot-password',
@@ -11,9 +13,12 @@ import { catchError } from 'rxjs';
   styleUrls: ['./forgot-password.component.scss'],
 })
 export class ForgotPasswordComponent {
+  loading$: Observable<boolean> = this.store.select(AppState.getLoadingState);
+
   constructor(
     private loginService: LoginService,
-    private alert: AppAlertService
+    private alert: AppAlertService,
+    private store: Store
   ) {}
   email = new FormControl('', [Validators.required, Validators.email]);
 

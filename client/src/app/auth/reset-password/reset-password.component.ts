@@ -8,8 +8,10 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppAlertService } from '../../shared/alerts/service/app-alert.service';
 import { PrimeNgAlerts } from '../../config/app-config';
-import { catchError, EMPTY, filter, skip } from 'rxjs';
+import { catchError, EMPTY, filter, Observable, skip } from 'rxjs';
 import { LoginService } from '../service/login.service';
+import { AppState } from '../../store/app/app.state';
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'app-reset-password',
@@ -17,6 +19,7 @@ import { LoginService } from '../service/login.service';
   styleUrls: ['./reset-password.component.scss'],
 })
 export class ResetPasswordComponent implements OnInit {
+  loading$: Observable<boolean> = this.store.select(AppState.getLoadingState);
   form!: FormGroup;
   token!: string;
   showForm = false;
@@ -26,7 +29,8 @@ export class ResetPasswordComponent implements OnInit {
     private route: ActivatedRoute,
     private loginService: LoginService,
     private alert: AppAlertService,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {}
 
   ngOnInit() {
