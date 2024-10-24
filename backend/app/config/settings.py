@@ -24,19 +24,13 @@ class Settings:
     set_allow_origin = "http://localhost:4200, https://performance-appraisal.netlify.app"
 
 
-    # POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    # POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
-    # POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
-    # POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
-    # POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db")
-    # SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "appraisal_user")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "VX1j4GKLUguYtoUBrn7Qe4BMVDHpAoMt")
-    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "dpg-crttehtds78s73f7kttg-a")
+    
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", 5432)
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "appraisal_db_x6wu")
-    SQLALCHEMY_DATABASE_URL = f"postgresql://appraisal_user:VX1j4GKLUguYtoUBrn7Qe4BMVDHpAoMt@dpg-crttehtds78s73f7kttg-a/appraisal_db_x6wu"
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB")
+    SQLALCHEMY_DATABASE_URL = f""
 
 
     INSTANCE_CONNECTION_NAME: str = os.getenv("INSTANCE_CONNECTION_NAME", None)
